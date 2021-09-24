@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using PhoneShop.Config;
 
 #nullable disable
 
@@ -23,7 +24,8 @@ namespace PhoneShop.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=localhost; user=SA; password=456789Zxc");
+                var dBConnection = ConfigManager.AppSetting["DBConnection"];
+                optionsBuilder.UseSqlServer(dBConnection);
             }
         }
 
