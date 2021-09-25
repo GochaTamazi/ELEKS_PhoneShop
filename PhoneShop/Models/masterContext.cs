@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using PhoneShop.Config;
+using PhoneShop.Tools;
 
 #nullable disable
 

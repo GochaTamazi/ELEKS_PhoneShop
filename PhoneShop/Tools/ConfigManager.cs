@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PhoneShop.Config
+namespace PhoneShop.Tools
 {
     static class ConfigManager
     {
