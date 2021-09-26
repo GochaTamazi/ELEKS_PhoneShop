@@ -5,9 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols;
+using PhoneShop.Configs;
+using PhoneShop.Models;
+using PhoneShop.RemoteAPI;
+using PhoneShop.Tools;
 
 namespace PhoneShop
 {
@@ -23,6 +29,13 @@ namespace PhoneShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureOptions<PhoneSpecificationOptions>(Configuration);
+            services.AddScoped<IPhoneSpecificationClient, PhoneSpecificationClient>();
+            
+            services.AddDbContext<masterContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
+
+            services.AddControllers();
             services.AddControllersWithViews();
         }
 
@@ -42,17 +55,9 @@ namespace PhoneShop
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

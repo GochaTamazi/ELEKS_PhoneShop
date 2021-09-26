@@ -1,25 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using PhoneShop.DTO.API.Latest;
+using PhoneShop.DTO.API.ListBrands;
+using PhoneShop.DTO.API.ListPhones;
+using PhoneShop.DTO.API.PhoneSpecifications;
+using PhoneShop.DTO.API.Search;
+using PhoneShop.DTO.API.TopByFans;
+using PhoneShop.DTO.API.TopByInterest;
 using PhoneShop.Models;
 using PhoneShop.RemoteAPI;
 
 namespace PhoneShop.Controllers
 {
+    [Route("home")]
+    [Route("")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IPhoneSpecification _phoneSpecification;
+        private readonly IPhoneSpecificationClient _phoneSpecification;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IPhoneSpecificationClient phoneSpecificationClient)
         {
             _logger = logger;
-            _phoneSpecification = new PhoneSpecification();
+            _phoneSpecification = phoneSpecificationClient;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -28,84 +34,67 @@ namespace PhoneShop.Controllers
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
+        [HttpGet("index")]
+        [HttpGet("")]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet("privacy")]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        public async Task<ActionResult<string>> ListBrands()
+        [HttpGet("listBrands")]
+        public async Task<ActionResult<ListBrands>> ListBrandsAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.ListBrandsAsync();
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var listBrands = await _phoneSpecification.ListBrandsAsync(ct);
+            return Ok(listBrands);
         }
 
-        public async Task<ActionResult<string>> ListPhones()
+        [HttpGet("listPhones")]
+        public async Task<ActionResult<ListPhones>> ListPhonesAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.ListPhonesAsync("acer-phones-59");
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var listPhones = await _phoneSpecification.ListPhonesAsync(ct, "acer-phones-59", 1);
+            return Ok(listPhones);
         }
 
-        public async Task<ActionResult<string>> PhoneSpecifications()
+        [HttpGet("phoneSpecifications")]
+        public async Task<ActionResult<PhoneSpecifications>> PhoneSpecificationsAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.PhoneSpecificationsAsync("acer_chromebook_tab_10-9139");
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var phoneSpecifications =
+                await _phoneSpecification.PhoneSpecificationsAsync(ct, "acer_chromebook_tab_10-9139");
+            return Ok(phoneSpecifications);
         }
 
-        public async Task<ActionResult<string>> Search()
+        [HttpGet("search")]
+        public async Task<ActionResult<Search>> SearchAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.SearchAsync("iPhone 12 pro max");
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var search = await _phoneSpecification.SearchAsync(ct, "iPhone 12 pro max");
+            return Ok(search);
         }
 
-        public async Task<ActionResult<string>> Latest()
+        [HttpGet("latest")]
+        public async Task<ActionResult<Latest>> LatestAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.LatestAsync();
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var latest = await _phoneSpecification.LatestAsync(ct);
+            return Ok(latest);
         }
 
-        public async Task<ActionResult<string>> TopByInterest()
+        [HttpGet("topByInterest")]
+        public async Task<ActionResult<TopByInterest>> TopByInterestAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.TopByInterestAsync();
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var topByInterest = await _phoneSpecification.TopByInterestAsync(ct);
+            return Ok(topByInterest);
         }
 
-        public async Task<ActionResult<string>> TopByFans()
+        [HttpGet("topByFans")]
+        public async Task<ActionResult<TopByFans>> TopByFansAsync(CancellationToken ct)
         {
-            var json = await _phoneSpecification.TopByFansAsync();
-
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var jsonPretty = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-            return Ok(jsonPretty);
+            var topByFans = await _phoneSpecification.TopByFansAsync(ct);
+            return Ok(topByFans);
         }
     }
 }

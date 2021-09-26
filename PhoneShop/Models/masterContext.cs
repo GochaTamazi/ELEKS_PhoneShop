@@ -20,15 +20,6 @@ namespace PhoneShop.Models
 
         public virtual DbSet<Test> Tests { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var dBConnection = ConfigManager.AppSetting["DBConnection"];
-                optionsBuilder.UseSqlServer(dBConnection);
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS");
