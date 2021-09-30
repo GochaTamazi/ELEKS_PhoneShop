@@ -1,17 +1,18 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Interfaces;
+using Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PhoneShop.DTO.API.Latest;
-using PhoneShop.DTO.API.ListBrands;
-using PhoneShop.DTO.API.ListPhones;
-using PhoneShop.DTO.API.PhoneSpecifications;
-using PhoneShop.DTO.API.Search;
-using PhoneShop.DTO.API.TopByFans;
-using PhoneShop.DTO.API.TopByInterest;
-using PhoneShop.Models;
-using PhoneShop.RemoteAPI;
+using Models.DTO.API.Latest;
+using Models.DTO.API.ListBrands;
+using Models.DTO.API.ListPhones;
+using Models.DTO.API.PhoneSpecifications;
+using Models.DTO.API.Search;
+using Models.DTO.API.TopByFans;
+using Models.DTO.API.TopByInterest;
+using Models.Models;
 
 namespace PhoneShop.Controllers
 {
@@ -22,10 +23,16 @@ namespace PhoneShop.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IPhoneSpecificationClient _phoneSpecification;
 
-        public HomeController(ILogger<HomeController> logger, IPhoneSpecificationClient phoneSpecificationClient)
+        private readonly TestRepository _testRepository;
+
+        public HomeController(ILogger<HomeController> logger, IPhoneSpecificationClient phoneSpecificationClient,
+            TestRepository testRepository
+        )
         {
             _logger = logger;
             _phoneSpecification = phoneSpecificationClient;
+
+            _testRepository = testRepository;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -42,8 +49,10 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("privacy")]
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy(CancellationToken ct)
         {
+            await _testRepository.GetAll(ct);
+
             return View();
         }
 
