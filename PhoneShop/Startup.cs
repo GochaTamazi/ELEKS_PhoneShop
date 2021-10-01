@@ -1,8 +1,5 @@
-using Core;
-using Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,10 +18,9 @@ namespace PhoneShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MasterContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
-            
-            DiConfiguration.Configure(services);
+            Database.DependencyInjection.Configure(services, Configuration);
+            DataAccess.DependencyInjection.Configure(services);
+            Application.DependencyInjection.Configure(services);
 
             services.AddControllers();
             services.AddControllersWithViews();

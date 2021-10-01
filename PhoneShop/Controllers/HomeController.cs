@@ -1,18 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Interfaces;
-using Core.Repositories;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Models.DTO.API.Latest;
-using Models.DTO.API.ListBrands;
-using Models.DTO.API.ListPhones;
-using Models.DTO.API.PhoneSpecifications;
-using Models.DTO.API.Search;
-using Models.DTO.API.TopByFans;
-using Models.DTO.API.TopByInterest;
-using Models.Models;
+using Models.DTO.RemoteAPI.Latest;
+using Models.DTO.RemoteAPI.ListBrands;
+using Models.DTO.RemoteAPI.ListPhones;
+using Models.DTO.RemoteAPI.PhoneSpecifications;
+using Models.DTO.RemoteAPI.Search;
+using Models.DTO.RemoteAPI.TopByFans;
+using Models.DTO.RemoteAPI.TopByInterest;
+using Models.Entities;
 
 namespace PhoneShop.Controllers
 {
@@ -23,16 +22,14 @@ namespace PhoneShop.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IPhoneSpecificationClient _phoneSpecification;
 
-        private readonly TestRepository _testRepository;
+        private readonly ITestService _testService;
 
         public HomeController(ILogger<HomeController> logger, IPhoneSpecificationClient phoneSpecificationClient,
-            TestRepository testRepository
-        )
+            ITestService testService)
         {
             _logger = logger;
             _phoneSpecification = phoneSpecificationClient;
-
-            _testRepository = testRepository;
+            _testService = testService;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -51,7 +48,7 @@ namespace PhoneShop.Controllers
         [HttpGet("privacy")]
         public async Task<IActionResult> Privacy(CancellationToken ct)
         {
-            await _testRepository.GetAll(ct);
+            await _testService.RunTest(ct);
 
             return View();
         }

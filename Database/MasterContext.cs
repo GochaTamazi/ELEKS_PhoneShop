@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models.Models;
+using Models.Entities;
 
 #nullable disable
 namespace Database
