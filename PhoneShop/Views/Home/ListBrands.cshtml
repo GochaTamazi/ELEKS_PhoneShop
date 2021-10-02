@@ -1,0 +1,33 @@
+@using Models.DTO.RemoteAPI.ListBrands
+@model Models.DTO.RemoteAPI.ListBrands.ListBrands
+
+@{
+    ViewBag.Title = "List Brands";
+    Layout = "_Layout";
+    /*
+    @brand.Brand_id
+    @brand.Brand_name
+    @brand.Brand_slug
+    @brand.Device_count
+    @brand.Detail
+*/
+}
+
+<h2>List Brands</h2>
+
+<h4>Total Count: @Model.Data.Count</h4>
+
+<ul>
+    @foreach (var brand in @Model.Data)
+    {
+        <li>
+            <a asp-controller="Home"
+               asp-action="ListPhones"
+               asp-route-brandSlug="@brand.Brand_slug"
+               asp-route-page="1">
+                @brand.Brand_name
+            </a>
+            @brand.Device_count
+        </li>
+    }
+</ul>

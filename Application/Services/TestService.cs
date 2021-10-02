@@ -34,15 +34,16 @@ namespace Application.Services
             }
 
             var t = await TestRepo.GetAsync(1, token);
-            t.Name = "AAAAAA";
+            //t.Name = "AAAAAA";
 
-            await TestRepo.UpdateAsync(t, token);
+            //await TestRepo.UpdateAsync(t, token);
+            //await TestRepo.DeleteAsync(t, token);
 
-            var res2 = await TestRepo.ListAsync(token);
+            /*var res2 = await TestRepo.ListAsync(token);
             foreach (var v in res2)
             {
                 Console.WriteLine($"{v.Id} {v.Name}");
-            }
+            }*/
 
 
             /*var res2 = await TestRepo.ListAsync(test => test.Id == 1, token);

@@ -16,12 +16,12 @@ namespace Application.Interfaces
     /// </summary>
     public interface IPhoneSpecificationClient
     {
-        Task<ListBrands> ListBrandsAsync(CancellationToken ct);
-        Task<ListPhones> ListPhonesAsync(CancellationToken ct, string brandSlug, int page = 1);
-        Task<PhoneSpecifications> PhoneSpecificationsAsync(CancellationToken ct, string phoneSlug);
-        Task<Search> SearchAsync(CancellationToken ct, string query);
-        Task<Latest> LatestAsync(CancellationToken ct);
-        Task<TopByInterest> TopByInterestAsync(CancellationToken ct);
-        Task<TopByFans> TopByFansAsync(CancellationToken ct);
+        Task<ListBrands> ListBrandsAsync(CancellationToken token);
+        Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token);
+        Task<PhoneSpecifications> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
+        Task<Search> SearchAsync(string query, CancellationToken token);
+        Task<Latest> LatestAsync(CancellationToken token);
+        Task<TopByInterest> TopByInterestAsync(CancellationToken token);
+        Task<TopByFans> TopByFansAsync(CancellationToken token);
     }
 }
