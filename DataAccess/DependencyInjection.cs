@@ -9,7 +9,7 @@ namespace DataAccess
     {
         public static void Configure(IServiceCollection services)
         {
-            services.AddScoped<IGeneric<Test>, Generic<Test>>();
+            //services.AddScoped<IGeneric<Test>, Generic<Test>>();
         }
     }
 }

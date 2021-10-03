@@ -26,20 +26,20 @@ namespace PhoneShop.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task<ActionResult> Error(CancellationToken token)
         {
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
         [HttpGet("index")]
         [HttpGet("")]
-        public IActionResult Index()
+        public async Task<ActionResult> Index(CancellationToken token)
         {
             return View();
         }
 
         [HttpGet("privacy")]
-        public async Task<IActionResult> Privacy(CancellationToken token)
+        public async Task<ActionResult> Privacy(CancellationToken token)
         {
             await _testService.RunTest(token);
             return View();

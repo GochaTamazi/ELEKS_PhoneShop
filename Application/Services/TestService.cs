@@ -9,12 +9,12 @@ namespace Application.Services
 {
     public class TestService : ITestService
     {
-        private IGeneric<Test> TestRepo { set; get; }
+        //private IGeneric<Test> TestRepo { set; get; }
 
-        public TestService(IGeneric<Test> testRepo)
+        /*public TestService(IGeneric<Test> testRepo)
         {
             this.TestRepo = testRepo;
-        }
+        }*/
 
         public async Task RunTest(CancellationToken token)
         {
@@ -26,7 +26,7 @@ namespace Application.Services
             /*var r = await TestRepo.GetAsync(30, token);
             Console.WriteLine(r==null);*/
 
-
+            /*
             var res1 = await TestRepo.ListAsync(token);
             foreach (var v in res1)
             {
@@ -34,6 +34,8 @@ namespace Application.Services
             }
 
             var t = await TestRepo.GetAsync(1, token);
+            */
+
             //t.Name = "AAAAAA";
 
             //await TestRepo.UpdateAsync(t, token);
