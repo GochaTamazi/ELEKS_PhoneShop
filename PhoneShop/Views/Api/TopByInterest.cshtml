@@ -1,0 +1,25 @@
+@model Models.DTO.RemoteAPI.TopByInterest.TopByInterest
+
+@{
+    ViewBag.Title = "Top By Interest";
+    Layout = "_Layout";
+    var data = @Model.Data;
+}
+
+<h2>Top By Interest</h2>
+
+<h4>@data.Title : @data.Phones.Count</h4>
+
+<ul>
+    @foreach (var phone in @data.Phones)
+    {
+        <li>
+            <a asp-controller="Api"
+               asp-action="PhoneSpecifications"
+               asp-route-phoneSlug="@phone.Slug">
+                <b>Phone_name:</b> @phone.Phone_name |
+                <b>Hits:</b> @phone.Hits
+            </a>
+        </li>
+    }
+</ul>

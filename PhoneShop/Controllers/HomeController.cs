@@ -1,19 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Models.DTO.RemoteAPI.Latest;
-using Models.DTO.RemoteAPI.ListBrands;
-using Models.DTO.RemoteAPI.ListPhones;
-using Models.DTO.RemoteAPI.PhoneSpecifications;
-using Models.DTO.RemoteAPI.Search;
-using Models.DTO.RemoteAPI.TopByFans;
-using Models.DTO.RemoteAPI.TopByInterest;
 using Models.Entities;
-using PhoneShop.DTO;
 
 namespace PhoneShop.Controllers
 {
@@ -50,65 +41,8 @@ namespace PhoneShop.Controllers
         [HttpGet("privacy")]
         public async Task<IActionResult> Privacy(CancellationToken token)
         {
-            //await _testService.RunTest(ct);
+            await _testService.RunTest(token);
             return View();
-        }
-
-        [HttpGet("listBrands")]
-        public async Task<ActionResult<ListBrands>> ListBrandsAsync(CancellationToken token)
-        {
-            var listBrands = await _phoneSpecification.ListBrandsAsync(token);
-            return View(listBrands);
-        }
-
-        [HttpGet("listPhones")]
-        public async Task<ActionResult<ListPhones>> ListPhonesAsync([FromQuery] string brandSlug,
-            [FromQuery] int page,
-            CancellationToken token)
-        {
-            var listPhonesRes = new ListPhonesRes()
-            {
-                Phones = await _phoneSpecification.ListPhonesAsync(brandSlug, page, token),
-                BrandSlug = brandSlug,
-                Page = page
-            };
-            return View(listPhonesRes);
-        }
-
-        [HttpGet("phoneSpecifications")]
-        public async Task<ActionResult<PhoneSpecifications>> PhoneSpecificationsAsync(string phoneSlug,
-            CancellationToken token)
-        {
-            var phoneSpecifications = await _phoneSpecification.PhoneSpecificationsAsync(phoneSlug, token);
-            return View(phoneSpecifications);
-        }
-
-        [HttpGet("search")]
-        public async Task<ActionResult<Search>> SearchAsync(CancellationToken token)
-        {
-            var search = await _phoneSpecification.SearchAsync("iPhone 12 pro max", token);
-            return Ok(search);
-        }
-
-        [HttpGet("latest")]
-        public async Task<ActionResult<Latest>> LatestAsync(CancellationToken token)
-        {
-            var latest = await _phoneSpecification.LatestAsync(token);
-            return Ok(latest);
-        }
-
-        [HttpGet("topByInterest")]
-        public async Task<ActionResult<TopByInterest>> TopByInterestAsync(CancellationToken token)
-        {
-            var topByInterest = await _phoneSpecification.TopByInterestAsync(token);
-            return Ok(topByInterest);
-        }
-
-        [HttpGet("topByFans")]
-        public async Task<ActionResult<TopByFans>> TopByFansAsync(CancellationToken token)
-        {
-            var topByFans = await _phoneSpecification.TopByFansAsync(token);
-            return Ok(topByFans);
         }
     }
 }

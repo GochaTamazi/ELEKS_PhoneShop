@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Api Page";
+}
+
+<div class="text-left">
+    <h1 class="display-4 text-center">Api</h1>
+
+    <p>
+        <a asp-controller="Api" asp-action="ListBrands">ListBrands</a>
+    </p>
+
+    <p>
+        <form asp-controller="Api" asp-action="Search" method="get">
+            <div>
+                <label>
+                    <b>Search:</b>
+                </label>
+                <input type="text" name="query"/>
+                <input type="submit" value="Find"/>
+            </div>
+        </form>
+    </p>
+
+    <p>
+        <a asp-controller="Api" asp-action="Latest">Latest</a>
+    </p>
+
+    <p>
+        <a asp-controller="Api" asp-action="TopByInterest">TopByInterest</a>
+    </p>
+
+    <p>
+        <a asp-controller="Api" asp-action="TopByFans">TopByFans</a>
+    </p>
+
+</div>

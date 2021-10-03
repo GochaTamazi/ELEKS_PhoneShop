@@ -21,7 +21,7 @@
     @foreach (var brand in @Model.Data)
     {
         <li>
-            <a asp-controller="Home"
+            <a asp-controller="Api"
                asp-action="ListPhones"
                asp-route-brandSlug="@brand.Brand_slug"
                asp-route-page="1">
