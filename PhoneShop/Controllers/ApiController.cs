@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,8 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("index")]
-        public async Task<ActionResult> Index(CancellationToken token)
+        [HttpGet("")]
+        public ActionResult Index(CancellationToken token)
         {
             return View();
         }

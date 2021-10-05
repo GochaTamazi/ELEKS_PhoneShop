@@ -18,30 +18,31 @@ namespace PhoneShop.Controllers
         private ISynchronizeDb Synchronize { get; set; }
 
         [HttpGet("index")]
-        public async Task<ActionResult> Index(CancellationToken token)
+        [HttpGet("")]
+        public ActionResult Index(CancellationToken token)
         {
-            return Ok();
+            return View();
         }
 
-        [HttpGet("synchronize")]
-        public async Task<ActionResult> SynchronizeDb(CancellationToken token)
+        [HttpGet("SynchronizeBrands")]
+        public async Task<ActionResult> SynchronizeBrandsAsync(CancellationToken token)
         {
             await Synchronize.BrandsAsync(token);
+            return Ok("Done");
+        }
 
-            //var cnt = brands.Sum(brand => brand.Device_count);
-            //var phones = await Synchronize.PhonesAsync(brands, token);
-            //var phonesDetails = await Synchronize.SpecificationsAsync(phones, token);
+        [HttpGet("SynchronizePhones")]
+        public ActionResult SynchronizePhonesAsync(CancellationToken token)
+        {
+            //await Synchronize.PhonesAsync(token);
+            return Ok("Done");
+        }
 
-
-            /*var str =
-                $"Brands.Count = {brands.Count}; " +
-                $"Total Device_count = {cnt}" +
-                $"Phones.Count = {phones.Count}"; // +*/
-            //$"PhonesDetails.Count = {phonesDetails.Count}";
-
-            var str = "sdfsdfds";
-
-            return Ok(str);
+        [HttpGet("SynchronizeSpecifications")]
+        public ActionResult SynchronizeSpecificationsAsync(CancellationToken token)
+        {
+            //await Synchronize.SpecificationsAsync(token);
+            return Ok("Done");
         }
     }
 }
