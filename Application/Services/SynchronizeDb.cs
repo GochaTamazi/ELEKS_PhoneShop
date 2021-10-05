@@ -11,21 +11,20 @@ namespace Application.Services
 {
     public class SynchronizeDb : ISynchronizeDb
     {
-        private readonly IPhoneSpecificationClient _phoneSpecification;
-
-        private readonly IBrands _rBrands;
-        private readonly IPhones _rPhones;
+        private IPhoneSpecificationClient PhoneSpecification { get; set; }
+        private IBrands RBrands { get; set; }
+        private IPhones RPhones { get; set; }
 
         public SynchronizeDb(IPhoneSpecificationClient phoneSpecification, IBrands rBrands, IPhones rPhones)
         {
-            _phoneSpecification = phoneSpecification;
-            _rBrands = rBrands;
-            _rPhones = rPhones;
+            PhoneSpecification = phoneSpecification;
+            RBrands = rBrands;
+            RPhones = rPhones;
         }
 
         public async Task BrandsAsync(CancellationToken token)
         {
-            var listBrands = await _phoneSpecification.ListBrandsAsync(token);
+            var listBrands = await PhoneSpecification.ListBrandsAsync(token);
             foreach (var brand in listBrands.Data)
             {
                 var eBrand = new Brand()
@@ -33,13 +32,13 @@ namespace Application.Services
                     Name = brand.Brand_name,
                     Slug = brand.Brand_slug
                 };
-                await _rBrands.UpdateOrInsertAsync(eBrand, token);
+                await RBrands.UpdateOrInsertAsync(eBrand, token);
             }
         }
 
         public async Task PhonesAsync(CancellationToken token)
         {
-            var brands = await _rBrands.ListAsync(token);
+            var brands = await RBrands.ListAsync(token);
             foreach (var brand in brands)
             {
                 GetPhonesAsync(brand, 1, token);
@@ -48,7 +47,7 @@ namespace Application.Services
 
         private async Task GetPhonesAsync(Brand brand, int page, CancellationToken token)
         {
-            var listPhones = await _phoneSpecification.ListPhonesAsync(brand.Slug, page, token);
+            var listPhones = await PhoneSpecification.ListPhonesAsync(brand.Slug, page, token);
             var phones = listPhones.Data.Phones;
 
             Console.WriteLine($"BrandSlug: {brand.Slug}; Page: {page}; Phones Count: {phones.Count}");
@@ -62,7 +61,7 @@ namespace Application.Services
                     Slug = phone.Slug,
                     Image = phone.Image
                 };
-                await _rPhones.UpdateOrInsertAsync(ePhone, token);
+                await RPhones.UpdateOrInsertAsync(ePhone, token);
             }
 
             if (listPhones.Data.Current_page < listPhones.Data.Last_page)

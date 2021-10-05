@@ -16,16 +16,16 @@ namespace Application.Services.RemoteAPI
 {
     public class PhoneSpecificationClient : IPhoneSpecificationClient
     {
-        private readonly string _baseUrl;
+        private string BaseUrl { get; set; }
 
         public PhoneSpecificationClient()
         {
-            _baseUrl = "http://api-mobilespecs.azharimm.site";
+            BaseUrl = "http://api-mobilespecs.azharimm.site";
         }
 
         public async Task<ListBrands> ListBrandsAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
+            var response = BaseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
@@ -37,7 +37,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
+            var response = BaseUrl.AppendPathSegments("v2", "brands", brandSlug)
                 .SetQueryParams(new {page = page})
                 .GetAsync(token);
 
@@ -51,7 +51,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<PhoneSpecifications> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
+            var response = BaseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
@@ -63,7 +63,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<Search> SearchAsync(string query, CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "search")
+            var response = BaseUrl.AppendPathSegments("v2", "search")
                 .SetQueryParams(new {query = query})
                 .GetAsync(token);
 
@@ -77,7 +77,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<Latest> LatestAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
+            var response = BaseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
@@ -89,7 +89,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<TopByInterest> TopByInterestAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
+            var response = BaseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
@@ -101,7 +101,7 @@ namespace Application.Services.RemoteAPI
 
         public async Task<TopByFans> TopByFansAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
+            var response = BaseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
