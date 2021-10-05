@@ -7,6 +7,9 @@ using Models.Entities.RemoteApi;
 
 namespace DataAccess.Interfaces
 {
+    /// <summary>
+    /// Repository for Models.Entities.RemoteApi.Brand
+    /// </summary>
     public interface IBrands
     {
         Task<Brand> GetAsync(int id, CancellationToken token);

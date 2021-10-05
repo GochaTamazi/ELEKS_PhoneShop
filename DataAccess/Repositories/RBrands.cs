@@ -11,6 +11,9 @@ using Models.Entities.RemoteApi;
 
 namespace DataAccess.Repositories
 {
+    /// <summary>
+    /// Repository for Models.Entities.RemoteApi.Brand
+    /// </summary>
     public class RBrands : IBrands
     {
         private readonly MasterContext _masterContext;

@@ -12,6 +12,5 @@ namespace Application.Interfaces
         Task BrandsAsync(CancellationToken token);
         Task PhonesAsync(CancellationToken token);
         Task SpecificationsAsync(CancellationToken token);
-        Task AllAsync(CancellationToken token);
     }
 }
