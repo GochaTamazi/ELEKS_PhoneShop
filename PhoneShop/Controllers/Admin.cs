@@ -10,12 +10,12 @@ namespace PhoneShop.Controllers
     [Route("admin")]
     public class AdminController : Controller
     {
+        private ISynchronizeDb Synchronize { get; set; }
+
         public AdminController(ISynchronizeDb iSynchronizeDb)
         {
             Synchronize = iSynchronizeDb;
         }
-
-        private ISynchronizeDb Synchronize { get; set; }
 
         [HttpGet("index")]
         [HttpGet("")]
@@ -32,9 +32,9 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("SynchronizePhones")]
-        public ActionResult SynchronizePhonesAsync(CancellationToken token)
+        public async Task<ActionResult> SynchronizePhonesAsync(CancellationToken token)
         {
-            //await Synchronize.PhonesAsync(token);
+            await Synchronize.PhonesAsync(token);
             return Ok("Done");
         }
 

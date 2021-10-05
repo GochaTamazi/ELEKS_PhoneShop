@@ -33,7 +33,9 @@ namespace PhoneShop
             //DataAccess
             services.AddScoped<IGeneric<Brand>, Generic<Brand>>();
             services.AddScoped<IBrands, RBrands>();
-            
+            services.AddScoped<IGeneric<Phone>, Generic<Phone>>();
+            services.AddScoped<IPhones, RPhones>();
+
             //Application
             services.AddScoped<IPhoneSpecificationClient, PhoneSpecificationClient>();
             services.AddScoped<ISynchronizeDb, SynchronizeDb>();
