@@ -5,6 +5,6 @@ namespace Models.DTO.RemoteAPI.Search
     public class SearchtData
     {
         public string Title { get; set; }
-        public virtual ICollection<Phone> Phones { get; set; }
+        public ICollection<Phone> Phones { get; set; } = new List<Phone>();
     }
 }
