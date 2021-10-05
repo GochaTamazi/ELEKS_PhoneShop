@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -22,55 +23,92 @@ namespace Application.Services.RemoteAPI
             _baseUrl = "http://api-mobilespecs.azharimm.site";
         }
 
-        public Task<ListBrands> ListBrandsAsync(CancellationToken token)
+        public async Task<ListBrands> ListBrandsAsync(CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "brands")
-                .GetAsync(token)
-                .ReceiveJson<ListBrands>();
+            var response = _baseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<ListBrands>();
+            }
+
+            return new ListBrands();
         }
 
-        public Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
+        public async Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
+            var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
                 .SetQueryParams(new {page = page})
-                .GetAsync(token)
-                .ReceiveJson<ListPhones>();
+                .GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<ListPhones>();
+            }
+
+            return new ListPhones();
         }
 
-        public Task<PhoneSpecifications> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
+        public async Task<PhoneSpecifications> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", phoneSlug)
-                .GetAsync(token)
-                .ReceiveJson<PhoneSpecifications>();
+            var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<PhoneSpecifications>();
+            }
+
+            return new PhoneSpecifications();
         }
 
-        public Task<Search> SearchAsync(string query, CancellationToken token)
+        public async Task<Search> SearchAsync(string query, CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "search")
+            var response = _baseUrl.AppendPathSegments("v2", "search")
                 .SetQueryParams(new {query = query})
-                .GetAsync(token)
-                .ReceiveJson<Search>();
+                .GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<Search>();
+            }
+
+            return new Search();
         }
 
-        public Task<Latest> LatestAsync(CancellationToken token)
+        public async Task<Latest> LatestAsync(CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "latest")
-                .GetAsync(token)
-                .ReceiveJson<Latest>();
+            var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<Latest>();
+            }
+
+            return new Latest();
         }
 
-        public Task<TopByInterest> TopByInterestAsync(CancellationToken token)
+        public async Task<TopByInterest> TopByInterestAsync(CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "top-by-interest")
-                .GetAsync(token)
-                .ReceiveJson<TopByInterest>();
+            var response = _baseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<TopByInterest>();
+            }
+
+            return new TopByInterest();
         }
 
-        public Task<TopByFans> TopByFansAsync(CancellationToken token)
+        public async Task<TopByFans> TopByFansAsync(CancellationToken token)
         {
-            return _baseUrl.AppendPathSegments("v2", "top-by-fans")
-                .GetAsync(token)
-                .ReceiveJson<TopByFans>();
+            var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<TopByFans>();
+            }
+
+            return new TopByFans();
         }
     }
 }
