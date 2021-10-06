@@ -25,6 +25,11 @@ namespace Application.Services
         public async Task BrandsAsync(CancellationToken token)
         {
             var listBrands = await PhoneSpecification.ListBrandsAsync(token);
+            if (!listBrands.Status)
+            {
+                return;
+            }
+
             foreach (var brand in listBrands.Data)
             {
                 var eBrand = new Brand()
@@ -48,6 +53,11 @@ namespace Application.Services
         private async Task GetPhonesAsync(Brand brand, int page, CancellationToken token)
         {
             var listPhones = await PhoneSpecification.ListPhonesAsync(brand.Slug, page, token);
+            if (!listPhones.Status)
+            {
+                return;
+            }
+
             var phones = listPhones.Data.Phones;
 
             Console.WriteLine($"BrandSlug: {brand.Slug}; Page: {page}; Phones Count: {phones.Count}");
