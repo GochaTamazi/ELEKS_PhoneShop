@@ -71,7 +71,10 @@ namespace Application.Services
                     Slug = phone.Slug,
                     Image = phone.Image
                 };
-                await RPhones.UpdateOrInsertAsync(ePhone, token);
+
+                //ThreadPool.QueueUserWorkItem(async (object stateInfo) => { });
+
+                await RPhones.QueueUpdateOrInsertAsync(ePhone, token);
             }
 
             if (listPhones.Data.Current_page < listPhones.Data.Last_page)

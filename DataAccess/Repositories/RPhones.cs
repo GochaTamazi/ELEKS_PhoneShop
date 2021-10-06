@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -86,6 +87,33 @@ namespace DataAccess.Repositories
 
                 await UpdateAsync(phone, token);
             }
+        }
+
+        private ConcurrentQueue<Phone> _phonesQueueUpdateOrInsert = new ConcurrentQueue<Phone>();
+        private bool _queueEmpty = true;
+
+        public async Task QueueUpdateOrInsertAsync(Phone entity, CancellationToken token)
+        {
+            _phonesQueueUpdateOrInsert.Enqueue(entity);
+            if (_queueEmpty)
+            {
+                await RunQueueUpdateOrInsertAsync(token);
+            }
+        }
+
+        private async Task RunQueueUpdateOrInsertAsync(CancellationToken token)
+        {
+            _queueEmpty = false;
+
+            while (_phonesQueueUpdateOrInsert.IsEmpty == false)
+            {
+                if (_phonesQueueUpdateOrInsert.TryDequeue(out var entity))
+                {
+                    await UpdateOrInsertAsync(entity, token);
+                }
+            }
+
+            _queueEmpty = true;
         }
     }
 }
