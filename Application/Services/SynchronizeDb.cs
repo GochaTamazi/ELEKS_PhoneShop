@@ -43,92 +43,75 @@ namespace Application.Services
         public async Task PhonesAsync(CancellationToken token)
         {
             var brands = await _rBrands.ListAsync(token);
-            //SyncPhonesCounter = brands.Count();
-            _syncPhonesCounter = 9;
-            int i = 0;
-            foreach (var brand in brands)
+            var tasks = brands.Select(brand => GetPhonesAsync(brand, token)).ToList();
+            var tasksResults = await Task.WhenAll(tasks);
+            var allPhones = tasksResults.SelectMany(x => x).ToList();
+
+            Console.WriteLine($"Phones cnt: {allPhones.Count}");
+            var i = 0;
+            foreach (var phone in allPhones)
             {
-                i++;
-                if (i >= 10)
+                await _rPhones.UpdateOrInsertAsync(phone, token);
+                if (i % 100 == 0)
                 {
-                    break;
+                    Console.Write($"{i} ");
                 }
 
-                await GetPhonesAsync(brand, 1, token);
+                i++;
             }
         }
 
-        private int _syncPhonesCounter = 0;
-        private ConcurrentQueue<Phone> _phonesQueue = new ConcurrentQueue<Phone>();
-        private int _totalCountPhones = 0;
-
-        private async Task GetPhonesAsync(Brand brand, int page, CancellationToken token)
+        private async Task<List<Phone>> GetPhonesAsync(Brand brand, CancellationToken token)
         {
-            var listPhones = await _phoneSpecification.ListPhonesAsync(brand.Slug, page, token);
-            if (listPhones.Status)
+            var listPhones = await _phoneSpecification.ListPhonesAsync2(brand.Slug, 1, token);
+            if (listPhones.Status == false)
             {
-                var phones = listPhones.Data.Phones;
-                foreach (var phone in phones)
-                {
-                    var ePhone = new Phone()
-                    {
-                        BrandId = brand.Id,
-                        Name = phone.Phone_name,
-                        Slug = phone.Slug,
-                        Image = phone.Image
-                    };
-                    _phonesQueue.Enqueue(ePhone);
-                    _totalCountPhones++;
-                }
-
-                Console.WriteLine(
-                    $"Slug: {brand.Slug}; Page: {listPhones.Data.Current_page}/{listPhones.Data.Last_page}; " +
-                    $"PCount: {phones.Count}; TPC: {_totalCountPhones}; BCNT: {_syncPhonesCounter}"
-                );
+                return new List<Phone>();
             }
 
-            if (listPhones.Data.Current_page < listPhones.Data.Last_page)
+            Phone ConvertPhone(int brandId, Models.DTO.RemoteAPI.ListPhones.Phone phone)
             {
-                //GetPhonesAsync(brand, page + 1, token);
+                return new Models.Entities.RemoteApi.Phone()
+                {
+                    BrandId = brandId,
+                    Name = phone.Phone_name,
+                    Slug = phone.Slug,
+                    Image = phone.Image
+                };
             }
 
-            //else
+            var phonesBatch = new ConcurrentBag<Phone>();
+            foreach (var phone in listPhones.Data.Phones)
             {
-                _syncPhonesCounter--;
-                if (_syncPhonesCounter <= 0)
-                {
-                    var total = _phonesQueue.Count;
-                    Console.WriteLine($"PQ: {total}; ");
-                    var i = 0;
+                phonesBatch.Add(ConvertPhone(brand.Id, phone));
+            }
 
-                    while (_phonesQueue.Count > 0)
+            var tasks = new List<Task>();
+            for (var page = 2; page <= listPhones.Data.Last_page; page++)
+            {
+                tasks.Add(_phoneSpecification.ListPhonesAsync2(brand.Slug, page, token)
+                    .ContinueWith(x =>
                     {
-                        if (_phonesQueue.TryDequeue(out var phone))
+                        if (x.Exception != null)
                         {
-                            i++;
-                            Console.Write($"{i}/{total} ");
-                            await _rPhones.UpdateOrInsertAsync(phone, token);
+                            Console.WriteLine(x.Exception);
+                            throw x.Exception;
                         }
-                    }
 
-                    Console.WriteLine("Done:");
-                    _phonesQueue.Clear();
-                }
+                        foreach (var phone in x.Result.Data.Phones)
+                        {
+                            phonesBatch.Add(ConvertPhone(brand.Id, phone));
+                        }
+                    }, token));
             }
+
+            await Task.WhenAll(tasks);
+
+            return phonesBatch.ToList();
         }
 
         public async Task SpecificationsAsync(CancellationToken token)
         {
-            /*ICollection<Phone> phones = new List<Phone>();
-            Console.WriteLine("SpecificationsAsync");
-            Console.WriteLine($"Phones Count: {phones.Count}");
-    
-            var listPhoneDetail = new List<PhoneDetail>();
-            foreach (var phone in phones)
-            {
-                var specifications = await _phoneSpecification.PhoneSpecificationsAsync(phone.Slug, token);
-                listPhoneDetail.Add(specifications.Data);
-            }*/
         }
     }
 }

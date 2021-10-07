@@ -1,4 +1,7 @@
 using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -35,6 +38,13 @@ namespace Application.Services.RemoteAPI
             return new ListBrands();
         }
 
+        /// <summary>
+        /// Flurl request
+        /// </summary>
+        /// <param name="brandSlug"></param>
+        /// <param name="page"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
@@ -44,6 +54,26 @@ namespace Application.Services.RemoteAPI
             if (response.Result.StatusCode == 200)
             {
                 return await response.ReceiveJson<ListPhones>();
+            }
+
+            return new ListPhones();
+        }
+
+        /// <summary>
+        /// System.Net.Http.HttpClient request
+        /// </summary>
+        /// <param name="brandSlug"></param>
+        /// <param name="page"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<ListPhones> ListPhonesAsync2(string brandSlug, int page, CancellationToken token)
+        {
+            using var httpClient = new HttpClient();
+            var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/brands/{brandSlug}?page={page}", token);
+
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return await httpResponse.Content.ReadFromJsonAsync<ListPhones>(cancellationToken: token);
             }
 
             return new ListPhones();
