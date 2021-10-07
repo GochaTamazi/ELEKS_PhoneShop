@@ -17,49 +17,49 @@ namespace DataAccess.Repositories
     /// </summary>
     public class RPhones : IPhones
     {
-        private MasterContext MasterContext { get; set; }
-        private IGeneric<Phone> GenRPhone { get; set; }
+        private readonly MasterContext _masterContext;
+        private readonly IGeneric<Phone> _genRPhone;
 
         public RPhones(MasterContext dbContext, IGeneric<Phone> genRPhone)
         {
-            MasterContext = dbContext;
-            GenRPhone = genRPhone;
+            _masterContext = dbContext;
+            _genRPhone = genRPhone;
         }
 
         public async Task<Phone> GetAsync(int id, CancellationToken token)
         {
-            return await GenRPhone.GetAsync(id, token);
+            return await _genRPhone.GetAsync(id, token);
         }
 
         public async Task<Phone> GetAsync(string slug, CancellationToken token)
         {
-            return await MasterContext.PhonesRemoteApi.Where(v => v.Slug == slug).FirstOrDefaultAsync(token);
+            return await _masterContext.PhonesRemoteApi.Where(v => v.Slug == slug).FirstOrDefaultAsync(token);
         }
 
         public async Task<IEnumerable<Phone>> ListAsync(CancellationToken token)
         {
-            return await GenRPhone.ListAsync(token);
+            return await _genRPhone.ListAsync(token);
         }
 
         public async Task<IEnumerable<Phone>> ListAsync(Expression<Func<Phone, bool>> predicate,
             CancellationToken token)
         {
-            return await GenRPhone.ListAsync(predicate, token);
+            return await _genRPhone.ListAsync(predicate, token);
         }
 
         public async Task InsertAsync(Phone entity, CancellationToken token)
         {
-            await GenRPhone.InsertAsync(entity, token);
+            await _genRPhone.InsertAsync(entity, token);
         }
 
         public async Task UpdateAsync(Phone entity, CancellationToken token)
         {
-            await GenRPhone.UpdateAsync(entity, token);
+            await _genRPhone.UpdateAsync(entity, token);
         }
 
         public async Task DeleteAsync(Phone entity, CancellationToken token)
         {
-            await GenRPhone.DeleteAsync(entity, token);
+            await _genRPhone.DeleteAsync(entity, token);
         }
 
         public async Task InsertIfNotExistsAsync(Phone entity, CancellationToken token)
@@ -84,7 +84,6 @@ namespace DataAccess.Repositories
                 phone.Name = entity.Name;
                 phone.Slug = entity.Slug;
                 phone.Image = entity.Image;
-
                 await UpdateAsync(phone, token);
             }
         }

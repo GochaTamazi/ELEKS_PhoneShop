@@ -12,20 +12,20 @@ namespace Application.Services
 {
     public class SynchronizeDb : ISynchronizeDb
     {
-        private IPhoneSpecificationClient PhoneSpecification { get; set; }
-        private IBrands RBrands { get; set; }
-        private IPhones RPhones { get; set; }
+        private readonly IPhoneSpecificationClient _phoneSpecification;
+        private readonly IBrands _rBrands;
+        private readonly IPhones _rPhones;
 
         public SynchronizeDb(IPhoneSpecificationClient phoneSpecification, IBrands rBrands, IPhones rPhones)
         {
-            PhoneSpecification = phoneSpecification;
-            RBrands = rBrands;
-            RPhones = rPhones;
+            _phoneSpecification = phoneSpecification;
+            _rBrands = rBrands;
+            _rPhones = rPhones;
         }
 
         public async Task BrandsAsync(CancellationToken token)
         {
-            var listBrands = await PhoneSpecification.ListBrandsAsync(token);
+            var listBrands = await _phoneSpecification.ListBrandsAsync(token);
             if (listBrands.Status)
             {
                 foreach (var brand in listBrands.Data)
@@ -35,16 +35,16 @@ namespace Application.Services
                         Name = brand.Brand_name,
                         Slug = brand.Brand_slug
                     };
-                    await RBrands.UpdateOrInsertAsync(eBrand, token);
+                    await _rBrands.UpdateOrInsertAsync(eBrand, token);
                 }
             }
         }
 
         public async Task PhonesAsync(CancellationToken token)
         {
-            var brands = await RBrands.ListAsync(token);
+            var brands = await _rBrands.ListAsync(token);
             //SyncPhonesCounter = brands.Count();
-            SyncPhonesCounter = 9;
+            _syncPhonesCounter = 9;
             int i = 0;
             foreach (var brand in brands)
             {
@@ -54,18 +54,17 @@ namespace Application.Services
                     break;
                 }
 
-                GetPhonesAsync(brand, 1, token);
+                await GetPhonesAsync(brand, 1, token);
             }
         }
 
-        private int SyncPhonesCounter { set; get; } = 0;
+        private int _syncPhonesCounter = 0;
         private ConcurrentQueue<Phone> _phonesQueue = new ConcurrentQueue<Phone>();
         private int _totalCountPhones = 0;
-        private int PSizeByS = 0;
 
         private async Task GetPhonesAsync(Brand brand, int page, CancellationToken token)
         {
-            var listPhones = await PhoneSpecification.ListPhonesAsync(brand.Slug, page, token);
+            var listPhones = await _phoneSpecification.ListPhonesAsync(brand.Slug, page, token);
             if (listPhones.Status)
             {
                 var phones = listPhones.Data.Phones;
@@ -84,7 +83,7 @@ namespace Application.Services
 
                 Console.WriteLine(
                     $"Slug: {brand.Slug}; Page: {listPhones.Data.Current_page}/{listPhones.Data.Last_page}; " +
-                    $"PCount: {phones.Count}; TPC: {_totalCountPhones}; BCNT: {SyncPhonesCounter}"
+                    $"PCount: {phones.Count}; TPC: {_totalCountPhones}; BCNT: {_syncPhonesCounter}"
                 );
             }
 
@@ -95,8 +94,8 @@ namespace Application.Services
 
             //else
             {
-                SyncPhonesCounter--;
-                if (SyncPhonesCounter <= 0)
+                _syncPhonesCounter--;
+                if (_syncPhonesCounter <= 0)
                 {
                     var total = _phonesQueue.Count;
                     Console.WriteLine($"PQ: {total}; ");
@@ -108,7 +107,7 @@ namespace Application.Services
                         {
                             i++;
                             Console.Write($"{i}/{total} ");
-                            await RPhones.UpdateOrInsertAsync(phone, token);
+                            await _rPhones.UpdateOrInsertAsync(phone, token);
                         }
                     }
 

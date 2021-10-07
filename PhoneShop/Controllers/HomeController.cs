@@ -12,11 +12,11 @@ namespace PhoneShop.Controllers
     [Route("")]
     public class HomeController : Controller
     {
-        private ILogger<HomeController> Logger { get; set; }
+        private ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
-            Logger = logger;
+            _logger = logger;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

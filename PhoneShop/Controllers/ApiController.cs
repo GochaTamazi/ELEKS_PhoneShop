@@ -17,11 +17,11 @@ namespace PhoneShop.Controllers
     [Route("api")]
     public class ApiController : Controller
     {
-        private IPhoneSpecificationClient PhoneSpecification { get; set; }
+        private readonly IPhoneSpecificationClient _phoneSpecification;
 
         public ApiController(IPhoneSpecificationClient phoneSpecificationClient)
         {
-            PhoneSpecification = phoneSpecificationClient;
+            _phoneSpecification = phoneSpecificationClient;
         }
 
         [HttpGet("index")]
@@ -34,7 +34,7 @@ namespace PhoneShop.Controllers
         [HttpGet("listBrands")]
         public async Task<ActionResult<ListBrands>> ListBrandsAsync(CancellationToken token)
         {
-            var listBrands = await PhoneSpecification.ListBrandsAsync(token);
+            var listBrands = await _phoneSpecification.ListBrandsAsync(token);
             return View(listBrands);
         }
 
@@ -45,7 +45,7 @@ namespace PhoneShop.Controllers
         {
             var listPhonesRes = new ListPhonesRes()
             {
-                Phones = await PhoneSpecification.ListPhonesAsync(brandSlug, page, token),
+                Phones = await _phoneSpecification.ListPhonesAsync(brandSlug, page, token),
                 BrandSlug = brandSlug,
                 Page = page
             };
@@ -56,35 +56,35 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<PhoneSpecifications>> PhoneSpecificationsAsync([FromQuery] string phoneSlug,
             CancellationToken token)
         {
-            var phoneSpecifications = await PhoneSpecification.PhoneSpecificationsAsync(phoneSlug, token);
+            var phoneSpecifications = await _phoneSpecification.PhoneSpecificationsAsync(phoneSlug, token);
             return View(phoneSpecifications);
         }
 
         [HttpGet("search")]
         public async Task<ActionResult<Search>> SearchAsync([FromQuery] string query, CancellationToken token)
         {
-            var search = await PhoneSpecification.SearchAsync(query, token);
+            var search = await _phoneSpecification.SearchAsync(query, token);
             return View(search);
         }
 
         [HttpGet("latest")]
         public async Task<ActionResult<Latest>> LatestAsync(CancellationToken token)
         {
-            var latest = await PhoneSpecification.LatestAsync(token);
+            var latest = await _phoneSpecification.LatestAsync(token);
             return View(latest);
         }
 
         [HttpGet("topByInterest")]
         public async Task<ActionResult<TopByInterest>> TopByInterestAsync(CancellationToken token)
         {
-            var topByInterest = await PhoneSpecification.TopByInterestAsync(token);
+            var topByInterest = await _phoneSpecification.TopByInterestAsync(token);
             return View(topByInterest);
         }
 
         [HttpGet("topByFans")]
         public async Task<ActionResult<TopByFans>> TopByFansAsync(CancellationToken token)
         {
-            var topByFans = await PhoneSpecification.TopByFansAsync(token);
+            var topByFans = await _phoneSpecification.TopByFansAsync(token);
             return View(topByFans);
         }
     }

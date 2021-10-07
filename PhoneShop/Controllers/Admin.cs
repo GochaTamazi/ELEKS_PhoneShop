@@ -10,11 +10,11 @@ namespace PhoneShop.Controllers
     [Route("admin")]
     public class AdminController : Controller
     {
-        private ISynchronizeDb Synchronize { get; set; }
+        private readonly ISynchronizeDb _synchronize;
 
         public AdminController(ISynchronizeDb iSynchronizeDb)
         {
-            Synchronize = iSynchronizeDb;
+            _synchronize = iSynchronizeDb;
         }
 
         [HttpGet("index")]
@@ -27,14 +27,14 @@ namespace PhoneShop.Controllers
         [HttpGet("SynchronizeBrands")]
         public async Task<ActionResult> SynchronizeBrandsAsync(CancellationToken token)
         {
-            await Synchronize.BrandsAsync(token);
+            await _synchronize.BrandsAsync(token);
             return Ok("Done");
         }
 
         [HttpGet("SynchronizePhones")]
         public async Task<ActionResult> SynchronizePhonesAsync(CancellationToken token)
         {
-            await Synchronize.PhonesAsync(token);
+            await _synchronize.PhonesAsync(token);
             return Ok("Done");
         }
 

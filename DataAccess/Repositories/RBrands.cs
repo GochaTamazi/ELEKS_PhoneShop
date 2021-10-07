@@ -16,49 +16,49 @@ namespace DataAccess.Repositories
     /// </summary>
     public class RBrands : IBrands
     {
-        private MasterContext MasterContext { get; set; }
-        private IGeneric<Brand> GenRBrand { get; set; }
+        private readonly MasterContext _masterContext;
+        private readonly IGeneric<Brand> _genRBrand;
 
         public RBrands(MasterContext dbContext, IGeneric<Brand> genRBrand)
         {
-            MasterContext = dbContext;
-            GenRBrand = genRBrand;
+            _masterContext = dbContext;
+            _genRBrand = genRBrand;
         }
 
         public async Task<Brand> GetAsync(int id, CancellationToken token)
         {
-            return await GenRBrand.GetAsync(id, token);
+            return await _genRBrand.GetAsync(id, token);
         }
 
         public async Task<Brand> GetAsync(string slug, CancellationToken token)
         {
-            return await MasterContext.Brands.Where(v => v.Slug == slug).FirstOrDefaultAsync(token);
+            return await _masterContext.Brands.Where(v => v.Slug == slug).FirstOrDefaultAsync(token);
         }
 
         public async Task<IEnumerable<Brand>> ListAsync(CancellationToken token)
         {
-            return await GenRBrand.ListAsync(token);
+            return await _genRBrand.ListAsync(token);
         }
 
         public async Task<IEnumerable<Brand>> ListAsync(Expression<Func<Brand, bool>> predicate,
             CancellationToken token)
         {
-            return await GenRBrand.ListAsync(predicate, token);
+            return await _genRBrand.ListAsync(predicate, token);
         }
 
         public async Task InsertAsync(Brand entity, CancellationToken token)
         {
-            await GenRBrand.InsertAsync(entity, token);
+            await _genRBrand.InsertAsync(entity, token);
         }
 
         public async Task UpdateAsync(Brand entity, CancellationToken token)
         {
-            await GenRBrand.UpdateAsync(entity, token);
+            await _genRBrand.UpdateAsync(entity, token);
         }
 
         public async Task DeleteAsync(Brand entity, CancellationToken token)
         {
-            await GenRBrand.DeleteAsync(entity, token);
+            await _genRBrand.DeleteAsync(entity, token);
         }
 
         public async Task InsertIfNotExistsAsync(Brand entity, CancellationToken token)

@@ -14,48 +14,47 @@ namespace DataAccess.Repositories
 {
     public class Generic<T> : IGeneric<T> where T : class, IEntity
     {
-        private MasterContext MasterContext { get; set; }
+        private readonly MasterContext _masterContext;
 
         public Generic(MasterContext dbContext)
         {
-            MasterContext = dbContext;
+            _masterContext = dbContext;
         }
 
         public virtual async Task<T?> GetAsync(int id, CancellationToken token)
         {
-            return await MasterContext.Set<T>().Where(v =>
+            return await _masterContext.Set<T>().Where(v =>
                 v.Id == id
             ).FirstOrDefaultAsync(token);
         }
 
         public virtual async Task<IEnumerable<T>> ListAsync(CancellationToken token)
         {
-            return await MasterContext.Set<T>().ToListAsync(token);
+            return await _masterContext.Set<T>().ToListAsync(token);
         }
 
         public virtual async Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> predicate,
             CancellationToken token)
         {
-            return await MasterContext.Set<T>().Where(predicate).ToListAsync(token);
+            return await _masterContext.Set<T>().Where(predicate).ToListAsync(token);
         }
 
         public async Task InsertAsync(T entity, CancellationToken token)
         {
-            await MasterContext.Set<T>().AddAsync(entity, token);
-            await MasterContext.SaveChangesAsync(token);
+            await _masterContext.Set<T>().AddAsync(entity, token);
+            await _masterContext.SaveChangesAsync(token);
         }
 
         public async Task UpdateAsync(T entity, CancellationToken token)
         {
-            //_masterContext.Update(entity).State = EntityState.Modified;
-            MasterContext.Entry(entity).State = EntityState.Modified;
-            await MasterContext.SaveChangesAsync(token);
+            _masterContext.Update(entity);
+            await _masterContext.SaveChangesAsync(token);
         }
 
         public async Task DeleteAsync(T entity, CancellationToken token)
         {
-            MasterContext.Set<T>().Remove(entity);
-            await MasterContext.SaveChangesAsync(token);
+            _masterContext.Set<T>().Remove(entity);
+            await _masterContext.SaveChangesAsync(token);
         }
     }
 }
