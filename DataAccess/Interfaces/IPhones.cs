@@ -21,5 +21,6 @@ namespace DataAccess.Interfaces
         Task DeleteAsync(Phone entity, CancellationToken token);
         Task InsertIfNotExistsAsync(Phone entity, CancellationToken token);
         Task UpdateOrInsertAsync(Phone entity, CancellationToken token);
+        Task BulkInsertOrUpdate(List<Phone> entities, CancellationToken token);
     }
 }

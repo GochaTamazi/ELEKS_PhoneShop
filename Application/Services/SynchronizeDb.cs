@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,15 +27,12 @@ namespace Application.Services
             var listBrands = await _phoneSpecification.ListBrandsAsync(token);
             if (listBrands.Status)
             {
-                foreach (var brand in listBrands.Data)
+                var brands = listBrands.Data.Select(brand => new Brand()
                 {
-                    var eBrand = new Brand()
-                    {
-                        Name = brand.Brand_name,
-                        Slug = brand.Brand_slug
-                    };
-                    await _rBrands.UpdateOrInsertAsync(eBrand, token);
-                }
+                    Name = brand.Brand_name,
+                    Slug = brand.Brand_slug
+                }).ToList();
+                await _rBrands.BulkInsertOrUpdate(brands, token);
             }
         }
 
@@ -46,19 +42,7 @@ namespace Application.Services
             var tasks = brands.Select(brand => GetPhonesAsync(brand, token)).ToList();
             var tasksResults = await Task.WhenAll(tasks);
             var allPhones = tasksResults.SelectMany(x => x).ToList();
-
-            Console.WriteLine($"Phones cnt: {allPhones.Count}");
-            var i = 0;
-            foreach (var phone in allPhones)
-            {
-                await _rPhones.UpdateOrInsertAsync(phone, token);
-                if (i % 100 == 0)
-                {
-                    Console.Write($"{i} ");
-                }
-
-                i++;
-            }
+            await _rPhones.BulkInsertOrUpdate(allPhones, token);
         }
 
         private async Task<List<Phone>> GetPhonesAsync(Brand brand, CancellationToken token)
@@ -94,7 +78,6 @@ namespace Application.Services
                     {
                         if (x.Exception != null)
                         {
-                            Console.WriteLine(x.Exception);
                             throw x.Exception;
                         }
 
@@ -106,7 +89,6 @@ namespace Application.Services
             }
 
             await Task.WhenAll(tasks);
-
             return phonesBatch.ToList();
         }
 

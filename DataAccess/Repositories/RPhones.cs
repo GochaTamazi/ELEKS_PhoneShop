@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Models.Entities.RemoteApi;
 
 namespace DataAccess.Repositories
@@ -86,6 +87,22 @@ namespace DataAccess.Repositories
                 phone.Image = entity.Image;
                 await UpdateAsync(phone, token);
             }
+        }
+
+        public async Task BulkInsertOrUpdate(List<Phone> entities, CancellationToken token)
+        {
+            await _masterContext.BulkUpdateAsync(entities,
+                cancellationToken: token,
+                options: options => { options.ColumnPrimaryKeyExpression = phone => phone.Slug; }
+            );
+            await _masterContext.BulkInsertAsync(entities,
+                cancellationToken: token,
+                options: options =>
+                {
+                    options.InsertIfNotExists = true;
+                    options.ColumnPrimaryKeyExpression = phone => phone.Slug;
+                }
+            );
         }
     }
 }
