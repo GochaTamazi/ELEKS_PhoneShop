@@ -91,6 +91,19 @@ namespace Application.Services.RemoteAPI
             return new PhoneSpecifications();
         }
 
+        public async Task<PhoneSpecifications> PhoneSpecificationsAsync2(string phoneSlug, CancellationToken token)
+        {
+            using var httpClient = new HttpClient();
+            var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/{phoneSlug}", token);
+
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return await httpResponse.Content.ReadFromJsonAsync<PhoneSpecifications>(cancellationToken: token);
+            }
+
+            return new PhoneSpecifications();
+        }
+
         public async Task<Search> SearchAsync(string query, CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "search")

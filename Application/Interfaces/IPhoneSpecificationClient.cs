@@ -20,6 +20,7 @@ namespace Application.Interfaces
         Task<ListPhones> ListPhonesAsync(string brandSlug, int page, CancellationToken token);
         Task<ListPhones> ListPhonesAsync2(string brandSlug, int page, CancellationToken token);
         Task<PhoneSpecifications> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
+        Task<PhoneSpecifications> PhoneSpecificationsAsync2(string phoneSlug, CancellationToken token);
         Task<Search> SearchAsync(string query, CancellationToken token);
         Task<Latest> LatestAsync(CancellationToken token);
         Task<TopByInterest> TopByInterestAsync(CancellationToken token);

@@ -39,9 +39,9 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("SynchronizeSpecifications")]
-        public ActionResult SynchronizeSpecificationsAsync(CancellationToken token)
+        public async Task<ActionResult> SynchronizeSpecificationsAsync(CancellationToken token)
         {
-            //await Synchronize.SpecificationsAsync(token);
+            await _synchronize.SpecificationsAsync(token);
             return Ok("Done");
         }
     }
