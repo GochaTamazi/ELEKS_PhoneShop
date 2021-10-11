@@ -41,6 +41,13 @@ namespace PhoneShop
             services.AddScoped<IPhoneSpecificationClient, PhoneSpecificationClient>();
             services.AddScoped<ISynchronizeDb, SynchronizeDb>();
 
+            services.AddSingleton<IMapperProvider, MapperProvider>();
+            services.AddSingleton(serviceProvider =>
+            {
+                var provider = serviceProvider.GetRequiredService<IMapperProvider>();
+                return provider.GetMapper();
+            });
+
             services.AddControllers();
             services.AddControllersWithViews();
         }

@@ -18,13 +18,17 @@ namespace Application.Services
         private readonly IPhones _rPhones;
         private readonly ISpecification _rSpecification;
 
+        private readonly IMapperProvider _mapper;
+
+
         public SynchronizeDb(IPhoneSpecificationClient phoneSpecification, IBrands rBrands, IPhones rPhones,
-            ISpecification rSpecification)
+            ISpecification rSpecification, IMapperProvider mapper)
         {
             _phoneSpecification = phoneSpecification;
             _rBrands = rBrands;
             _rPhones = rPhones;
             _rSpecification = rSpecification;
+            _mapper = mapper;
         }
 
         public async Task BrandsAsync(CancellationToken token)
@@ -32,11 +36,9 @@ namespace Application.Services
             var listBrands = await _phoneSpecification.ListBrandsAsync(token);
             if (listBrands.Status)
             {
-                var brands = listBrands.Data.Select(brand => new Brand()
-                {
-                    Name = brand.Brand_name,
-                    Slug = brand.Brand_slug
-                }).ToList();
+                var brands = listBrands.Data.Select(brand =>
+                    _mapper.GetMapper().Map<Models.Entities.RemoteApi.Brand>(brand)
+                ).ToList();
                 await _rBrands.BulkInsertOrUpdate(brands, token);
             }
         }
@@ -58,21 +60,12 @@ namespace Application.Services
                 return new List<Phone>();
             }
 
-            Phone ConvertPhone(int brandId, Models.DTO.RemoteAPI.ListPhones.Phone phone)
-            {
-                return new Models.Entities.RemoteApi.Phone()
-                {
-                    BrandId = brandId,
-                    Name = phone.Phone_name,
-                    Slug = phone.Slug,
-                    Image = phone.Image
-                };
-            }
-
             var phonesBatch = new ConcurrentBag<Phone>();
             foreach (var phone in listPhones.Data.Phones)
             {
-                phonesBatch.Add(ConvertPhone(brand.Id, phone));
+                var p = _mapper.GetMapper().Map<Models.Entities.RemoteApi.Phone>(phone);
+                p.BrandId = brand.Id;
+                phonesBatch.Add(p);
             }
 
             var tasks = new List<Task>();
@@ -88,7 +81,9 @@ namespace Application.Services
 
                         foreach (var phone in x.Result.Data.Phones)
                         {
-                            phonesBatch.Add(ConvertPhone(brand.Id, phone));
+                            var p = _mapper.GetMapper().Map<Models.Entities.RemoteApi.Phone>(phone);
+                            p.BrandId = brand.Id;
+                            phonesBatch.Add(p);
                         }
                     }, token));
             }
@@ -107,7 +102,7 @@ namespace Application.Services
             {
                 tasks.Add(GetSpecificationsAsync(phone, token));
                 i++;
-                if (i > 10)
+                if (i > 15)
                 {
                     break;
                 }
@@ -130,19 +125,9 @@ namespace Application.Services
                 return new Specification();
             }
 
-            var eSpecification = new Specification()
-            {
-                BrandId = phone.BrandId,
-                PhoneId = phone.Id,
-                Name = specification.Data.Phone_name,
-                ReleaseDate = specification.Data.Release_date,
-                Dimension = specification.Data.Dimension,
-                Os = specification.Data.Os,
-                Storage = specification.Data.Storage,
-                Thumbnail = specification.Data.Thumbnail,
-                Images = JsonConvert.SerializeObject(specification.Data.Phone_images, Formatting.Indented),
-                Specifications = JsonConvert.SerializeObject(specification.Data.Specifications, Formatting.Indented)
-            };
+            var eSpecification = _mapper.GetMapper().Map<Models.Entities.RemoteApi.Specification>(specification);
+            eSpecification.BrandId = phone.BrandId;
+            eSpecification.PhoneId = phone.Id;
             return eSpecification;
         }
     }
