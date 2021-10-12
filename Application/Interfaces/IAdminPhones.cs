@@ -1,15 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Models.Entities.PhoneShop;
+using Application.DTO.Frontend;
 
 namespace Application.Interfaces
 {
     public interface IAdminPhones
     {
-        Task GetPhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
-        
-        /*void GetPhone(string phoneSlug);
-        void AddPhone(string phoneSlug, Phone p );
-        void UpdatePhone(string phoneSlug, Phone p);*/
+        Task<PhoneSpecFront> GetPhone(string phoneSlug, CancellationToken token);
+        Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
+        Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token);
     }
 }

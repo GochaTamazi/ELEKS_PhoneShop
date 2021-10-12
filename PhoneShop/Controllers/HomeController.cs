@@ -1,11 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using Application.DTO.Frontend;
-using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Models.Entities;
 
 namespace PhoneShop.Controllers
 {

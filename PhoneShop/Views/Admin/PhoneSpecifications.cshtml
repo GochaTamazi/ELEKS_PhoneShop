@@ -3,36 +3,30 @@
 @{
     ViewBag.Title = "Phone Specifications";
     Layout = "_Layout";
-    var phone = @Model.Specification.Data;
+    var phone = @Model.PhoneDetail;
 }
 
-<form>
+<form asp-controller="Admin" asp-action="PhoneInsertOrUpdate" method="post">
+    <input type="hidden" value="@Model.BrandSlug" name="BrandSlug"/>
+    <input type="hidden" value="@Model.PhoneSlug" name="PhoneSlug"/>
+    <input type="hidden" value="@Model.InStore" name="InStore"/>
     <p>
-        <label>Already in store? </label>
+        <label>Already in store? @Model.InStore</label>
     </p>
-
     <p>
-        <label>Add To Shop: </label> <input type="checkbox" value="" name="addToShop"/>
+        <label>Hided: </label>
+        <input asp-for="@Model.Hided" type="checkbox" name="Hided"/>
     </p>
-
     <p>
-        <label>Hided: </label> <input type="checkbox" value="" name="Hided"/>
+        <label>Stock: </label>
+        <input type="text" placeholder="Stock" value="@Model.Stock" name="Stock"/>
     </p>
-
     <p>
-        <label>Stock: </label> <input type="text" value="0" placeholder="Stock" name="stock"/>
+        <label>Price: </label>
+        <input type="text" placeholder="Price" value="@Model.Price" name="Price"/>
     </p>
-
     <p>
-        <label>Price: </label> <input type="text" value="0" placeholder="Price" name="price"/>
-    </p>
-
-    <p>
-        <input type="hidden" name="phoneSlug" value="@Model.PhoneSlug">
-    </p>
-
-    <p>
-        <input type="button" value="Ok"/>
+        <input type="submit" value="Insert Or Update"/>
     </p>
 </form>
 

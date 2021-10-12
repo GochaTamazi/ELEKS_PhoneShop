@@ -1,4 +1,4 @@
-using Application.DTO.RemoteAPI.PhoneSpecificationsAPI.ListPhones;
+using Application.DTO.PhoneSpecificationsAPI.ListPhones;
 
 namespace Application.DTO.Frontend
 {

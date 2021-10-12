@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(MasterContext))]
-    partial class MasterContextModelSnapshot : ModelSnapshot
+    [Migration("20211012215411_0002")]
+    partial class _0002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace Database.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Models.Entities.Brand", b =>
+            modelBuilder.Entity("Database.Models.Brand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,7 +48,7 @@ namespace Database.Migrations
                     b.ToTable("Brands", "PhoneShop");
                 });
 
-            modelBuilder.Entity("Models.Entities.Phone", b =>
+            modelBuilder.Entity("Database.Models.Phone", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +133,7 @@ namespace Database.Migrations
                     b.ToTable("Phones", "PhoneShop");
                 });
 
-            modelBuilder.Entity("Models.Entities.PriceSubscriber", b =>
+            modelBuilder.Entity("Database.Models.PriceSubscriber", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -164,7 +166,7 @@ namespace Database.Migrations
                     b.ToTable("PriceSubscribers", "PhoneShop");
                 });
 
-            modelBuilder.Entity("Models.Entities.StockSubscriber", b =>
+            modelBuilder.Entity("Database.Models.StockSubscriber", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

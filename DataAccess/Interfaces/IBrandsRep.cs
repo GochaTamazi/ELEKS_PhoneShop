@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.Entities.RemoteApi;
+using Models.Entities;
 
 namespace DataAccess.Interfaces
 {
     public interface IBrandsRep
     {
-        Task<Brand> GetAsync(int id, CancellationToken token);
-        Task<Brand> GetAsync(string slug, CancellationToken token);
-        Task<IEnumerable<Brand>> ListAsync(CancellationToken token);
-        Task<IEnumerable<Brand>> ListAsync(Expression<Func<Brand, bool>> predicate, CancellationToken token);
-        Task InsertAsync(Brand entity, CancellationToken token);
-        Task UpdateAsync(Brand entity, CancellationToken token);
-        Task DeleteAsync(Brand entity, CancellationToken token);
-        Task InsertIfNotExistsAsync(Brand entity, CancellationToken token);
-        Task UpdateOrInsertAsync(Brand entity, CancellationToken token);
-        Task BulkInsertOrUpdate(List<Brand> entities, CancellationToken token);
+        Task<Brand> GetByIdAsync(int id, CancellationToken token);
+        Task<Brand> GetByNameAsync(string name, CancellationToken token);
+        Task<Brand> GetBySlugAsync(string slug, CancellationToken token);
+        Task InsertAsync(Brand brand, CancellationToken token);
     }
 }
