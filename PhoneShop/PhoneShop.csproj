@@ -9,4 +9,8 @@
       <ProjectReference Include="..\Application\Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\AdminController1\Index.cshtml" />
+    </ItemGroup>
+
 </Project>

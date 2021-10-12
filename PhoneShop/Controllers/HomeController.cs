@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.DTO.Frontend;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,12 +29,6 @@ namespace PhoneShop.Controllers
         [HttpGet("index")]
         [HttpGet("")]
         public ActionResult Index(CancellationToken token)
-        {
-            return View();
-        }
-
-        [HttpGet("privacy")]
-        public ActionResult Privacy(CancellationToken token)
         {
             return View();
         }

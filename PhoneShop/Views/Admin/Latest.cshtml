@@ -1,0 +1,25 @@
+@model Application.DTO.RemoteAPI.PhoneSpecificationsAPI.Latest.LatestDto
+
+@{
+    ViewBag.Title = "Latest Phones";
+    Layout = "_Layout";
+    var data = @Model.Data;
+}
+
+<h2>Latest Phones</h2>
+
+<h4>@data.Title : @data.Phones.Count</h4>
+
+<ul>
+    @foreach (var phone in @data.Phones)
+    {
+        <li>
+            <a asp-controller="Admin"
+               asp-action="PhoneSpecifications"
+               asp-route-phoneSlug="@phone.Slug">
+                <img src="@phone.Image" alt="x"/>
+                @phone.Phone_name
+            </a>
+        </li>
+    }
+</ul>

@@ -1,0 +1,91 @@
+@model Application.DTO.Frontend.PhoneSpecFront
+
+@{
+    ViewBag.Title = "Phone Specifications";
+    Layout = "_Layout";
+    var phone = @Model.Specification.Data;
+}
+
+<form>
+    <p>
+        <label>Already in store? </label>
+    </p>
+
+    <p>
+        <label>Add To Shop: </label> <input type="checkbox" value="" name="addToShop"/>
+    </p>
+
+    <p>
+        <label>Hided: </label> <input type="checkbox" value="" name="Hided"/>
+    </p>
+
+    <p>
+        <label>Stock: </label> <input type="text" value="0" placeholder="Stock" name="stock"/>
+    </p>
+
+    <p>
+        <label>Price: </label> <input type="text" value="0" placeholder="Price" name="price"/>
+    </p>
+
+    <p>
+        <input type="hidden" name="phoneSlug" value="@Model.PhoneSlug">
+    </p>
+
+    <p>
+        <input type="button" value="Ok"/>
+    </p>
+</form>
+
+<hr/>
+
+<h2>Phone Specification</h2>
+
+@foreach (var image in @phone.Phone_images)
+{
+    <img src="@image" alt="x" style="width: 200px"/>
+}
+<br/>
+
+@if (@phone.Thumbnail != string.Empty)
+{
+    <img src="@phone.Thumbnail" alt="x"/>
+}
+
+<br/>
+<br/>
+
+<div>
+    <b>Brand:</b> @phone.Brand
+</div>
+<div>
+    <b>Phone_name:</b> @phone.Phone_name
+</div>
+<div>
+    <b>Release_date:</b> @phone.Release_date
+</div>
+<div>
+    <b>Dimension:</b> @phone.Dimension
+</div>
+<div>
+    <b>Os:</b> @phone.Os
+</div>
+<div>
+    <b>Storage:</b> @phone.Storage
+</div>
+
+@foreach (var v in phone.Specifications)
+{
+    <hr/>
+    <b>@v.Title</b>
+    <br/>
+    foreach (var spec in v.Specs)
+    {
+        <b>@spec.Key:</b>
+        <br/>
+        foreach (var sval in spec.Val)
+        {
+            @sval
+            <br/>
+        }
+    }
+}

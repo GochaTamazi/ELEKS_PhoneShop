@@ -1,0 +1,25 @@
+@model Application.DTO.RemoteAPI.PhoneSpecificationsAPI.TopByFans.TopByFansDto
+
+@{
+    ViewBag.Title = "Top By Fans";
+    Layout = "_Layout";
+    var data = @Model.Data;
+}
+
+<h2>Top By Fans</h2>
+
+<h4>@data.Title : @data.Phones.Count</h4>
+
+<ul>
+    @foreach (var phone in @data.Phones)
+    {
+        <li>
+            <a asp-controller="Admin"
+               asp-action="PhoneSpecifications"
+               asp-route-phoneSlug="@phone.Slug">
+                <b>Phone_name:</b> @phone.Phone_name |
+                <b>Favorites:</b> @phone.Favorites
+            </a>
+        </li>
+    }
+</ul>

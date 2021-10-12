@@ -1,6 +1,8 @@
-﻿namespace Models.Entities.RemoteApi
+﻿using Models.Interfaces;
+
+namespace Models.Entities.RemoteApi
 {
-    public partial class Specification
+    public partial class Specification : IEntity
     {
         public int Id { get; set; }
         public int? BrandId { get; set; }

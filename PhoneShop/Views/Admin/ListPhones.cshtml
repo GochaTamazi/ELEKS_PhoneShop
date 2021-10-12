@@ -1,0 +1,36 @@
+@model Application.DTO.Frontend.ListPhonesFront
+
+@{
+    ViewBag.Title = "List Phones";
+    Layout = "_Layout";
+}
+
+<h2>List Phones</h2>
+
+<h4>Total @Model.Phones.Data.Title Count: @Model.Phones.Data.Phones.Count</h4>
+<h4>Page: @Model.Phones.Data.Current_page / @Model.Phones.Data.Last_page</h4>
+
+
+@for (var i = 1; i <= @Model.Phones.Data.Last_page; i++)
+{
+    <a asp-controller="Admin"
+       asp-action="ListPhones"
+       asp-route-brandSlug="@Model.BrandSlug"
+       asp-route-page="@i">
+        @i |
+    </a>
+}
+
+<ul>
+    @foreach (var phone in @Model.Phones.Data.Phones)
+    {
+        <li>
+            <a asp-controller="Admin"
+               asp-action="PhoneSpecifications"
+               asp-route-phoneSlug="@phone.Slug">
+                <img src="@phone.Image" alt="x"/>
+                @phone.Phone_name
+            </a>
+        </li>
+    }
+</ul>

@@ -1,5 +1,9 @@
+using Application.DTO.RemoteAPI.PhoneSpecificationsAPI.ListBrands;
+using Application.DTO.RemoteAPI.PhoneSpecificationsAPI.ListPhones;
+using Application.DTO.RemoteAPI.PhoneSpecificationsAPI.PhoneSpecifications;
 using Application.Interfaces;
 using AutoMapper;
+using Models.Entities.RemoteApi;
 using Newtonsoft.Json;
 
 namespace Application.Services
@@ -20,14 +24,14 @@ namespace Application.Services
                 {
                     //cfg.CreateMap<TO, FROM>
 
-                    cfg.CreateMap<Models.DTO.RemoteAPI.ListBrands.Brand, Models.Entities.RemoteApi.Brand>()
+                    cfg.CreateMap<BrandDto, Brand>()
                         .ForMember(x => x.Slug,
                             m => m.MapFrom(x => x.Brand_slug))
                         .ForMember(x => x.Name,
                             m => m.MapFrom(x => x.Brand_name))
                         .ForAllOtherMembers(m => m.Ignore());
 
-                    cfg.CreateMap<Models.DTO.RemoteAPI.ListPhones.Phone, Models.Entities.RemoteApi.Phone>()
+                    cfg.CreateMap<PhoneDto, Phone>()
                         .ForMember(x => x.Name,
                             m => m.MapFrom(x => x.Phone_name))
                         .ForMember(x => x.Slug,
@@ -36,8 +40,7 @@ namespace Application.Services
                             m => m.MapFrom(x => x.Image))
                         .ForAllOtherMembers(m => m.Ignore());
 
-                    cfg.CreateMap<Models.DTO.RemoteAPI.PhoneSpecifications.PhoneSpecifications,
-                            Models.Entities.RemoteApi.Specification>()
+                    cfg.CreateMap<PhoneSpecificationsDto, Specification>()
                         .ForMember(x => x.Name, m => m.MapFrom(x => x.Data.Phone_name))
                         .ForMember(x => x.ReleaseDate, m => m.MapFrom(x => x.Data.Release_date))
                         .ForMember(x => x.Dimension, m => m.MapFrom(x => x.Data.Dimension))

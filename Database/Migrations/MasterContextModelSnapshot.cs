@@ -20,7 +20,7 @@ namespace Database.Migrations
                 .HasAnnotation("ProductVersion", "6.0.0-preview.5.21301.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Models.Entities.PhoneShop.Phone", b =>
+            modelBuilder.Entity("Models.Entities.PhoneShop.PhoneDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace Database.Migrations
                     b.ToTable("StockSubscribers", "PhoneShop");
                 });
 
-            modelBuilder.Entity("Models.Entities.RemoteApi.Brand", b =>
+            modelBuilder.Entity("Models.Entities.RemoteApi.BrandDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +128,7 @@ namespace Database.Migrations
                     b.ToTable("Brands", "RemoteApi");
                 });
 
-            modelBuilder.Entity("Models.Entities.RemoteApi.Phone", b =>
+            modelBuilder.Entity("Models.Entities.RemoteApi.PhoneDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +165,7 @@ namespace Database.Migrations
                     b.ToTable("Phones", "RemoteApi");
                 });
 
-            modelBuilder.Entity("Models.Entities.RemoteApi.Specification", b =>
+            modelBuilder.Entity("Models.Entities.RemoteApi.SpecificationDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

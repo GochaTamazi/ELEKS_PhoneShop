@@ -1,6 +1,8 @@
-﻿namespace Models.Entities.PhoneShop
+﻿using Models.Interfaces;
+
+namespace Models.Entities.PhoneShop
 {
-    public partial class PriceSubscriber
+    public partial class PriceSubscriber : IEntity
     {
         public int Id { get; set; }
         public int? PhoneId { get; set; }

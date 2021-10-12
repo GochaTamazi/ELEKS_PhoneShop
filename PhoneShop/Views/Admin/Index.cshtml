@@ -1,24 +1,36 @@
-@model dynamic
-
-@{
-    ViewBag.Title = "Admin";
-    Layout = "_Layout";
+﻿@{
+    ViewData["Title"] = "Admin Page";
 }
 
-<h2>AdminController</h2>
+<div class="text-left">
+    <h1 class="display-4 text-center">Api</h1>
 
-<p>
-    <b>Synchronization:</b>
-</p>
+    <p>
+        <a asp-controller="Admin" asp-action="ListBrands">List Brands</a>
+    </p>
 
-<p>
-    <a asp-controller="Admin" asp-action="SynchronizeBrands">SynchronizeBrands</a>
-</p>
+    <p>
+        <form asp-controller="Admin" asp-action="Search" method="get">
+            <div>
+                <label>
+                    <b>Search:</b>
+                </label>
+                <input type="text" name="query"/>
+                <input type="submit" value="Find"/>
+            </div>
+        </form>
+    </p>
 
-<p>
-    <a asp-controller="Admin" asp-action="SynchronizePhones">SynchronizePhones</a>
-</p>
+    <p>
+        <a asp-controller="Admin" asp-action="Latest">Latest</a>
+    </p>
 
-<p>
-    <a asp-controller="Admin" asp-action="SynchronizeSpecifications">SynchronizeSpecifications</a>
-</p>
+    <p>
+        <a asp-controller="Admin" asp-action="TopByInterest">Top By Interest</a>
+    </p>
+
+    <p>
+        <a asp-controller="Admin" asp-action="TopByFans">Top By Fans</a>
+    </p>
+
+</div>

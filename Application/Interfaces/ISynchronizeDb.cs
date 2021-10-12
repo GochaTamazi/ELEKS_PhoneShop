@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.DTO.RemoteAPI.ListBrands;
-using Models.DTO.RemoteAPI.ListPhones;
-using Models.DTO.RemoteAPI.PhoneSpecifications;
 
 namespace Application.Interfaces
 {

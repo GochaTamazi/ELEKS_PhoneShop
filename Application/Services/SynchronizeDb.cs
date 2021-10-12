@@ -5,29 +5,27 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
+using Application.Interfaces.RemoteAPI;
 using DataAccess.Interfaces;
 using Models.Entities.RemoteApi;
-using Newtonsoft.Json;
 
 namespace Application.Services
 {
     public class SynchronizeDb : ISynchronizeDb
     {
-        private readonly IPhoneSpecificationClient _phoneSpecification;
-        private readonly IBrands _rBrands;
-        private readonly IPhones _rPhones;
-        private readonly ISpecification _rSpecification;
-
+        private readonly IPhoneSpecificationsApi _phoneSpecification;
+        private readonly IBrandsRep _rBrandsRep;
+        private readonly IPhonesRemoteApiRep _rPhonesRemoteApiRep;
+        private readonly ISpecificationRep _rSpecificationRep;
         private readonly IMapperProvider _mapper;
 
-
-        public SynchronizeDb(IPhoneSpecificationClient phoneSpecification, IBrands rBrands, IPhones rPhones,
-            ISpecification rSpecification, IMapperProvider mapper)
+        public SynchronizeDb(IPhoneSpecificationsApi phoneSpecification, IBrandsRep rBrandsRep, IPhonesRemoteApiRep rPhonesRemoteApiRep,
+            ISpecificationRep rSpecificationRep, IMapperProvider mapper)
         {
             _phoneSpecification = phoneSpecification;
-            _rBrands = rBrands;
-            _rPhones = rPhones;
-            _rSpecification = rSpecification;
+            _rBrandsRep = rBrandsRep;
+            _rPhonesRemoteApiRep = rPhonesRemoteApiRep;
+            _rSpecificationRep = rSpecificationRep;
             _mapper = mapper;
         }
 
@@ -39,17 +37,17 @@ namespace Application.Services
                 var brands = listBrands.Data.Select(brand =>
                     _mapper.GetMapper().Map<Models.Entities.RemoteApi.Brand>(brand)
                 ).ToList();
-                await _rBrands.BulkInsertOrUpdate(brands, token);
+                await _rBrandsRep.BulkInsertOrUpdate(brands, token);
             }
         }
 
         public async Task PhonesAsync(CancellationToken token)
         {
-            var brands = await _rBrands.ListAsync(token);
+            var brands = await _rBrandsRep.ListAsync(token);
             var tasks = brands.Select(brand => GetPhonesAsync(brand, token)).ToList();
             var tasksResults = await Task.WhenAll(tasks);
             var allPhones = tasksResults.SelectMany(x => x).ToList();
-            await _rPhones.BulkInsertOrUpdate(allPhones, token);
+            await _rPhonesRemoteApiRep.BulkInsertOrUpdate(allPhones, token);
         }
 
         private async Task<List<Phone>> GetPhonesAsync(Brand brand, CancellationToken token)
@@ -92,9 +90,13 @@ namespace Application.Services
             return phonesBatch.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
         public async Task SpecificationsAsync(CancellationToken token)
         {
-            var phones = await _rPhones.ListAsync(token);
+            var phones = await _rPhonesRemoteApiRep.ListAsync(token);
 
             var tasks = new List<Task<Specification>>();
             var i = 0;
@@ -111,9 +113,7 @@ namespace Application.Services
             //var tasks = phones.Select(phone => GetSpecificationsAsync(phone, token)).ToList();
             var tasksResults = await Task.WhenAll(tasks);
             var allSpecifications = tasksResults.ToList();
-            Console.WriteLine(allSpecifications.Count);
-            await _rSpecification.BulkInsertOrUpdate(allSpecifications, token);
-            Console.WriteLine("DONE !!!");
+            await _rSpecificationRep.BulkInsertOrUpdate(allSpecifications, token);
         }
 
         private async Task<Specification> GetSpecificationsAsync(Phone phone, CancellationToken token)
