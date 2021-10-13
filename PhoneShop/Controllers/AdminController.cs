@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Application.DTO.PhoneSpecificationsAPI.Search;
 using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
+using Models.Entities;
 
 namespace PhoneShop.Controllers
 {
@@ -51,6 +53,13 @@ namespace PhoneShop.Controllers
                 Page = page
             };
             return View(listPhonesRes);
+        }
+
+        [HttpGet("getPhonesInStore")]
+        public async Task<ActionResult<List<Phone>>> GetPhonesInStoreAsync(CancellationToken token)
+        {
+            var phones = await _adminPhones.GetPhonesInStoreAsync(token);
+            return View(phones);
         }
 
         [HttpGet("phoneSpecifications")]

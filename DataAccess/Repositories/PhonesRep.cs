@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,11 @@ namespace DataAccess.Repositories
         public PhonesRep(MasterContext dbContext)
         {
             _masterContext = dbContext;
+        }
+
+        public async Task<List<Phone>> GetAllAsync(CancellationToken token)
+        {
+            return await _masterContext.Phones.ToListAsync(token);
         }
 
         public async Task<Phone> GetPhoneBySlugAsync(string phoneSlug, CancellationToken token)

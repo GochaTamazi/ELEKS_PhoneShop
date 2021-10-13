@@ -1,0 +1,30 @@
+@model System.Collections.Generic.List<Models.Entities.Phone>
+
+@{
+    ViewBag.Title = "Get Phones In Store";
+    Layout = "_Layout";
+}
+
+<h2>Get Phones In Store</h2>
+
+<ul>
+    @foreach (var phone in @Model)
+    {
+        <li
+            @if (phone.Hided == true)
+            {
+                <text>style = "background-color: lightgray"</text>
+            }
+        >
+            <a asp-controller="Admin"
+               asp-action="PhoneSpecifications"
+               asp-route-phoneSlug="@phone.PhoneSlug">
+                <img src="@phone.Thumbnail" alt="x"/>
+                Name: @phone.PhoneName |
+                Price: @phone.Price |
+                Stock: @phone.Stock |
+                Hided: @phone.Hided
+            </a>
+        </li>
+    }
+</ul>

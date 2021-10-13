@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,13 @@ namespace Application.Services
             _mapperProvider = mapperProvider;
         }
 
+        /// <summary>
+        /// Get information about the phone from the remote api. Or from a local database if one already exists in the store.
+        /// </summary>
+        /// <param name="phoneSlug"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<PhoneSpecFront> GetPhone(string phoneSlug, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(phoneSlug, token);
@@ -62,6 +70,12 @@ namespace Application.Services
             return phoneSpecFront;
         }
 
+        /// <summary>
+        /// Update or add information about the specified phone.
+        /// </summary>
+        /// <param name="phoneSpecFront"></param>
+        /// <param name="token"></param>
+        /// <exception cref="Exception"></exception>
         public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
             var phoneSpecificationsDto =
@@ -82,6 +96,12 @@ namespace Application.Services
             await BrandInsertIfNotExistAsync(phone.BrandSlug, token);
         }
 
+        /// <summary>
+        /// Add a new brand if it is not in the database
+        /// </summary>
+        /// <param name="brandSlug"></param>
+        /// <param name="token"></param>
+        /// <exception cref="Exception"></exception>
         public async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
         {
             var brand = await _brandsRep.GetBySlugAsync(brandSlug, token);
@@ -97,6 +117,15 @@ namespace Application.Services
                 var brandE = _mapperProvider.GetMapper().Map<Brand>(brandDto);
                 await _brandsRep.InsertAsync(brandE, token);
             }
+        }
+
+        /// <summary>
+        /// Get all phones that are added to the store. Including hidden.
+        /// </summary>
+        /// <param name="token"></param>
+        public async Task<List<Phone>> GetPhonesInStoreAsync(CancellationToken token)
+        {
+            return await _phonesRep.GetAllAsync(token);
         }
     }
 }
