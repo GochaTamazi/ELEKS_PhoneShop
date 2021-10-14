@@ -29,7 +29,7 @@ namespace PhoneShop.Controllers
 
         [HttpGet("index")]
         [HttpGet("")]
-        public ActionResult Index(CancellationToken token)
+        public async Task<ActionResult> Index(CancellationToken token)
         {
             return View();
         }

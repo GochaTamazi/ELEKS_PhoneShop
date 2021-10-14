@@ -37,6 +37,7 @@ namespace PhoneShop
             //Application Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IAdminPhones, AdminPhones>();
+            services.AddScoped<ICustomerPhones, CustomerPhones>();
 
             services.AddSingleton<IMapperProvider, MapperProvider>();
             services.AddSingleton(serviceProvider =>

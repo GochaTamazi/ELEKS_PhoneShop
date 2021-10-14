@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
@@ -16,6 +18,11 @@ namespace DataAccess.Repositories
         public PhonesRep(MasterContext dbContext)
         {
             _masterContext = dbContext;
+        }
+
+        public async Task<List<Phone>> GetAllAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token)
+        {
+            return await _masterContext.Phones.Where(predicate).ToListAsync(token);
         }
 
         public async Task<List<Phone>> GetAllAsync(CancellationToken token)

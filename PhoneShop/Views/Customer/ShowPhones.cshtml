@@ -1,0 +1,63 @@
+@model System.Collections.Generic.List<Models.Entities.Phone>
+
+@{
+    ViewBag.Title = "Customer Phones";
+    Layout = "_Layout";
+}
+
+<h4>
+    Filter
+</h4>
+
+<form asp-controller="Customer" asp-action="ShowPhones" method="get">
+    <p>
+        <label>BrandName: </label>
+        <input type="text" placeholder="PhoneName" name="brandName"/>
+    </p>
+    <p>
+        <label>PhoneName: </label>
+        <input type="text" placeholder="PhoneName" name="phoneName"/>
+    </p>
+    <p>
+        <label>PriceMin: </label>
+        <input type="text" placeholder="PriceMin" name="priceMin"/>
+    </p>
+    <p>
+        <label>PriceMax: </label>
+        <input type="text" placeholder="PriceMax" name="priceMax"/>
+    </p>
+    <p>
+        <label>InStock: </label>
+        <input type="text" placeholder="InStock" name="inStock"/>
+    </p>
+    <p>
+        <input type="submit" value="Submit"/>
+    </p>
+</form>
+
+<hr/>
+
+<h2>Customer Phonese</h2>
+
+<ul>
+    @foreach (var phone in @Model)
+    {
+        <li
+            @if (phone.Stock <= 0)
+            {
+                <text>style = "background-color: lightsalmon"</text>
+            }
+        >
+            <a asp-controller="Customer"
+               asp-action="ShowPhone"
+               asp-route-phoneSlug="@phone.PhoneSlug">
+                <img src="@phone.Thumbnail" alt="x"/>
+                Name: @phone.PhoneName |
+                Price: @phone.Price |
+                Stock: @phone.Stock |
+                Hided: @phone.Hided |
+                BrandSlug: @phone.BrandSlug
+            </a>
+        </li>
+    }
+</ul>
