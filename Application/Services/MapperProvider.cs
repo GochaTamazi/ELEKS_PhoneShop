@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using Application.Interfaces;
@@ -21,8 +22,6 @@ namespace Application.Services
         {
             var config = new MapperConfiguration(cfg =>
                 {
-                    //cfg.CreateMap<TO, FROM>
-
                     cfg.CreateMap<BrandDto, Brand>()
                         .ForMember(x => x.Slug,
                             m => m.MapFrom(x => x.Brand_slug))
@@ -43,6 +42,27 @@ namespace Application.Services
                         .ForMember(x => x.Specifications,
                             m => m.MapFrom(x =>
                                 JsonConvert.SerializeObject(x.Data.Specifications, Formatting.None)))
+                        .ForAllOtherMembers(m => m.Ignore());
+
+                    cfg.CreateMap<Phone, Application.DTO.Frontend.PhoneDto>()
+                        .ForMember(x => x.Id, m => m.MapFrom(x => x.Id))
+                        .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
+                        .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
+                        .ForMember(x => x.PhoneName, m => m.MapFrom(x => x.PhoneName))
+                        .ForMember(x => x.Dimension, m => m.MapFrom(x => x.Dimension))
+                        .ForMember(x => x.Os, m => m.MapFrom(x => x.Os))
+                        .ForMember(x => x.Storage, m => m.MapFrom(x => x.Storage))
+                        .ForMember(x => x.Thumbnail, m => m.MapFrom(x => x.Thumbnail))
+                        .ForMember(x => x.ReleaseDate, m => m.MapFrom(x => x.ReleaseDate))
+                        .ForMember(x => x.Price, m => m.MapFrom(x => x.Price))
+                        .ForMember(x => x.Stock, m => m.MapFrom(x => x.Stock))
+                        .ForMember(x => x.Hided, m => m.MapFrom(x => x.Hided))
+                        .ForMember(x => x.Images,
+                            m => m.MapFrom(x =>
+                                JsonConvert.DeserializeObject<List<string>>(x.Images)))
+                        .ForMember(x => x.Specifications,
+                            m => m.MapFrom(x =>
+                                JsonConvert.DeserializeObject<List<SpecificationDto>>(x.Specifications)))
                         .ForAllOtherMembers(m => m.Ignore());
                 }
             );

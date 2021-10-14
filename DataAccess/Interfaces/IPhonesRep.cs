@@ -9,6 +9,7 @@ namespace DataAccess.Interfaces
 {
     public interface IPhonesRep
     {
+        Task<Phone> GetOneAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token);
         Task<List<Phone>> GetAllAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token);
         Task<List<Phone>> GetAllAsync(CancellationToken token);
         Task<Phone> GetPhoneBySlugAsync(string slug, CancellationToken token);

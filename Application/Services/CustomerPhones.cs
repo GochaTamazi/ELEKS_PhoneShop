@@ -39,5 +39,17 @@ namespace Application.Services
 
             return await _phonesRep.GetAllAsync(condition, token);
         }
+
+        public async Task<DTO.Frontend.PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token)
+        {
+            Expression<Func<Phone, bool>> condition = (phone) =>
+                phone.PhoneSlug == phoneSlug
+                &&
+                phone.Hided == false;
+
+            var phoneE = await _phonesRep.GetOneAsync(condition, token);
+
+            return phoneE == null ? new PhoneDto() : _mapperProvider.GetMapper().Map<PhoneDto>(phoneE);
+        }
     }
 }

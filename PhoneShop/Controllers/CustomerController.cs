@@ -49,7 +49,8 @@ namespace PhoneShop.Controllers
         [HttpGet("showPhone")]
         public async Task<ActionResult> ShowPhoneAsync([FromQuery] string phoneSlug, CancellationToken token)
         {
-            return Ok(phoneSlug);
+            var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
+            return View(phone);
         }
     }
 }
