@@ -1,0 +1,64 @@
+@model Application.DTO.Frontend.PhoneDto
+
+@{
+    ViewBag.Title = "Customer Phone Specifications";
+    Layout = "_Layout";
+
+    var phone = @Model;
+
+}
+
+<h2>Customer Phone Specifications</h2>
+
+@foreach (var image in @phone.Images)
+{
+    <img src="@image" alt="x" style="width: 200px"/>
+}
+<br/>
+
+@if (@phone.Thumbnail != string.Empty)
+{
+    <img src="@phone.Thumbnail" alt="x"/>
+}
+
+<br/>
+<br/>
+
+<div>
+    <b>Brand:</b> @phone.BrandSlug
+</div>
+<div>
+    <b>Phone_name:</b> @phone.PhoneName
+</div>
+<div>
+    <b>Release_date:</b> @phone.ReleaseDate
+</div>
+<div>
+    <b>Dimension:</b> @phone.Dimension
+</div>
+<div>
+    <b>Os:</b> @phone.Os
+</div>
+<div>
+    <b>Storage:</b> @phone.Storage
+</div>
+
+@{
+
+}
+@foreach (var v in phone.Specifications)
+{
+    <hr/>
+    <b>@v.Title</b>
+    <br/>
+    foreach (var spec in v.Specs)
+    {
+        <b>@spec.Key:</b>
+        <br/>
+        foreach (var sval in spec.Val)
+        {
+            @sval
+            <br/>
+        }
+    }
+}
