@@ -51,11 +51,5 @@ namespace PhoneShop.Controllers
         {
             return Ok(phoneSlug);
         }
-
-        [HttpGet("search")]
-        public async Task<ActionResult> SearchAsync(CancellationToken token)
-        {
-            return Ok();
-        }
     }
 }

@@ -19,11 +19,11 @@
     </p>
     <p>
         <label>Stock: </label>
-        <input type="text" placeholder="Stock" value="@Model.Stock" name="Stock"/>
+        <input type="number" min="0" placeholder="Stock" value="@Model.Stock" name="Stock"/>
     </p>
     <p>
         <label>Price: </label>
-        <input type="text" placeholder="Price" value="@Model.Price" name="Price"/>
+        <input type="number" min="0" placeholder="Price" value="@Model.Price" name="Price"/>
     </p>
     <p>
         <input type="submit" value="Insert Or Update"/>

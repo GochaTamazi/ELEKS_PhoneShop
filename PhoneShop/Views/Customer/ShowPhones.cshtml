@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Customer Phones";
     Layout = "_Layout";
+    var inStock = true;
 }
 
 <h4>
@@ -20,15 +21,15 @@
     </p>
     <p>
         <label>PriceMin: </label>
-        <input type="text" placeholder="PriceMin" name="priceMin"/>
+        <input type="number" min="0" placeholder="PriceMin" name="priceMin"/>
     </p>
     <p>
         <label>PriceMax: </label>
-        <input type="text" placeholder="PriceMax" name="priceMax"/>
+        <input type="number" min="0" placeholder="PriceMax" name="priceMax"/>
     </p>
     <p>
         <label>InStock: </label>
-        <input type="text" placeholder="InStock" name="inStock"/>
+        <input asp-for="@inStock" type="checkbox" name="inStock"/>
     </p>
     <p>
         <input type="submit" value="Submit"/>
