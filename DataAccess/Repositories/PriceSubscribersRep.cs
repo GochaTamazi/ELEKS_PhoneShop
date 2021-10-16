@@ -1,5 +1,12 @@
+using System;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Database;
+using Models.Entities;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -10,6 +17,18 @@ namespace DataAccess.Repositories
         public PriceSubscribersRep(MasterContext masterContext)
         {
             _masterContext = masterContext;
+        }
+
+        public async Task<PriceSubscriber> GetOneAsync(Expression<Func<PriceSubscriber, bool>> predicate,
+            CancellationToken token)
+        {
+            return await _masterContext.PriceSubscribers.Where(predicate).FirstOrDefaultAsync(token);
+        }
+
+        public async Task InsertAsync(PriceSubscriber priceSubs, CancellationToken token)
+        {
+            await _masterContext.PriceSubscribers.AddAsync(priceSubs, token);
+            await _masterContext.SaveChangesAsync(token);
         }
     }
 }

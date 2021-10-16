@@ -10,5 +10,7 @@ namespace Application.Interfaces
     {
         Task<List<Phone>> GetPhonesAsync(PhonesFilter filter, CancellationToken token);
         Task<PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token);
+        Task SubscribePriceAsync(PriceSubscriberFront priceSubscriber, CancellationToken token);
+        Task SubscribeStockAsync(StockSubscriberFront stockSubscriber, CancellationToken token);
     }
 }

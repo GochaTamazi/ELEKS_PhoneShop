@@ -8,7 +8,47 @@
 
 }
 
+<form asp-controller="Customer" asp-action="SubscribePrice" method="post">
+    <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
+    <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
+    <p>
+        <label>
+            <b>Subscribe to a Price change:</b>
+        </label>
+        <input type="email" placeholder="Email" name="Email"/>
+        <input type="submit" value="Subscribe"/>
+    </p>
+</form>
+
+<hr/>
+
+
+@if (@phone.Stock <= 0)
+{
+    <form asp-controller="Customer" asp-action="SubscribeStock" method="post">
+        <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
+        <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
+        <p>
+            <label>
+                <b>Subscribe to a Stock change:</b>
+            </label>
+            <input type="email" placeholder="Email" name="Email"/>
+            <input type="submit" value="Subscribe"/>
+        </p>
+    </form>
+}
+
+<hr/>
+
 <h2>Customer Phone Specifications</h2>
+
+<div>
+    <b>Price:</b> @phone.Price
+</div>
+
+<div>
+    <b>Stock:</b> @phone.Stock
+</div>
 
 @foreach (var image in @phone.Images)
 {
@@ -43,9 +83,6 @@
     <b>Storage:</b> @phone.Storage
 </div>
 
-@{
-
-}
 @foreach (var v in phone.Specifications)
 {
     <hr/>

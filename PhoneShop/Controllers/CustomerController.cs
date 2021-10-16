@@ -52,5 +52,21 @@ namespace PhoneShop.Controllers
             var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
             return View(phone);
         }
+
+        [HttpPost("subscribePrice")]
+        public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberFront priceSubscriber,
+            CancellationToken token)
+        {
+            await _customerPhones.SubscribePriceAsync(priceSubscriber, token);
+            return Ok("SubscribePriceAsync ok");
+        }
+
+        [HttpPost("subscribeStock")]
+        public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberFront stockSubscriber,
+            CancellationToken token)
+        {
+            await _customerPhones.SubscribeStockAsync(stockSubscriber, token);
+            return Ok("SubscribeStockAsync ok");
+        }
     }
 }
