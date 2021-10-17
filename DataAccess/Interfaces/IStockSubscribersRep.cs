@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,5 +11,8 @@ namespace DataAccess.Interfaces
     {
         Task<StockSubscriber> GetOneAsync(Expression<Func<StockSubscriber, bool>> predicate, CancellationToken token);
         Task InsertAsync(StockSubscriber stockSubs, CancellationToken token);
+
+        Task<List<StockSubscriber>> GetAllAsync(Expression<Func<StockSubscriber, bool>> predicate,
+            CancellationToken token);
     }
 }

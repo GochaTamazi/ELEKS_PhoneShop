@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,12 @@ namespace DataAccess.Repositories
         {
             await _masterContext.PriceSubscribers.AddAsync(priceSubs, token);
             await _masterContext.SaveChangesAsync(token);
+        }
+
+        public async Task<List<PriceSubscriber>> GetAllAsync(Expression<Func<PriceSubscriber, bool>> predicate,
+            CancellationToken token)
+        {
+            return await _masterContext.PriceSubscribers.Where(predicate).ToListAsync(token);
         }
     }
 }

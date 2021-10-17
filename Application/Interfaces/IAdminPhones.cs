@@ -12,5 +12,7 @@ namespace Application.Interfaces
         Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
         Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token);
         Task<List<Phone>> GetPhonesInStoreAsync(CancellationToken token);
+        Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token);
+        Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token);
     }
 }

@@ -17,15 +17,20 @@ namespace Application.Services
         private readonly IPhonesRep _phonesRep;
         private readonly IMapperProvider _mapperProvider;
         private readonly IMailNotification _mailNotification;
+        private readonly IPriceSubscribersRep _priceSubsRep;
+        private readonly IStockSubscribersRep _stockSubsRep;
 
         public AdminPhones(IPhoneSpecificationsApi phoneSpecification, IBrandsRep brandsRep, IPhonesRep phonesRep,
-            IMapperProvider mapperProvider, IMailNotification mailNotification)
+            IMapperProvider mapperProvider, IMailNotification mailNotification, IPriceSubscribersRep priceSubsRep,
+            IStockSubscribersRep stockSubsRep)
         {
             _phoneSpecificationServiceApi = phoneSpecification;
             _brandsRep = brandsRep;
             _phonesRep = phonesRep;
             _mapperProvider = mapperProvider;
             _mailNotification = mailNotification;
+            _priceSubsRep = priceSubsRep;
+            _stockSubsRep = stockSubsRep;
         }
 
         /// <summary>
@@ -94,24 +99,38 @@ namespace Application.Services
             }
             else
             {
-                _phonesRep.DetachEntity(phone, token);
+                await _phonesRep.DetachEntityAsync(phoneE, token);
                 phone.Id = phoneE.Id;
                 await _phonesRep.UpdateAsync(phone, token);
-
                 if (phone.Price != phoneE.Price)
                 {
                     //Price notification
-                    
+                    await PriceSubscribersNotificationAsync(phone, token);
                 }
 
                 if (phone.Stock != phoneE.Stock && phoneE.Stock <= 0)
                 {
                     //Stock notification
-                    
+                    await StockSubscribersNotificationAsync(phone, token);
                 }
             }
 
             await BrandInsertIfNotExistAsync(phone.BrandSlug, token);
+        }
+
+        public async Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        {
+            var subs = await _priceSubsRep.GetAllAsync(subs =>
+                subs.BrandSlug == phone.BrandSlug && subs.PhoneSlug == phone.PhoneSlug, token);
+            await _mailNotification.PriceSubscribersNotificationAsync(subs, phone, token);
+        }
+
+        public async Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        {
+            var subs = await _stockSubsRep.GetAllAsync(subs =>
+                subs.BrandSlug == phone.BrandSlug && subs.PhoneSlug == phone.PhoneSlug, token);
+
+            await _mailNotification.StockSubscribersNotificationAsync(subs, phone, token);
         }
 
         /// <summary>
