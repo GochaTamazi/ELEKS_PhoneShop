@@ -1,3 +1,5 @@
+using System;
+using Application.DTO.Options;
 using Application.Interfaces;
 using Application.Services;
 using DataAccess.Interfaces;
@@ -14,16 +16,18 @@ namespace PhoneShop
 {
     public class Startup
     {
+        private IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+
             //Database Context
             services.AddDbContext<MasterContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
@@ -46,6 +50,13 @@ namespace PhoneShop
                 return provider.GetMapper();
             });
 
+            //Email Service
+            var configurationSectionEmailService = Configuration.GetSection("Email");
+            services.Configure<EmailOptions>(configurationSectionEmailService);
+            services.AddSingleton<IEmail, Email>();
+            services.AddSingleton<IMailNotification, MailNotification>();
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
             services.AddControllers();
             services.AddControllersWithViews();
         }

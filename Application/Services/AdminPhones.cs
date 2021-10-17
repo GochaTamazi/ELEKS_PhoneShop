@@ -16,23 +16,21 @@ namespace Application.Services
         private readonly IBrandsRep _brandsRep;
         private readonly IPhonesRep _phonesRep;
         private readonly IMapperProvider _mapperProvider;
+        private readonly IMailNotification _mailNotification;
 
         public AdminPhones(IPhoneSpecificationsApi phoneSpecification, IBrandsRep brandsRep, IPhonesRep phonesRep,
-            IMapperProvider mapperProvider)
+            IMapperProvider mapperProvider, IMailNotification mailNotification)
         {
             _phoneSpecificationServiceApi = phoneSpecification;
             _brandsRep = brandsRep;
             _phonesRep = phonesRep;
             _mapperProvider = mapperProvider;
+            _mailNotification = mailNotification;
         }
 
         /// <summary>
         /// Get information about the phone from the remote api. Or from a local database if one already exists in the store.
         /// </summary>
-        /// <param name="phoneSlug"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
         public async Task<PhoneSpecFront> GetPhone(string phoneSlug, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(phoneSlug, token);
@@ -73,9 +71,6 @@ namespace Application.Services
         /// <summary>
         /// Update or add information about the specified phone.
         /// </summary>
-        /// <param name="phoneSpecFront"></param>
-        /// <param name="token"></param>
-        /// <exception cref="Exception"></exception>
         public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
             var phoneSpecificationsDto =
@@ -92,16 +87,36 @@ namespace Application.Services
             phone.Stock = phoneSpecFront.Stock;
             phone.Hided = phoneSpecFront.Hided;
 
-            await _phonesRep.InsertOrUpdateAsync(phone, token);
+            var phoneE = await _phonesRep.GetPhoneBySlugAsync(phone.PhoneSlug, token);
+            if (phoneE == null)
+            {
+                await _phonesRep.InsertAsync(phone, token);
+            }
+            else
+            {
+                _phonesRep.DetachEntity(phone, token);
+                phone.Id = phoneE.Id;
+                await _phonesRep.UpdateAsync(phone, token);
+
+                if (phone.Price != phoneE.Price)
+                {
+                    //Price notification
+                    
+                }
+
+                if (phone.Stock != phoneE.Stock && phoneE.Stock <= 0)
+                {
+                    //Stock notification
+                    
+                }
+            }
+
             await BrandInsertIfNotExistAsync(phone.BrandSlug, token);
         }
 
         /// <summary>
         /// Add a new brand if it is not in the database
         /// </summary>
-        /// <param name="brandSlug"></param>
-        /// <param name="token"></param>
-        /// <exception cref="Exception"></exception>
         public async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
         {
             var brand = await _brandsRep.GetBySlugAsync(brandSlug, token);
@@ -122,7 +137,6 @@ namespace Application.Services
         /// <summary>
         /// Get all phones that are added to the store. Including hidden.
         /// </summary>
-        /// <param name="token"></param>
         public async Task<List<Phone>> GetPhonesInStoreAsync(CancellationToken token)
         {
             return await _phonesRep.GetAllAsync(token);

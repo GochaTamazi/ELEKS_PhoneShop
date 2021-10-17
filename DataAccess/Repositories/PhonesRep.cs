@@ -66,5 +66,10 @@ namespace DataAccess.Repositories
                 await UpdateAsync(phone, token);
             }
         }
+
+        public void DetachEntity(Phone phone, CancellationToken token)
+        {
+            _masterContext.Entry(phone).State = EntityState.Detached;
+        }
     }
 }
