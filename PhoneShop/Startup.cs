@@ -28,20 +28,32 @@ namespace PhoneShop
         {
             ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            //Database Context
+            // Options
+            var configurationPhoneSpecificationsApi = Configuration.GetSection("PhoneSpecificationsApi");
+            services.Configure<PhoneSpecificationsApiOptions>(configurationPhoneSpecificationsApi);
+
+            var configurationSectionEmailService = Configuration.GetSection("Email");
+            services.Configure<EmailOptions>(configurationSectionEmailService);
+
+
+            // Database Context
             services.AddDbContext<MasterContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 
-            //DataAccess Repositories
+
+            // DataAccess Repositories
             services.AddScoped<IBrandsRep, BrandsRep>();
             services.AddScoped<IPhonesRep, PhonesRep>();
             services.AddScoped<IPriceSubscribersRep, PriceSubscribersRep>();
             services.AddScoped<IStockSubscribersRep, StockSubscribersRep>();
 
-            //Application Services
+
+            // Application Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IAdminPhones, AdminPhones>();
             services.AddScoped<ICustomerPhones, CustomerPhones>();
+            services.AddSingleton<IEmail, Email>();
+            services.AddSingleton<IMailNotification, MailNotification>();
 
             services.AddSingleton<IMapperProvider, MapperProvider>();
             services.AddSingleton(serviceProvider =>
@@ -49,12 +61,6 @@ namespace PhoneShop
                 var provider = serviceProvider.GetRequiredService<IMapperProvider>();
                 return provider.GetMapper();
             });
-
-            //Email Service
-            var configurationSectionEmailService = Configuration.GetSection("Email");
-            services.Configure<EmailOptions>(configurationSectionEmailService);
-            services.AddSingleton<IEmail, Email>();
-            services.AddSingleton<IMailNotification, MailNotification>();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             services.AddControllers();

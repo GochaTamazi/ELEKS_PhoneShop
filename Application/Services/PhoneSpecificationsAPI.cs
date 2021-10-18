@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.DTO.Options;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.ListPhones;
@@ -13,6 +14,7 @@ using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
 using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Options;
 
 namespace Application.Services
 {
@@ -22,11 +24,13 @@ namespace Application.Services
     /// </summary>
     public class PhoneSpecificationsApi : IPhoneSpecificationsApi
     {
+        private readonly PhoneSpecificationsApiOptions _options;
         private readonly string _baseUrl;
 
-        public PhoneSpecificationsApi()
+        public PhoneSpecificationsApi(IOptions<PhoneSpecificationsApiOptions> options)
         {
-            _baseUrl = "http://api-mobilespecs.azharimm.site";
+            _options = options.Value;
+            _baseUrl = _options.BaseUrl;
         }
 
         public async Task<ListBrandsDto> ListBrandsAsync(CancellationToken token)
