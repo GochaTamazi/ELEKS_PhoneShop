@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Net.Mail;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.DTO.Options;
 using Application.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Net.Mail;
+using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace Application.Services
 {
@@ -21,12 +21,10 @@ namespace Application.Services
         public async Task SendEmailAsync(MailAddress to, string subject, string html, CancellationToken token)
         {
             Console.WriteLine("Email.SendMailAsync");
-
             Console.WriteLine($"SmtpHost: {_emailOptions.SmtpHost}");
             Console.WriteLine($"SmtpPort: {_emailOptions.SmtpPort}");
             Console.WriteLine($"SmtpUser: {_emailOptions.SmtpUser}");
             Console.WriteLine($"SmtpPass: {_emailOptions.SmtpPass}");
-
             Console.WriteLine($"MailAddress: {to}");
             Console.WriteLine($"Subject: {subject}");
             Console.WriteLine($"Body: {html}");

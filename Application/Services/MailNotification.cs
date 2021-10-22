@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.Interfaces;
 using Models.Entities;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace Application.Services
 {
@@ -18,8 +18,7 @@ namespace Application.Services
             _mail = mail;
         }
 
-        private async Task SendMailAsync(string email, string subject, string body,
-            CancellationToken token)
+        private async Task SendMailAsync(string email, string subject, string body, CancellationToken token)
         {
             try
             {
@@ -32,7 +31,7 @@ namespace Application.Services
             }
         }
 
-        public async Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subs, Phone phone,
+        public async Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone,
             CancellationToken token)
         {
             var subject = $"Phone {phone.PhoneName} price has changed";
@@ -44,11 +43,14 @@ namespace Application.Services
                 <b><a href='{url}'>Check it out!</a></b> 
             ";
 
-            var tasks = subs.Select(sub => SendMailAsync(sub.Email, subject, body, token)).ToList();
+            var tasks = subscribers
+                .Select(sub => SendMailAsync(sub.Email, subject, body, token))
+                .ToList();
+
             await Task.WhenAll(tasks);
         }
 
-        public async Task StockSubscribersNotificationAsync(List<StockSubscriber> subs, Phone phone,
+        public async Task StockSubscribersNotificationAsync(List<StockSubscriber> subscribers, Phone phone,
             CancellationToken token)
         {
             var subject = $"The phone {phone.PhoneName} is back in stock";
@@ -56,11 +58,14 @@ namespace Application.Services
             var url = $"http://localhost:5000/customer/showPhone?phoneSlug={phone.PhoneSlug}";
             var body = $@"
                 <b>The phone {phone.PhoneName} is back in stock</b> <br/>
-                <b>Current on stock:</b> {phone.Price}<br/>
+                <b>Current on stock:</b> {phone.Stock}<br/>
                 <b><a href='{url}'>Check it out!</a></b>
             ";
 
-            var tasks = subs.Select(sub => SendMailAsync(sub.Email, subject, body, token)).ToList();
+            var tasks = subscribers
+                .Select(sub => SendMailAsync(sub.Email, subject, body, token))
+                .ToList();
+
             await Task.WhenAll(tasks);
         }
     }

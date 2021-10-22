@@ -21,7 +21,10 @@ namespace PhoneShop.Controllers
         private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
         private readonly IAdminPhones _adminPhones;
 
-        public AdminController(IPhoneSpecificationsApi phoneSpecificationsServiceApiApi, IAdminPhones adminPhones)
+        public AdminController(
+            IPhoneSpecificationsApi phoneSpecificationsServiceApiApi,
+            IAdminPhones adminPhones
+        )
         {
             _phoneSpecificationServiceApi = phoneSpecificationsServiceApiApi;
             _adminPhones = adminPhones;

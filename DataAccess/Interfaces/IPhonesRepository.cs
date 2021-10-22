@@ -7,7 +7,7 @@ using Models.Entities;
 
 namespace DataAccess.Interfaces
 {
-    public interface IPhonesRep
+    public interface IPhonesRepository
     {
         Task<Phone> GetOneAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token);
         Task<List<Phone>> GetAllAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token);

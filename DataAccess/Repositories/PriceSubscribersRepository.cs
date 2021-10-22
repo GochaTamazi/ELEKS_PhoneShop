@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
-    public class PriceSubscribersRep : IPriceSubscribersRep
+    public class PriceSubscribersRepository : IPriceSubscribersRepository
     {
         private readonly MasterContext _masterContext;
 
-        public PriceSubscribersRep(MasterContext masterContext)
+        public PriceSubscribersRepository(MasterContext masterContext)
         {
             _masterContext = masterContext;
         }

@@ -4,7 +4,7 @@ using Models.Entities;
 
 namespace DataAccess.Interfaces
 {
-    public interface IBrandsRep
+    public interface IBrandsRepository
     {
         Task<Brand> GetByIdAsync(int id, CancellationToken token);
         Task<Brand> GetByNameAsync(string name, CancellationToken token);

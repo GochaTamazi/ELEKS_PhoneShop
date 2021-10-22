@@ -11,11 +11,11 @@ using Models.Entities;
 
 namespace DataAccess.Repositories
 {
-    public class PhonesRep : IPhonesRep
+    public class PhonesRepository : IPhonesRepository
     {
         private readonly MasterContext _masterContext;
 
-        public PhonesRep(MasterContext dbContext)
+        public PhonesRepository(MasterContext dbContext)
         {
             _masterContext = dbContext;
         }

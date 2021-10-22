@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace Application.Services
 {
-    /// /// <summary>
+    /// <summary>
     /// Phone Specifications API
     /// https://github.com/azharimm/phone-specs-api
     /// </summary>
@@ -31,6 +31,18 @@ namespace Application.Services
         {
             _options = options.Value;
             _baseUrl = _options.BaseUrl;
+        }
+
+        public async Task<LatestDto> LatestAsync(CancellationToken token)
+        {
+            var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
+
+            if (response.Result.StatusCode == 200)
+            {
+                return await response.ReceiveJson<LatestDto>();
+            }
+
+            return new LatestDto();
         }
 
         public async Task<ListBrandsDto> ListBrandsAsync(CancellationToken token)
@@ -48,10 +60,6 @@ namespace Application.Services
         /// <summary>
         /// ListPhones Flurl request
         /// </summary>
-        /// <param name="brandSlug"></param>
-        /// <param name="page"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public async Task<ListPhonesDto> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
@@ -69,10 +77,6 @@ namespace Application.Services
         /// <summary>
         /// ListPhones System.Net.Http.HttpClient request
         /// </summary>
-        /// <param name="brandSlug"></param>
-        /// <param name="page"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public async Task<ListPhonesDto> ListPhonesAsync2(string brandSlug, int page, CancellationToken token)
         {
             using var httpClient = new HttpClient();
@@ -89,9 +93,6 @@ namespace Application.Services
         /// <summary>
         /// PhoneSpecifications Flurl request
         /// </summary>
-        /// <param name="phoneSlug"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
@@ -107,9 +108,6 @@ namespace Application.Services
         /// <summary>
         /// PhoneSpecifications System.Net.Http.HttpClient request 
         /// </summary>
-        /// <param name="phoneSlug"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync2(string phoneSlug, CancellationToken token)
         {
             using var httpClient = new HttpClient();
@@ -137,16 +135,16 @@ namespace Application.Services
             return new SearchDto();
         }
 
-        public async Task<LatestDto> LatestAsync(CancellationToken token)
+        public async Task<TopByFansDto> TopByFansAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
+            var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
 
             if (response.Result.StatusCode == 200)
             {
-                return await response.ReceiveJson<LatestDto>();
+                return await response.ReceiveJson<TopByFansDto>();
             }
 
-            return new LatestDto();
+            return new TopByFansDto();
         }
 
         public async Task<TopByInterestDto> TopByInterestAsync(CancellationToken token)
@@ -159,18 +157,6 @@ namespace Application.Services
             }
 
             return new TopByInterestDto();
-        }
-
-        public async Task<TopByFansDto> TopByFansAsync(CancellationToken token)
-        {
-            var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
-            {
-                return await response.ReceiveJson<TopByFansDto>();
-            }
-
-            return new TopByFansDto();
         }
     }
 }

@@ -42,10 +42,10 @@ namespace PhoneShop
 
 
             // DataAccess Repositories
-            services.AddScoped<IBrandsRep, BrandsRep>();
-            services.AddScoped<IPhonesRep, PhonesRep>();
-            services.AddScoped<IPriceSubscribersRep, PriceSubscribersRep>();
-            services.AddScoped<IStockSubscribersRep, StockSubscribersRep>();
+            services.AddScoped<IBrandsRepository, BrandsRepository>();
+            services.AddScoped<IPhonesRepository, PhonesRepository>();
+            services.AddScoped<IPriceSubscribersRepository, PriceSubscribersRepository>();
+            services.AddScoped<IStockSubscribersRepository, StockSubscribersRepository>();
 
 
             // Application Services

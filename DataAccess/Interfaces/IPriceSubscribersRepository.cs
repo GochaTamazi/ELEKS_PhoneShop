@@ -7,7 +7,7 @@ using Models.Entities;
 
 namespace DataAccess.Interfaces
 {
-    public interface IPriceSubscribersRep
+    public interface IPriceSubscribersRepository
     {
         Task<PriceSubscriber> GetOneAsync(Expression<Func<PriceSubscriber, bool>> predicate, CancellationToken token);
         Task InsertAsync(PriceSubscriber priceSubs, CancellationToken token);

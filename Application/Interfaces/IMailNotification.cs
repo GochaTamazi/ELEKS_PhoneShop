@@ -1,13 +1,13 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Models.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Application.Interfaces
 {
     public interface IMailNotification
     {
-        Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subs, Phone phone, CancellationToken token);
-        Task StockSubscribersNotificationAsync(List<StockSubscriber> subs, Phone phone, CancellationToken token);
+        Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone, CancellationToken token);
+        Task StockSubscribersNotificationAsync(List<StockSubscriber> subscribers, Phone phone, CancellationToken token);
     }
 }
