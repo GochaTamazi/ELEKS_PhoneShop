@@ -1,14 +1,28 @@
-@model System.Collections.Generic.List<Models.Entities.Phone>
+@model Application.DTO.Frontend.PhonesPageFront 
 
 @{
     ViewBag.Title = "Get Phones In Store";
     Layout = "_Layout";
+    var phones = @Model.Phones;
 }
 
 <h2>Get Phones In Store</h2>
 
+<h4>Total Phones Count: @Model.TotalPhones</h4>
+<h4>Page size: @Model.PageSize</h4>
+<h4>Page: @Model.Page / @Model.TotalPages</h4>
+
+@for (var i = 1; i <= @Model.TotalPages; i++)
+{
+    <a asp-controller="Admin"
+       asp-action="GetPhonesInStore"
+       asp-route-page="@i">
+        @i |
+    </a>
+}
+
 <ul>
-    @foreach (var phone in @Model)
+    @foreach (var phone in phones)
     {
         <li
             @if (phone.Hided == true)

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using PagedList;
 
 namespace Application.Services
 {
@@ -132,9 +133,19 @@ namespace Application.Services
         /// <summary>
         /// Get all phones that are added to the store. Including hidden.
         /// </summary>
-        public async Task<List<Phone>> GetPhonesInStoreAsync(CancellationToken token)
+        public async Task<PhonesPageFront> GetPhonesInStoreAsync(int page, int pageSize, CancellationToken token)
         {
-            return await _phonesRepository.GetAllAsync(token);
+            var phones = await _phonesRepository.GetAllAsync(token);
+            var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
+
+            return new PhonesPageFront()
+            {
+                TotalPhones = phones.Count,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                Page = page,
+                Phones = phones.ToPagedList(page, pageSize).ToList()
+            };
         }
 
         /// <summary>

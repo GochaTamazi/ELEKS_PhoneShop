@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using Application.DTO.PhoneSpecificationsAPI.Search;
 using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
-using Models.Entities;
 
 namespace PhoneShop.Controllers
 {
@@ -30,9 +28,8 @@ namespace PhoneShop.Controllers
             _adminPhones = adminPhones;
         }
 
-        [HttpGet("index")]
-        [HttpGet("")]
-        public async Task<ActionResult> Index(CancellationToken token)
+        [HttpGet("index"), HttpGet("")]
+        public ActionResult Index(CancellationToken token)
         {
             return View();
         }
@@ -45,9 +42,11 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("listPhones")]
-        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync([FromQuery] string brandSlug,
+        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync(
+            [FromQuery] string brandSlug,
             [FromQuery] int page,
-            CancellationToken token)
+            CancellationToken token
+        )
         {
             var listPhonesRes = new ListPhonesFront()
             {
@@ -59,30 +58,41 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("getPhonesInStore")]
-        public async Task<ActionResult<List<Phone>>> GetPhonesInStoreAsync(CancellationToken token)
+        public async Task<ActionResult<PhonesPageFront>> GetPhonesInStoreAsync(
+            CancellationToken token,
+            [FromQuery] int page = 1
+        )
         {
-            var phones = await _adminPhones.GetPhonesInStoreAsync(token);
-            return View(phones);
+            const int pageSize = 5;
+            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(page, pageSize, token);
+            return View(phonesPageFront);
         }
 
         [HttpGet("phoneSpecifications")]
-        public async Task<ActionResult<PhoneSpecificationsDto>> PhoneSpecificationsAsync([FromQuery] string phoneSlug,
-            CancellationToken token)
+        public async Task<ActionResult<PhoneSpecificationsDto>> PhoneSpecificationsAsync(
+            [FromQuery] string phoneSlug,
+            CancellationToken token
+        )
         {
             var phoneSpecFront = await _adminPhones.GetPhone(phoneSlug, token);
             return View(phoneSpecFront);
         }
 
         [HttpPost("phoneInsertOrUpdate")]
-        public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync([FromForm] PhoneSpecFront phoneSpecFront,
-            CancellationToken token)
+        public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync(
+            [FromForm] PhoneSpecFront phoneSpecFront,
+            CancellationToken token
+        )
         {
             await _adminPhones.PhoneInsertOrUpdateAsync(phoneSpecFront, token);
             return Ok("PhoneInsertOrUpdateAsync Done");
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<SearchDto>> SearchAsync([FromQuery] string query, CancellationToken token)
+        public async Task<ActionResult<SearchDto>> SearchAsync(
+            [FromQuery] string query,
+            CancellationToken token
+        )
         {
             var search = await _phoneSpecificationServiceApi.SearchAsync(query, token);
             return View(search);
