@@ -10,7 +10,7 @@ namespace Application.Interfaces
     {
         Task SubscribePriceAsync(PriceSubscriberFront priceSubscriberFront, CancellationToken token);
         Task SubscribeStockAsync(StockSubscriberFront stockSubscriberFront, CancellationToken token);
-        Task<List<Phone>> GetPhonesAsync(PhonesFilter filter, CancellationToken token);
+        Task<PhonesPageFront> GetPhonesAsync(PhonesFilter filter, int page, int pageSize, CancellationToken token);
         Task<PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token);
     }
 }

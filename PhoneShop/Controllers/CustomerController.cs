@@ -17,20 +17,21 @@ namespace PhoneShop.Controllers
             _customerPhones = customerPhones;
         }
 
-        [HttpGet("index")]
-        [HttpGet("")]
+        [HttpGet("index"), HttpGet("")]
         public ActionResult IndexAsync(CancellationToken token)
         {
             return View();
         }
 
         [HttpGet("showAllPhones")]
-        public async Task<ActionResult> ShowPhonesAsync(CancellationToken token,
+        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
             [FromQuery] string brandName = "",
             [FromQuery] string phoneName = "",
             [FromQuery] uint priceMin = 0,
             [FromQuery] uint priceMax = 10_000,
-            [FromQuery] bool inStock = true)
+            [FromQuery] bool inStock = true,
+            [FromQuery] int page = 1
+        )
         {
             var filter = new PhonesFilter()
             {
@@ -41,29 +42,39 @@ namespace PhoneShop.Controllers
                 InStock = inStock
             };
 
-            var phones = await _customerPhones.GetPhonesAsync(filter, token);
+            const int pageSize = 3;
 
-            return View(phones);
+            var phonesPageFront = await _customerPhones.GetPhonesAsync(filter, page, pageSize, token);
+            phonesPageFront.Filter = filter;
+
+            return View(phonesPageFront);
         }
 
         [HttpGet("showPhone")]
-        public async Task<ActionResult> ShowPhoneAsync([FromQuery] string phoneSlug, CancellationToken token)
+        public async Task<ActionResult> ShowPhoneAsync(
+            [FromQuery] string phoneSlug,
+            CancellationToken token
+        )
         {
             var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
             return View(phone);
         }
 
         [HttpPost("subscribePrice")]
-        public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberFront priceSubscriber,
-            CancellationToken token)
+        public async Task<ActionResult> SubscribePriceAsync(
+            [FromForm] PriceSubscriberFront priceSubscriber,
+            CancellationToken token
+        )
         {
             await _customerPhones.SubscribePriceAsync(priceSubscriber, token);
             return Ok("SubscribePriceAsync ok");
         }
 
         [HttpPost("subscribeStock")]
-        public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberFront stockSubscriber,
-            CancellationToken token)
+        public async Task<ActionResult> SubscribeStockAsync(
+            [FromForm] StockSubscriberFront stockSubscriber,
+            CancellationToken token
+        )
         {
             await _customerPhones.SubscribeStockAsync(stockSubscriber, token);
             return Ok("SubscribeStockAsync ok");

@@ -10,5 +10,6 @@ namespace Application.DTO.Frontend
         public int PageSize { set; get; } = 0;
         public int Page { set; get; } = 0;
         public List<Phone> Phones { set; get; } = new List<Phone>();
+        public PhonesFilter Filter { set; get; } = new PhonesFilter();
     }
 }

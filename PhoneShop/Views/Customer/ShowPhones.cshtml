@@ -1,9 +1,13 @@
-@model System.Collections.Generic.List<Models.Entities.Phone>
+@model Application.DTO.Frontend.PhonesPageFront
 
 @{
     ViewBag.Title = "Customer Phones";
     Layout = "_Layout";
-    var inStock = true;
+
+    var filter = @Model.Filter;
+    var phones = @Model.Phones;
+
+    var InStock = filter.InStock;
 }
 
 <h4>
@@ -13,26 +17,50 @@
 <form asp-controller="Customer" asp-action="ShowPhones" method="get">
     <p>
         <label>BrandName: </label>
-        <input type="text" placeholder="PhoneName" name="brandName"/>
+        <input
+            type="text"
+            placeholder="BrandName"
+            name="brandName"
+            value="@filter.BrandName"/>
     </p>
     <p>
         <label>PhoneName: </label>
-        <input type="text" placeholder="PhoneName" name="phoneName"/>
+        <input
+            type="text"
+            placeholder="PhoneName"
+            name="phoneName"
+            value="@filter.PhoneName"/>
     </p>
     <p>
         <label>PriceMin: </label>
-        <input type="number" min="0" placeholder="PriceMin" name="priceMin"/>
+        <input
+            type="number"
+            min="0"
+            placeholder="PriceMin"
+            name="priceMin"
+            value="@filter.PriceMin"/>
     </p>
     <p>
         <label>PriceMax: </label>
-        <input type="number" min="0" placeholder="PriceMax" name="priceMax"/>
+        <input
+            type="number"
+            min="0"
+            placeholder="PriceMax"
+            name="priceMax"
+            value="@filter.PriceMax"/>
     </p>
     <p>
         <label>InStock: </label>
-        <input asp-for="@inStock" type="checkbox" name="inStock"/>
+        <input
+            asp-for="@InStock"
+            type="checkbox"
+            name="InStock"/>
+
     </p>
     <p>
-        <input type="submit" value="Submit"/>
+        <input
+            type="submit"
+            value="Submit"/>
     </p>
 </form>
 
@@ -40,8 +68,26 @@
 
 <h2>Customer Phonese</h2>
 
+<h4>Total Phones Count: @Model.TotalPhones</h4>
+<h4>Page size: @Model.PageSize</h4>
+<h4>Page: @Model.Page / @Model.TotalPages</h4>
+
+@for (var i = 1; i <= @Model.TotalPages; i++)
+{
+    <a asp-controller="Customer"
+       asp-action="ShowPhones"
+       asp-route-brandName="@filter.BrandName"
+       asp-route-phoneName="@filter.PhoneName"
+       asp-route-priceMin="@filter.PriceMin"
+       asp-route-priceMax="@filter.PriceMax"
+       asp-route-inStock="@InStock"
+       asp-route-page="@i">
+        @i |
+    </a>
+}
+
 <ul>
-    @foreach (var phone in @Model)
+    @foreach (var phone in phones)
     {
         <li
             @if (phone.Stock <= 0)

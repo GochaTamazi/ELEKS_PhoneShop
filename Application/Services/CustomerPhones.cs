@@ -8,6 +8,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Linq;
+using PagedList;
 
 namespace Application.Services
 {
@@ -75,7 +77,12 @@ namespace Application.Services
         /// <summary>
         /// Get phones by specified filter. 
         /// </summary>
-        public async Task<List<Phone>> GetPhonesAsync(PhonesFilter filter, CancellationToken token)
+        public async Task<PhonesPageFront> GetPhonesAsync(
+            PhonesFilter filter,
+            int page,
+            int pageSize,
+            CancellationToken token
+        )
         {
             Expression<Func<Phone, bool>> condition = (phone) =>
                 EF.Functions.Like(phone.BrandSlug, $"%{filter.BrandName}%") &&
@@ -84,7 +91,18 @@ namespace Application.Services
                 ((!filter.InStock) || 1 <= phone.Stock) &&
                 phone.Hided == false;
 
-            return await _phonesRepository.GetAllAsync(condition, token);
+            var phones = await _phonesRepository.GetAllAsync(condition, token);
+
+            var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
+
+            return new PhonesPageFront()
+            {
+                TotalPhones = phones.Count,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                Page = page,
+                Phones = phones.ToPagedList(page, pageSize).ToList()
+            };
         }
 
         /// <summary>
