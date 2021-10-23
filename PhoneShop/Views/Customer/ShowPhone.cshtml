@@ -52,13 +52,13 @@
 
 @foreach (var image in @phone.Images)
 {
-    <img src="@image" alt="x" style="width: 200px"/>
+    <img class="phoneImage" src="@image" alt="x"/>
 }
 <br/>
 
 @if (@phone.Thumbnail != string.Empty)
 {
-    <img src="@phone.Thumbnail" alt="x"/>
+    <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
 }
 
 <br/>

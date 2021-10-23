@@ -1,4 +1,4 @@
-@model Application.DTO.Frontend.PhonesPageFront
+@model Application.DTO.Frontend.PhonesPageFront;
 
 @{
     ViewBag.Title = "Customer Phones";
@@ -10,67 +10,65 @@
     var InStock = filter.InStock;
 }
 
-<h4>
-    Filter
-</h4>
-
+<div>
+    <b>Filter</b>
+</div>
 <form asp-controller="Customer" asp-action="ShowPhones" method="get">
-    <p>
-        <label>BrandName: </label>
+    <div>
+        <label class="filterLabel">BrandName: </label>
         <input
             type="text"
             placeholder="BrandName"
             name="brandName"
             value="@filter.BrandName"/>
-    </p>
-    <p>
-        <label>PhoneName: </label>
+    </div>
+    <div>
+        <label class="filterLabel">PhoneName: </label>
         <input
             type="text"
             placeholder="PhoneName"
             name="phoneName"
             value="@filter.PhoneName"/>
-    </p>
-    <p>
-        <label>PriceMin: </label>
+    </div>
+    <div>
+        <label class="filterLabel">PriceMin: </label>
         <input
             type="number"
             min="0"
             placeholder="PriceMin"
             name="priceMin"
             value="@filter.PriceMin"/>
-    </p>
-    <p>
-        <label>PriceMax: </label>
+    </div>
+    <div>
+        <label class="filterLabel">PriceMax: </label>
         <input
             type="number"
             min="0"
             placeholder="PriceMax"
             name="priceMax"
             value="@filter.PriceMax"/>
-    </p>
-    <p>
-        <label>InStock: </label>
+    </div>
+    <div>
+        <label class="filterLabel">InStock: </label>
         <input
             asp-for="@InStock"
             type="checkbox"
             name="InStock"/>
 
-    </p>
-    <p>
+    </div>
+    <div>
         <input
             type="submit"
             value="Submit"/>
-    </p>
+    </div>
 </form>
 
 <hr/>
 
-<h2>Customer Phonese</h2>
-
-<h4>Total Phones Count: @Model.TotalPhones</h4>
-<h4>Page size: @Model.PageSize</h4>
-<h4>Page: @Model.Page / @Model.TotalPages</h4>
+<div>Customer Phonese</div>
+<div>Total Phones Count: @Model.TotalPhones</div>
+<div>Page size: @Model.PageSize</div>
+<div>Page: @Model.Page / @Model.TotalPages</div>
 
 @for (var i = 1; i <= @Model.TotalPages; i++)
 {
@@ -86,24 +84,41 @@
     </a>
 }
 
-<ul>
+<ul class="pUl">
     @foreach (var phone in phones)
     {
-        <li
-            @if (phone.Stock <= 0)
-            {
-                <text>style = "background-color: lightsalmon"</text>
-            }
-        >
-            <a asp-controller="Customer"
+        var phoneClass = "";
+        if (phone.Hided == true)
+        {
+            phoneClass = "pHided";
+        }
+        else if (phone.Stock <= 0)
+        {
+            phoneClass = "pStockEmpty";
+        }
+
+        <li class="pLi @phoneClass">
+            <a class="pUrl"
+               asp-controller="Customer"
                asp-action="ShowPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
-                <img src="@phone.Thumbnail" alt="x"/>
-                Name: @phone.PhoneName |
-                Price: @phone.Price |
-                Stock: @phone.Stock |
-                Hided: @phone.Hided |
-                BrandSlug: @phone.BrandSlug
+                <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
+                <div class="pRow">
+                    <span class="pColKey">BrandSlug:</span>
+                    <span class="pColVal">@phone.BrandSlug</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">PhoneName:</span>
+                    <span class="pColVal">@phone.PhoneName</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Price:</span>
+                    <span class="pColVal">@phone.Price</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Stock:</span>
+                    <span class="pColVal">@phone.Stock</span>
+                </div>
             </a>
         </li>
     }

@@ -138,6 +138,11 @@ namespace Application.Services
             var phones = await _phonesRepository.GetAllAsync(token);
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
             return new PhonesPageFront()
             {
                 TotalPhones = phones.Count,

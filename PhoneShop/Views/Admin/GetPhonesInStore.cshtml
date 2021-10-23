@@ -6,11 +6,10 @@
     var phones = @Model.Phones;
 }
 
-<h2>Get Phones In Store</h2>
-
-<h4>Total Phones Count: @Model.TotalPhones</h4>
-<h4>Page size: @Model.PageSize</h4>
-<h4>Page: @Model.Page / @Model.TotalPages</h4>
+<div>Get Phones In Store</div>
+<div>Total Phones Count: @Model.TotalPhones</div>
+<div>Page size: @Model.PageSize</div>
+<div>Page: @Model.Page / @Model.TotalPages</div>
 
 @for (var i = 1; i <= @Model.TotalPages; i++)
 {
@@ -21,23 +20,41 @@
     </a>
 }
 
-<ul>
+<ul class="pUl">
     @foreach (var phone in phones)
     {
-        <li
-            @if (phone.Hided == true)
-            {
-                <text>style = "background-color: lightgray"</text>
-            }
-        >
-            <a asp-controller="Admin"
+        var phoneClass = "";
+        if (phone.Hided == true)
+        {
+            phoneClass = "pHided";
+        }
+        else if (phone.Stock <= 0)
+        {
+            phoneClass = "pStockEmpty";
+        }
+
+        <li class="pLi @phoneClass">
+            <a class="pUrl"
+               asp-controller="Admin"
                asp-action="PhoneSpecifications"
                asp-route-phoneSlug="@phone.PhoneSlug">
-                <img src="@phone.Thumbnail" alt="x"/>
-                Name: @phone.PhoneName |
-                Price: @phone.Price |
-                Stock: @phone.Stock |
-                Hided: @phone.Hided
+                <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
+                <div class="pRow">
+                    <span class="pColKey">BrandSlug:</span>
+                    <span class="pColVal">@phone.BrandSlug</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">PhoneName:</span>
+                    <span class="pColVal">@phone.PhoneName</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Price:</span>
+                    <span class="pColVal">@phone.Price</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Stock:</span>
+                    <span class="pColVal">@phone.Stock</span>
+                </div>
             </a>
         </li>
     }

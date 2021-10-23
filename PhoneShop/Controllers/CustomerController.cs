@@ -42,11 +42,9 @@ namespace PhoneShop.Controllers
                 InStock = inStock
             };
 
-            const int pageSize = 3;
-
+            const int pageSize = 10;
             var phonesPageFront = await _customerPhones.GetPhonesAsync(filter, page, pageSize, token);
             phonesPageFront.Filter = filter;
-
             return View(phonesPageFront);
         }
 

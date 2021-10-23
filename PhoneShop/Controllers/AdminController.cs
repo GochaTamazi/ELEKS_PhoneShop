@@ -63,7 +63,7 @@ namespace PhoneShop.Controllers
             [FromQuery] int page = 1
         )
         {
-            const int pageSize = 5;
+            const int pageSize = 10;
             var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(page, pageSize, token);
             return View(phonesPageFront);
         }

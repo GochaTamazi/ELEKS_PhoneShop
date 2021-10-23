@@ -95,6 +95,11 @@ namespace Application.Services
 
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
             return new PhonesPageFront()
             {
                 TotalPhones = phones.Count,
