@@ -20,20 +20,38 @@ namespace DataAccess.Repositories
             _masterContext = dbContext;
         }
 
-        public async Task<Phone> GetOneAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token)
-        {
-            return await _masterContext.Phones.Where(predicate).FirstOrDefaultAsync(token);
-        }
-
-        public async Task<List<Phone>> GetAllAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token)
-        {
-            return await _masterContext.Phones.Where(predicate).ToListAsync(token);
-        }
-
         public async Task<List<Phone>> GetAllAsync(CancellationToken token)
         {
             return await _masterContext.Phones.ToListAsync(token);
         }
+
+        public async Task<List<Phone>> GetAllAsync(
+            Expression<Func<Phone, bool>> condition,
+            CancellationToken token)
+        {
+            return await _masterContext.Phones
+                .Where(condition)
+                .ToListAsync(token);
+        }
+
+        public async Task<List<Phone>> GetAllAsync<TKey>(
+            Expression<Func<Phone, bool>> condition,
+            Expression<Func<Phone, TKey>> orderBy,
+            CancellationToken token)
+        {
+            return await _masterContext.Phones
+                .Where(condition)
+                .OrderBy(orderBy)
+                .ToListAsync(token);
+        }
+
+        public async Task<Phone> GetOneAsync(
+            Expression<Func<Phone, bool>> predicate,
+            CancellationToken token)
+        {
+            return await _masterContext.Phones.Where(predicate).FirstOrDefaultAsync(token);
+        }
+
 
         public async Task<Phone> GetPhoneBySlugAsync(string phoneSlug, CancellationToken token)
         {

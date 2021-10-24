@@ -30,6 +30,7 @@ namespace PhoneShop.Controllers
             [FromQuery] uint priceMin = 0,
             [FromQuery] uint priceMax = 10_000,
             [FromQuery] bool inStock = true,
+            [FromQuery] string orderBy = "PhoneName",
             [FromQuery] int page = 1
         )
         {
@@ -39,7 +40,8 @@ namespace PhoneShop.Controllers
                 PhoneName = phoneName,
                 PriceMin = priceMin,
                 PriceMax = priceMax,
-                InStock = inStock
+                InStock = inStock,
+                OrderBy = orderBy
             };
 
             const int pageSize = 10;

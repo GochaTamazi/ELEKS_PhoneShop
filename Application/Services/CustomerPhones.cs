@@ -91,7 +91,30 @@ namespace Application.Services
                 ((!filter.InStock) || 1 <= phone.Stock) &&
                 phone.Hided == false;
 
-            var phones = await _phonesRepository.GetAllAsync(condition, token);
+            Expression<Func<Phone, object>> orderBy;
+            switch (filter.OrderBy)
+            {
+                default:
+                    orderBy = (phone) => phone.PhoneName;
+                    break;
+                case "PhoneName":
+                    orderBy = (phone) => phone.PhoneName;
+                    break;
+                case "BrandSlug":
+                    orderBy = (phone) => phone.BrandSlug;
+                    break;
+                case "Price":
+                    orderBy = (phone) => phone.Price;
+                    break;
+                case "Stock":
+                    orderBy = (phone) => phone.Stock;
+                    break;
+            }
+
+            var phones = await _phonesRepository.GetAllAsync(
+                condition,
+                orderBy,
+                token);
 
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 

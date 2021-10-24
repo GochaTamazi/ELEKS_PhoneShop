@@ -7,5 +7,6 @@ namespace Application.DTO.Frontend
         public uint PriceMin { get; set; } = 0;
         public uint PriceMax { get; set; } = 10_000;
         public bool InStock { get; set; } = true;
+        public string OrderBy { get; set; } = "PhoneName";
     }
 }

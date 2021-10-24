@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Authentication
 @model Application.DTO.Frontend.PhonesPageFront;
 
 @{
@@ -57,6 +58,26 @@
 
     </div>
     <div>
+        <label class="filterLabel">OrderBy: </label>
+        @{
+            var list = new List<SelectListItem>
+            {
+                new() {Value = "BrandSlug", Text = "BrandSlug"},
+                new() {Value = "PhoneName", Text = "PhoneName"},
+                new() {Value = "Price", Text = "Price"},
+                new() {Value = "Stock", Text = "Stock"}
+            };
+            var orderBy = new SelectList(list,
+                "Value",
+                "Text",
+                filter.OrderBy);
+        }
+        @Html.DropDownList("orderBy",
+            selectList: orderBy,
+            htmlAttributes: new {name = "orderBy"}
+            )
+    </div>
+    <div>
         <input
             type="submit"
             value="Submit"/>
@@ -79,6 +100,7 @@
        asp-route-priceMin="@filter.PriceMin"
        asp-route-priceMax="@filter.PriceMax"
        asp-route-inStock="@InStock"
+       asp-route-orderBy="@filter.OrderBy"
        asp-route-page="@i">
         @i |
     </a>
