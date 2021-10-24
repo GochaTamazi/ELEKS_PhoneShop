@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using PagedList;
 
 namespace Application.Services
@@ -133,9 +135,43 @@ namespace Application.Services
         /// <summary>
         /// Get all phones that are added to the store. Including hidden.
         /// </summary>
-        public async Task<PhonesPageFront> GetPhonesInStoreAsync(int page, int pageSize, CancellationToken token)
+        public async Task<PhonesPageFront> GetPhonesInStoreAsync(
+            PhonesFilter filter,
+            int page,
+            int pageSize,
+            CancellationToken token)
         {
-            var phones = await _phonesRepository.GetAllAsync(token);
+            Expression<Func<Phone, bool>> condition = (phone) =>
+                EF.Functions.Like(phone.BrandSlug, $"%{filter.BrandName}%") &&
+                EF.Functions.Like(phone.PhoneName, $"%{filter.PhoneName}%") &&
+                filter.PriceMin <= phone.Price && phone.Price <= filter.PriceMax &&
+                ((!filter.InStock) || 1 <= phone.Stock);
+
+            Expression<Func<Phone, object>> orderBy;
+            switch (filter.OrderBy)
+            {
+                default:
+                    orderBy = (phone) => phone.PhoneName;
+                    break;
+                case "PhoneName":
+                    orderBy = (phone) => phone.PhoneName;
+                    break;
+                case "BrandSlug":
+                    orderBy = (phone) => phone.BrandSlug;
+                    break;
+                case "Price":
+                    orderBy = (phone) => phone.Price;
+                    break;
+                case "Stock":
+                    orderBy = (phone) => phone.Stock;
+                    break;
+            }
+
+            var phones = await _phonesRepository.GetAllAsync(
+                condition,
+                orderBy,
+                token);
+
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 
             if (page <= 0)
@@ -152,6 +188,7 @@ namespace Application.Services
                 Phones = phones.ToPagedList(page, pageSize).ToList()
             };
         }
+
 
         /// <summary>
         /// Get information about the phone from the remote api. Or from a local database if one already exists in the store.

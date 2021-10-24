@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,26 +23,12 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("showAllPhones")]
-        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
-            [FromQuery] string brandName = "",
-            [FromQuery] string phoneName = "",
-            [FromQuery] uint priceMin = 0,
-            [FromQuery] uint priceMax = 10_000,
-            [FromQuery] bool inStock = true,
-            [FromQuery] string orderBy = "PhoneName",
+        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(
+            CancellationToken token,
+            [FromQuery] PhonesFilter filter,
             [FromQuery] int page = 1
         )
         {
-            var filter = new PhonesFilter()
-            {
-                BrandName = brandName,
-                PhoneName = phoneName,
-                PriceMin = priceMin,
-                PriceMax = priceMax,
-                InStock = inStock,
-                OrderBy = orderBy
-            };
-
             const int pageSize = 10;
             var phonesPageFront = await _customerPhones.GetPhonesAsync(filter, page, pageSize, token);
             phonesPageFront.Filter = filter;

@@ -57,14 +57,16 @@ namespace PhoneShop.Controllers
             return View(listPhonesRes);
         }
 
-        [HttpGet("getPhonesInStore")]
-        public async Task<ActionResult<PhonesPageFront>> GetPhonesInStoreAsync(
+        [HttpGet("showAllPhones")]
+        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(
             CancellationToken token,
+            [FromQuery] PhonesFilter filter,
             [FromQuery] int page = 1
         )
         {
             const int pageSize = 10;
-            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(page, pageSize, token);
+            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(filter, page, pageSize, token);
+            phonesPageFront.Filter = filter;
             return View(phonesPageFront);
         }
 
