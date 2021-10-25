@@ -1,6 +1,5 @@
 using Application.DTO.Frontend;
-using Models.Entities;
-using System.Collections.Generic;
+using Database.Models;
 using System.Threading.Tasks;
 using System.Threading;
 

@@ -1,8 +1,8 @@
 ﻿#nullable disable
 
-namespace Models.Entities
+namespace Database.Models
 {
-    public partial class PriceSubscriber
+    public partial class StockSubscriber
     {
         public int Id { get; set; }
         public string BrandSlug { get; set; }

@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace Models.Entities
+namespace Database.Models
 {
     public partial class Brand
     {

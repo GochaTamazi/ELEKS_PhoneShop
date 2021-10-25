@@ -1,11 +1,10 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
+using Database.Models;
 
 namespace DataAccess.Repositories
 {

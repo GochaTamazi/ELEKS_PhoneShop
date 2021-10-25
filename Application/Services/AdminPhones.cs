@@ -1,8 +1,7 @@
 using Application.DTO.Frontend;
 using Application.Interfaces;
 using DataAccess.Interfaces;
-using Models.Entities;
-using System.Collections.Generic;
+using Database.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;

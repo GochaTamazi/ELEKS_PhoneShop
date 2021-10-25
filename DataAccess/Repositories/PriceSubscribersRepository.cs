@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Database;
-using Models.Entities;
+using Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 

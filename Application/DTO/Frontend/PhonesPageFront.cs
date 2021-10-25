@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Models.Entities;
+using Database.Models;
 
 namespace Application.DTO.Frontend
 {

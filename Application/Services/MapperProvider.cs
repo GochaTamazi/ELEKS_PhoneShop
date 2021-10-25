@@ -4,7 +4,7 @@ using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using Application.Interfaces;
 using AutoMapper;
-using Models.Entities;
+using Database.Models;
 using Newtonsoft.Json;
 
 namespace Application.Services

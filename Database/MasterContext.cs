@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models.Entities;
+using Brand = Database.Models.Brand;
+using Phone = Database.Models.Phone;
+using PriceSubscriber = Database.Models.PriceSubscriber;
+using StockSubscriber = Database.Models.StockSubscriber;
 
 #nullable disable
 namespace Database
