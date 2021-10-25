@@ -1,10 +1,9 @@
-using System;
 using Application.DTO.Options;
 using Application.Interfaces;
 using Application.Services;
 using DataAccess.Interfaces;
 using DataAccess.Repositories;
-using Database;
+using Database.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

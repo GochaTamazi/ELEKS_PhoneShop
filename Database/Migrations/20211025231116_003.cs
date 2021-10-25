@@ -2,7 +2,7 @@
 
 namespace Database.Migrations
 {
-    public partial class _0002 : Migration
+    public partial class _003 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -85,6 +85,30 @@ namespace Database.Migrations
                     table.PrimaryKey("StockSubscribers_pk", x => x.id)
                         .Annotation("SqlServer:Clustered", false);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    email = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
+                    password = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
+                    role = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Users_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "Users_email_uindex",
+                schema: "PhoneShop",
+                table: "Users",
+                column: "email",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -103,6 +127,10 @@ namespace Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "StockSubscribers",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
+                name: "Users",
                 schema: "PhoneShop");
         }
     }

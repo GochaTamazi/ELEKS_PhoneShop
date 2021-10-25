@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Brand = Database.Models.Brand;
-using Phone = Database.Models.Phone;
-using PriceSubscriber = Database.Models.PriceSubscriber;
-using StockSubscriber = Database.Models.StockSubscriber;
 
 #nullable disable
-namespace Database
+
+namespace Database.Models
 {
     public partial class MasterContext : DbContext
     {
@@ -22,6 +19,7 @@ namespace Database
         public virtual DbSet<Phone> Phones { get; set; }
         public virtual DbSet<PriceSubscriber> PriceSubscribers { get; set; }
         public virtual DbSet<StockSubscriber> StockSubscribers { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -163,6 +161,38 @@ namespace Database
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("phoneSlug");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("Users_pk")
+                    .IsClustered(false);
+
+                entity.ToTable("Users", "PhoneShop");
+
+                entity.HasIndex(e => e.Email, "Users_email_uindex")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("email");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("password");
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("role");
             });
 
             OnModelCreatingPartial(modelBuilder);
