@@ -4,6 +4,7 @@ using Application.Services;
 using DataAccess.Interfaces;
 using DataAccess.Repositories;
 using Database.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ namespace PhoneShop
             services.AddScoped<IPhonesRepository, PhonesRepository>();
             services.AddScoped<IPriceSubscribersRepository, PriceSubscribersRepository>();
             services.AddScoped<IStockSubscribersRepository, StockSubscribersRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
 
 
             // Application Services
@@ -60,6 +62,14 @@ namespace PhoneShop
                 var provider = serviceProvider.GetRequiredService<IMapperProvider>();
                 return provider.GetMapper();
             });
+
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => //CookieAuthenticationOptions
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
+                });
+
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             services.AddControllers();
@@ -83,6 +93,7 @@ namespace PhoneShop
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

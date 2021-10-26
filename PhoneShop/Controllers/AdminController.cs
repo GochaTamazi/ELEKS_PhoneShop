@@ -10,9 +10,11 @@ using Application.DTO.PhoneSpecificationsAPI.Search;
 using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PhoneShop.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("admin")]
     public class AdminController : Controller
     {

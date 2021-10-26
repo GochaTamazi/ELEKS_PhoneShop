@@ -25,6 +25,6 @@ namespace DataAccess.Interfaces
         Task InsertAsync(Phone phone, CancellationToken token);
         Task UpdateAsync(Phone phone, CancellationToken token);
         Task InsertOrUpdateAsync(Phone phone, CancellationToken token);
-        Task DetachEntityAsync(Phone phone, CancellationToken token);
+        void DetachEntityAsync(Phone phone, CancellationToken token);
     }
 }

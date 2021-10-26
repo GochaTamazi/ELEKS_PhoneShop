@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
 using System.Threading;
 using Application.DTO.Frontend;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace PhoneShop.Controllers
 {
-    [Route("home")]
-    [Route("")]
+    [AllowAnonymous]
+    [Route("home"), Route("")]
     public class HomeController : Controller
     {
         private ILogger<HomeController> _logger;
@@ -23,11 +25,27 @@ namespace PhoneShop.Controllers
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
-        [HttpGet("index")]
-        [HttpGet("")]
+        [HttpGet("index"), HttpGet("")]
         public ActionResult Index(CancellationToken token)
         {
             return View();
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
+                var role1 = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+                var asd = $"{User.Identity.Name} | " +
+                          $"{User.Identity.AuthenticationType} | " +
+                          $"{User.Identity.IsAuthenticated} | {role} {role1}";
+                return Content(asd);
+            }
+
+            return Content("не аутентифицирован");
         }
     }
 }

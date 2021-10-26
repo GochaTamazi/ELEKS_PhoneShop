@@ -3,9 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.DTO.Frontend;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PhoneShop.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [Route("customer")]
     public class CustomerController : Controller
     {
@@ -17,7 +19,7 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("index"), HttpGet("")]
-        public ActionResult IndexAsync(CancellationToken token)
+        public ActionResult Index(CancellationToken token)
         {
             return View();
         }

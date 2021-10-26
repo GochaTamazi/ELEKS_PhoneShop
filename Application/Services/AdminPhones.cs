@@ -88,7 +88,7 @@ namespace Application.Services
             }
             else
             {
-                await _phonesRepository.DetachEntityAsync(phoneModelFromDb, token);
+                _phonesRepository.DetachEntityAsync(phoneModelFromDb, token);
                 phoneModelFromApi.Id = phoneModelFromDb.Id;
                 await _phonesRepository.UpdateAsync(phoneModelFromApi, token);
                 if (phoneModelFromApi.Price != phoneModelFromDb.Price)

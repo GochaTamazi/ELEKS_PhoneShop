@@ -84,7 +84,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task DetachEntityAsync(Phone phone, CancellationToken token)
+        public void DetachEntityAsync(Phone phone, CancellationToken token)
         {
             _masterContext.Entry(phone).State = EntityState.Detached;
         }
