@@ -7,6 +7,7 @@ using Database.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,6 @@ namespace PhoneShop
         public void ConfigureServices(IServiceCollection services)
         {
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-
             // Options
             var configurationPhoneSpecificationsApi = Configuration.GetSection("PhoneSpecificationsApi");
             services.Configure<PhoneSpecificationsApiOptions>(configurationPhoneSpecificationsApi);
@@ -35,11 +35,9 @@ namespace PhoneShop
             var configurationSectionEmailService = Configuration.GetSection("Email");
             services.Configure<EmailOptions>(configurationSectionEmailService);
 
-
             // Database Context
             services.AddDbContext<MasterContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
-
 
             // DataAccess Repositories
             services.AddScoped<IBrandsRepository, BrandsRepository>();
@@ -49,7 +47,6 @@ namespace PhoneShop
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ICommentsRepository, CommentsRepository>();
 
-
             // Application Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IAdminPhones, AdminPhones>();
@@ -57,6 +54,7 @@ namespace PhoneShop
             services.AddSingleton<IEmail, Email>();
             services.AddSingleton<IMailNotification, MailNotification>();
 
+            // Mapper
             services.AddSingleton<IMapperProvider, MapperProvider>();
             services.AddSingleton(serviceProvider =>
             {
@@ -64,13 +62,14 @@ namespace PhoneShop
                 return provider.GetMapper();
             });
 
-
+            // Security
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
                 });
 
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             services.AddControllers();

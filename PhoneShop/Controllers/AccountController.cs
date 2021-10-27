@@ -11,6 +11,7 @@ using Database.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace PhoneShop.Controllers
 {
@@ -18,10 +19,15 @@ namespace PhoneShop.Controllers
     public class AccountController : Controller
     {
         private readonly IUsersRepository _usersRepository;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AccountController(IUsersRepository usersRepository)
+        public AccountController(
+            IUsersRepository usersRepository,
+            IPasswordHasher<User> passwordHasher
+        )
         {
             _usersRepository = usersRepository;
+            _passwordHasher = passwordHasher;
         }
 
         [AllowAnonymous]
@@ -41,14 +47,18 @@ namespace PhoneShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) =>
-                        user.Email == loginModel.Email &&
-                        user.Password == loginModel.Password,
-                    token);
+                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginModel.Email, token);
                 if (user != null)
                 {
-                    await AuthenticateAsync(user.Email, user.Role);
-                    return RedirectToAction("Index", "Home");
+                    var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user,
+                        user.Password,
+                        loginModel.Password);
+
+                    if (passwordVerificationResult == PasswordVerificationResult.Success)
+                    {
+                        await AuthenticateAsync(user.Email, user.Role);
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
                 ModelState.AddModelError("", "Incorrect login or password");
@@ -74,19 +84,20 @@ namespace PhoneShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginModel.Email
-                    , token);
+                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginModel.Email, token);
                 if (user == null)
                 {
-                    var userModel = new User
+                    var userNew = new User
                     {
                         Email = loginModel.Email,
                         Password = loginModel.Password,
                         Role = "Customer"
                     };
-                    await _usersRepository.InsertAsync(userModel, token);
+                    userNew.Password = _passwordHasher.HashPassword(userNew, loginModel.Password);
 
-                    await AuthenticateAsync(userModel.Email, userModel.Role);
+                    await _usersRepository.InsertAsync(userNew, token);
+
+                    await AuthenticateAsync(userNew.Email, userNew.Role);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -110,8 +121,8 @@ namespace PhoneShop.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRole)
+                new(ClaimsIdentity.DefaultNameClaimType, userName),
+                new(ClaimsIdentity.DefaultRoleClaimType, userRole)
             };
             var id = new ClaimsIdentity(
                 claims, "ApplicationCookie",
