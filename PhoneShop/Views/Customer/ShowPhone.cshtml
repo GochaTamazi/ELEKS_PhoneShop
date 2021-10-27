@@ -99,3 +99,59 @@
         }
     }
 }
+
+<hr/>
+
+
+<h3>
+    Comments
+</h3>
+
+@foreach (var comment in phone.Comments)
+{
+    <hr/>
+    <div>
+        Id: @comment.Id <br/>
+        PhoneSlug: @comment.PhoneSlug <br/>
+        UserId: @comment.UserId <br/>
+        Rating: @comment.Rating <br/>
+        CreateTime: @comment.CreateTime <br/>
+        Comments: @comment.Comments <br/>
+    </div>
+}
+
+
+<h4>
+    Post comment
+</h4>
+<form asp-controller="Customer" asp-action="PostComment" method="post">
+    <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
+    <div>
+        <div>
+            <b>Comments:</b>
+        </div>
+        <textarea class="customerComments" name="Comments" maxlength="3000"></textarea>
+    </div>
+    <div>
+        <label class="pRating">Rating: </label>
+        @{
+            var list = new List<SelectListItem>
+            {
+                new() {Value = "1", Text = "1"},
+                new() {Value = "2", Text = "2"},
+                new() {Value = "3", Text = "3"},
+                new() {Value = "4", Text = "4"},
+                new() {Value = "5", Text = "5"}
+            };
+            var orderBy = new SelectList(list,
+                "Value",
+                "Text",
+                5);
+        }
+        @Html.DropDownList("Rating",
+            selectList: orderBy,
+            htmlAttributes: new {name = "Rating"}
+            )
+    </div>
+    <input type="submit" value="Post Comment"/>
+</form>

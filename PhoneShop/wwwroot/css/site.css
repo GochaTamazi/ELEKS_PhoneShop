@@ -123,3 +123,8 @@ span.pColVal {
 .filterLabel {
     width: 95px;
 }
+
+textarea.customerComments {
+    width: 400px;
+    height: 250px;
+}

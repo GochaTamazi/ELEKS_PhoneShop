@@ -10,7 +10,8 @@ namespace Database.Models
         public int Id { get; set; }
         public string PhoneSlug { get; set; }
         public int? UserId { get; set; }
-        public string Comment1 { get; set; }
+        public string Comments { get; set; }
         public int? Rating { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
 }

@@ -19,13 +19,17 @@ namespace Application.Services
         private readonly IPhonesRepository _phonesRepository;
         private readonly IPriceSubscribersRepository _priceSubscribersRepository;
         private readonly IStockSubscribersRepository _stockSubscribersRepository;
+        private readonly IUsersRepository _usersRepository;
+        private readonly ICommentsRepository _commentsRepository;
 
         public CustomerPhones(
             IBrandsRepository brandsRepository,
             IMapperProvider mapperProvider,
             IPhonesRepository phonesRepository,
             IPriceSubscribersRepository priceSubscribersRepository,
-            IStockSubscribersRepository stockSubscribersRepository
+            IStockSubscribersRepository stockSubscribersRepository,
+            IUsersRepository usersRepository,
+            ICommentsRepository commentsRepository
         )
         {
             _brandsRepository = brandsRepository;
@@ -33,6 +37,44 @@ namespace Application.Services
             _phonesRepository = phonesRepository;
             _priceSubscribersRepository = priceSubscribersRepository;
             _stockSubscribersRepository = stockSubscribersRepository;
+            _usersRepository = usersRepository;
+            _commentsRepository = commentsRepository;
+        }
+
+        public async Task<bool> PostComment(CommentForm commentForm, CancellationToken token)
+        {
+            var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var commentNew = new Comment()
+            {
+                Comments = commentForm.Comments,
+                Rating = commentForm.Rating,
+                CreateTime = commentForm.CreateTime,
+                PhoneSlug = commentForm.PhoneSlug,
+                UserId = user.Id
+            };
+
+            var commentOld = await _commentsRepository.GetOneAsync(comment =>
+                    comment.UserId == commentNew.UserId &&
+                    comment.PhoneSlug == commentNew.PhoneSlug,
+                token);
+
+            if (commentOld == null)
+            {
+                await _commentsRepository.InsertAsync(commentNew, token);
+            }
+            else
+            {
+                commentNew.Id = commentOld.Id;
+                _commentsRepository.DetachEntity(commentOld);
+                await _commentsRepository.UpdateAsync(commentNew, token);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -142,8 +184,21 @@ namespace Application.Services
                 phone.Hided == false;
 
             var phoneModel = await _phonesRepository.GetOneAsync(condition, token);
+            if (phoneModel == null)
+            {
+                return new PhoneDto();
+            }
 
-            return phoneModel == null ? new PhoneDto() : _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
+            var phoneDto = _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
+
+            var comments = await _commentsRepository.GetAllAsync(comment =>
+                comment.PhoneSlug == phoneSlug, token);
+            if (comments != null)
+            {
+                phoneDto.Comments = comments;
+            }
+
+            return phoneDto;
         }
     }
 }

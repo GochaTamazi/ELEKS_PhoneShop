@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
+using Database.Models;
 
 namespace Application.DTO.Frontend
 {
@@ -19,5 +20,6 @@ namespace Application.DTO.Frontend
         public int? Price { get; set; }
         public int? Stock { get; set; }
         public bool? Hided { get; set; }
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

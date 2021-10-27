@@ -10,5 +10,9 @@ namespace Application.Interfaces
         Task SubscribeStockAsync(StockSubscriberFront stockSubscriberFront, CancellationToken token);
         Task<PhonesPageFront> GetPhonesAsync(PhonesFilter filter, int page, int pageSize, CancellationToken token);
         Task<PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token);
+        Task<bool> PostComment(CommentForm commentForm, CancellationToken token);
+
+
+        //Task<PhoneDto> GetCurrentUserId(CancellationToken token);
     }
 }

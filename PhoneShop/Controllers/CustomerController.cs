@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,6 +46,25 @@ namespace PhoneShop.Controllers
         {
             var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
             return View(phone);
+        }
+
+        [HttpPost("postComment")]
+        public async Task<ActionResult> PostComment(
+            [FromForm] CommentForm commentForm,
+            CancellationToken token
+        )
+        {
+            commentForm.UserMail = User.Identity.Name;
+            bool result = await _customerPhones.PostComment(commentForm, token);
+            if (result)
+            {
+                return RedirectToAction("ShowPhone", "Customer", new
+                {
+                    phoneSlug = commentForm.PhoneSlug
+                });
+            }
+
+            return BadRequest("Error PostComment");
         }
 
         [HttpPost("subscribePrice")]

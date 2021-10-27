@@ -47,6 +47,7 @@ namespace PhoneShop
             services.AddScoped<IPriceSubscribersRepository, PriceSubscribersRepository>();
             services.AddScoped<IStockSubscribersRepository, StockSubscribersRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<ICommentsRepository, CommentsRepository>();
 
 
             // Application Services
