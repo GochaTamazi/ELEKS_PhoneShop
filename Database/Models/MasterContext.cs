@@ -59,10 +59,12 @@ namespace Database.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Comment1)
+                entity.Property(e => e.Comments)
                     .HasMaxLength(3000)
                     .IsUnicode(false)
-                    .HasColumnName("comment");
+                    .HasColumnName("comments");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
 
                 entity.Property(e => e.PhoneSlug)
                     .HasMaxLength(200)

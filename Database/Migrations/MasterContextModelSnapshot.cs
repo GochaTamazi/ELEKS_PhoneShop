@@ -55,11 +55,15 @@ namespace Database.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment1")
+                    b.Property<string>("Comments")
                         .HasMaxLength(3000)
                         .IsUnicode(false)
                         .HasColumnType("varchar(3000)")
-                        .HasColumnName("comment");
+                        .HasColumnName("comments");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createTime");
 
                     b.Property<string>("PhoneSlug")
                         .HasMaxLength(200)

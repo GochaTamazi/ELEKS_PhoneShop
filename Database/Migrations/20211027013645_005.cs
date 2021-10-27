@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class _004 : Migration
+    public partial class _005 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -34,8 +35,9 @@ namespace Database.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     phoneSlug = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
                     userId = table.Column<int>(type: "int", nullable: true),
-                    comment = table.Column<string>(type: "varchar(3000)", unicode: false, maxLength: 3000, nullable: true),
-                    rating = table.Column<int>(type: "int", nullable: true)
+                    comments = table.Column<string>(type: "varchar(3000)", unicode: false, maxLength: 3000, nullable: true),
+                    rating = table.Column<int>(type: "int", nullable: true),
+                    createTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
