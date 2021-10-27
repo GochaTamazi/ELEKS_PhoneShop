@@ -5,11 +5,12 @@ using System.Collections.Generic;
 
 namespace Database.Models
 {
-    public partial class StockSubscriber
+    public partial class Comment
     {
         public int Id { get; set; }
-        public string BrandSlug { get; set; }
         public string PhoneSlug { get; set; }
-        public string Email { get; set; }
+        public int? UserId { get; set; }
+        public string Comment1 { get; set; }
+        public int? Rating { get; set; }
     }
 }

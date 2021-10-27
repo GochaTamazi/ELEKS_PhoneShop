@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -16,6 +18,7 @@ namespace Database.Models
         }
 
         public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Phone> Phones { get; set; }
         public virtual DbSet<PriceSubscriber> PriceSubscribers { get; set; }
         public virtual DbSet<StockSubscriber> StockSubscribers { get; set; }
@@ -44,6 +47,31 @@ namespace Database.Models
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("slug");
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("Comments_pk")
+                    .IsClustered(false);
+
+                entity.ToTable("Comments", "PhoneShop");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Comment1)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("comment");
+
+                entity.Property(e => e.PhoneSlug)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("phoneSlug");
+
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
             });
 
             modelBuilder.Entity<Phone>(entity =>

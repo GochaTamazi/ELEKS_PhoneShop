@@ -2,7 +2,7 @@
 
 namespace Database.Migrations
 {
-    public partial class _003 : Migration
+    public partial class _004 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,6 +22,24 @@ namespace Database.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("Brands_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    phoneSlug = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
+                    userId = table.Column<int>(type: "int", nullable: true),
+                    comment = table.Column<string>(type: "varchar(3000)", unicode: false, maxLength: 3000, nullable: true),
+                    rating = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Comments_pk", x => x.id)
                         .Annotation("SqlServer:Clustered", false);
                 });
 
@@ -115,6 +133,10 @@ namespace Database.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Brands",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
+                name: "Comments",
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(

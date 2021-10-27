@@ -47,6 +47,41 @@ namespace Database.Migrations
                     b.ToTable("Brands", "PhoneShop");
                 });
 
+            modelBuilder.Entity("Database.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment1")
+                        .HasMaxLength(3000)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(3000)")
+                        .HasColumnName("comment");
+
+                    b.Property<string>("PhoneSlug")
+                        .HasMaxLength(200)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("phoneSlug");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int")
+                        .HasColumnName("rating");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
+                        .HasName("Comments_pk")
+                        .IsClustered(false);
+
+                    b.ToTable("Comments", "PhoneShop");
+                });
+
             modelBuilder.Entity("Database.Models.Phone", b =>
                 {
                     b.Property<int>("Id")

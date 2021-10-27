@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(MasterContext))]
-    [Migration("20211025231116_003")]
-    partial class _003
+    [Migration("20211027012412_004")]
+    partial class _004
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,41 @@ namespace Database.Migrations
                         .IsClustered(false);
 
                     b.ToTable("Brands", "PhoneShop");
+                });
+
+            modelBuilder.Entity("Database.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment1")
+                        .HasMaxLength(3000)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(3000)")
+                        .HasColumnName("comment");
+
+                    b.Property<string>("PhoneSlug")
+                        .HasMaxLength(200)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("phoneSlug");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int")
+                        .HasColumnName("rating");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
+                        .HasName("Comments_pk")
+                        .IsClustered(false);
+
+                    b.ToTable("Comments", "PhoneShop");
                 });
 
             modelBuilder.Entity("Database.Models.Phone", b =>
