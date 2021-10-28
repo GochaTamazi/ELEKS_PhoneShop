@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Application.DTO.Frontend.Forms;
 using Database.Models;
 
 namespace Application.DTO.Frontend
@@ -10,6 +11,6 @@ namespace Application.DTO.Frontend
         public int PageSize { set; get; } = 0;
         public int Page { set; get; } = 0;
         public List<Phone> Phones { set; get; } = new List<Phone>();
-        public PhonesFilter Filter { set; get; } = new PhonesFilter();
+        public PhonesFilterForm FilterForm { set; get; } = new PhonesFilterForm();
     }
 }

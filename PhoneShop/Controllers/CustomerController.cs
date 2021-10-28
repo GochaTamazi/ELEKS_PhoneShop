@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.DTO.Frontend;
+using Application.DTO.Frontend.Forms;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
@@ -28,13 +29,13 @@ namespace PhoneShop.Controllers
         [HttpGet("showAllPhones")]
         public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(
             CancellationToken token,
-            [FromQuery] PhonesFilter filter,
+            [FromQuery] PhonesFilterForm filterForm,
             [FromQuery] int page = 1
         )
         {
             const int pageSize = 10;
-            var phonesPageFront = await _customerPhones.GetPhonesAsync(filter, page, pageSize, token);
-            phonesPageFront.Filter = filter;
+            var phonesPageFront = await _customerPhones.GetPhonesAsync(filterForm, page, pageSize, token);
+            phonesPageFront.FilterForm = filterForm;
             return View(phonesPageFront);
         }
 
@@ -69,7 +70,7 @@ namespace PhoneShop.Controllers
 
         [HttpPost("subscribePrice")]
         public async Task<ActionResult> SubscribePriceAsync(
-            [FromForm] PriceSubscriberFront priceSubscriber,
+            [FromForm] PriceSubscriberForm priceSubscriber,
             CancellationToken token
         )
         {
@@ -79,7 +80,7 @@ namespace PhoneShop.Controllers
 
         [HttpPost("subscribeStock")]
         public async Task<ActionResult> SubscribeStockAsync(
-            [FromForm] StockSubscriberFront stockSubscriber,
+            [FromForm] StockSubscriberForm stockSubscriber,
             CancellationToken token
         )
         {

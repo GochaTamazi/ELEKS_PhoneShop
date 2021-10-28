@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
@@ -16,19 +18,9 @@ namespace DataAccess.Repositories
             _masterContext = dbContext;
         }
 
-        public async Task<Brand> GetByIdAsync(int id, CancellationToken token)
+        public async Task<Brand> GetOneAsync(Expression<Func<Brand, bool>> predicate, CancellationToken token)
         {
-            return await _masterContext.Brands.Where(brand => brand.Id == id).FirstOrDefaultAsync(token);
-        }
-
-        public async Task<Brand> GetByNameAsync(string name, CancellationToken token)
-        {
-            return await _masterContext.Brands.Where(brand => brand.Name == name).FirstOrDefaultAsync(token);
-        }
-
-        public async Task<Brand> GetBySlugAsync(string slug, CancellationToken token)
-        {
-            return await _masterContext.Brands.Where(brand => brand.Slug == slug).FirstOrDefaultAsync(token);
+            return await _masterContext.Brands.Where(predicate).FirstOrDefaultAsync(token);
         }
 
         public async Task InsertAsync(Brand brand, CancellationToken token)

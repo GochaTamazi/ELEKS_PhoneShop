@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Linq;
+using Application.DTO.Frontend.Forms;
 using PagedList;
 
 namespace Application.Services
@@ -80,9 +81,9 @@ namespace Application.Services
         /// <summary>
         /// Subscription of a customer to change the price for a specific phone.
         /// </summary>
-        public async Task SubscribePriceAsync(PriceSubscriberFront priceSubscriberFront, CancellationToken token)
+        public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
         {
-            var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberFront);
+            var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberForm);
 
             var priceSubscriberModel = await _priceSubscribersRepository.GetOneAsync(sub =>
                     sub.BrandSlug == priceSubscriber.BrandSlug &&
@@ -99,9 +100,9 @@ namespace Application.Services
         /// <summary>
         /// Subscription of a customer to change the stock for a specific phone.
         /// </summary>
-        public async Task SubscribeStockAsync(StockSubscriberFront stockSubscriberFront, CancellationToken token)
+        public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
         {
-            var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberFront);
+            var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberForm);
 
             var stockSubscriberModel = await _stockSubscribersRepository.GetOneAsync(sub =>
                     sub.BrandSlug == stockSubscriber.BrandSlug &&
@@ -119,21 +120,21 @@ namespace Application.Services
         /// Get phones by specified filter. 
         /// </summary>
         public async Task<PhonesPageFront> GetPhonesAsync(
-            PhonesFilter filter,
+            PhonesFilterForm filterForm,
             int page,
             int pageSize,
             CancellationToken token
         )
         {
             Expression<Func<Phone, bool>> condition = (phone) =>
-                EF.Functions.Like(phone.BrandSlug, $"%{filter.BrandName}%") &&
-                EF.Functions.Like(phone.PhoneName, $"%{filter.PhoneName}%") &&
-                filter.PriceMin <= phone.Price && phone.Price <= filter.PriceMax &&
-                ((!filter.InStock) || 1 <= phone.Stock) &&
+                EF.Functions.Like(phone.BrandSlug, $"%{filterForm.BrandName}%") &&
+                EF.Functions.Like(phone.PhoneName, $"%{filterForm.PhoneName}%") &&
+                filterForm.PriceMin <= phone.Price && phone.Price <= filterForm.PriceMax &&
+                ((!filterForm.InStock) || 1 <= phone.Stock) &&
                 phone.Hided == false;
 
             Expression<Func<Phone, object>> orderBy;
-            switch (filter.OrderBy)
+            switch (filterForm.OrderBy)
             {
                 default:
                     orderBy = (phone) => phone.PhoneName;

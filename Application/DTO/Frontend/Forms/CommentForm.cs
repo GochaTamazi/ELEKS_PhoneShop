@@ -1,6 +1,6 @@
 using System;
 
-namespace Application.DTO.Frontend
+namespace Application.DTO.Frontend.Forms
 {
     public class CommentForm
     {

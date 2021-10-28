@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTO.Frontend
+namespace Application.DTO.Frontend.Forms
 {
-    public class LoginModel
+    public class LoginForm
     {
         [Required(ErrorMessage = "Email not specified")]
         public string Email { get; set; }

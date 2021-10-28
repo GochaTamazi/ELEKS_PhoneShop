@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading;
 using Application.DTO.Frontend;
+using Application.DTO.Frontend.Forms;
 using DataAccess.Interfaces;
 using Database.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -41,18 +42,18 @@ namespace PhoneShop.Controllers
         [HttpPost("login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginAsync(
-            [FromForm] LoginModel loginModel,
+            [FromForm] LoginForm loginForm,
             CancellationToken token
         )
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginModel.Email, token);
+                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginForm.Email, token);
                 if (user != null)
                 {
                     var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user,
                         user.Password,
-                        loginModel.Password);
+                        loginForm.Password);
 
                     if (passwordVerificationResult == PasswordVerificationResult.Success)
                     {
@@ -64,7 +65,7 @@ namespace PhoneShop.Controllers
                 ModelState.AddModelError("", "Incorrect login or password");
             }
 
-            return View(loginModel);
+            return View(loginForm);
         }
 
         [AllowAnonymous]
@@ -78,22 +79,22 @@ namespace PhoneShop.Controllers
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAsync(
-            [FromForm] RegisterModel loginModel,
+            [FromForm] RegisterForm registerForm,
             CancellationToken token
         )
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginModel.Email, token);
+                var user = await _usersRepository.GetOneAsync((user) => user.Email == registerForm.Email, token);
                 if (user == null)
                 {
                     var userNew = new User
                     {
-                        Email = loginModel.Email,
-                        Password = loginModel.Password,
+                        Email = registerForm.Email,
+                        Password = registerForm.Password,
                         Role = "Customer"
                     };
-                    userNew.Password = _passwordHasher.HashPassword(userNew, loginModel.Password);
+                    userNew.Password = _passwordHasher.HashPassword(userNew, registerForm.Password);
 
                     await _usersRepository.InsertAsync(userNew, token);
 
@@ -106,7 +107,7 @@ namespace PhoneShop.Controllers
                 }
             }
 
-            return View(loginModel);
+            return View(registerForm);
         }
 
         [Authorize]

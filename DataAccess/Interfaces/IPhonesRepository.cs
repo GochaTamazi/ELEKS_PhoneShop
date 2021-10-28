@@ -21,10 +21,8 @@ namespace DataAccess.Interfaces
             CancellationToken token);
 
         Task<Phone> GetOneAsync(Expression<Func<Phone, bool>> predicate, CancellationToken token);
-        Task<Phone> GetPhoneBySlugAsync(string slug, CancellationToken token);
         Task InsertAsync(Phone phone, CancellationToken token);
         Task UpdateAsync(Phone phone, CancellationToken token);
-        Task InsertOrUpdateAsync(Phone phone, CancellationToken token);
         void DetachEntityAsync(Phone phone, CancellationToken token);
     }
 }

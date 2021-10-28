@@ -2,6 +2,7 @@ using Application.DTO.Frontend;
 using Database.Models;
 using System.Threading.Tasks;
 using System.Threading;
+using Application.DTO.Frontend.Forms;
 
 namespace Application.Interfaces
 {
@@ -12,7 +13,7 @@ namespace Application.Interfaces
         Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token);
         Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token);
 
-        Task<PhonesPageFront> GetPhonesInStoreAsync(PhonesFilter filter, int page, int pageSize,
+        Task<PhonesPageFront> GetPhonesInStoreAsync(PhonesFilterForm filterForm, int page, int pageSize,
             CancellationToken token);
 
         Task<PhoneSpecFront> GetPhone(string phoneSlug, CancellationToken token);

@@ -51,12 +51,6 @@ namespace DataAccess.Repositories
             return await _masterContext.Phones.Where(predicate).FirstOrDefaultAsync(token);
         }
 
-
-        public async Task<Phone> GetPhoneBySlugAsync(string phoneSlug, CancellationToken token)
-        {
-            return await _masterContext.Phones.Where(phone => phone.PhoneSlug == phoneSlug).FirstOrDefaultAsync(token);
-        }
-
         public async Task InsertAsync(Phone phone, CancellationToken token)
         {
             await _masterContext.Phones.AddAsync(phone, token);
@@ -67,21 +61,6 @@ namespace DataAccess.Repositories
         {
             _masterContext.Update(phone);
             await _masterContext.SaveChangesAsync(token);
-        }
-
-        public async Task InsertOrUpdateAsync(Phone phone, CancellationToken token)
-        {
-            var phoneE = await GetPhoneBySlugAsync(phone.PhoneSlug, token);
-            if (phoneE == null)
-            {
-                await InsertAsync(phone, token);
-            }
-            else
-            {
-                _masterContext.Entry(phoneE).State = EntityState.Detached;
-                phone.Id = phoneE.Id;
-                await UpdateAsync(phone, token);
-            }
         }
 
         public void DetachEntityAsync(Phone phone, CancellationToken token)

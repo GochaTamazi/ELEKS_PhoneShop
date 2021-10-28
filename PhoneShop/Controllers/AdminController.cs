@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.DTO.Frontend;
+using Application.DTO.Frontend.Forms;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.ListPhones;
@@ -62,13 +63,13 @@ namespace PhoneShop.Controllers
         [HttpGet("showAllPhones")]
         public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(
             CancellationToken token,
-            [FromQuery] PhonesFilter filter,
+            [FromQuery] PhonesFilterForm filterForm,
             [FromQuery] int page = 1
         )
         {
             const int pageSize = 10;
-            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(filter, page, pageSize, token);
-            phonesPageFront.Filter = filter;
+            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(filterForm, page, pageSize, token);
+            phonesPageFront.FilterForm = filterForm;
             return View(phonesPageFront);
         }
 

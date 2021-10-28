@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Linq.Expressions;
+using Application.DTO.Frontend.Forms;
 using Microsoft.EntityFrameworkCore;
 using PagedList;
 
@@ -46,7 +47,8 @@ namespace Application.Services
         /// </summary>
         public async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
         {
-            var brandModelFromDb = await _brandsRepository.GetBySlugAsync(brandSlug, token);
+            var brandModelFromDb = await _brandsRepository.GetOneAsync(brand => brand.Slug == brandSlug, token);
+
             if (brandModelFromDb == null)
             {
                 var listBrandsDto = await _phoneSpecificationServiceApi.ListBrandsAsync(token);
@@ -81,7 +83,8 @@ namespace Application.Services
             phoneModelFromApi.Stock = phoneSpecFront.Stock;
             phoneModelFromApi.Hided = phoneSpecFront.Hided;
 
-            var phoneModelFromDb = await _phonesRepository.GetPhoneBySlugAsync(phoneModelFromApi.PhoneSlug, token);
+            var phoneModelFromDb = await _phonesRepository.GetOneAsync(phone =>
+                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, token);
             if (phoneModelFromDb == null)
             {
                 await _phonesRepository.InsertAsync(phoneModelFromApi, token);
@@ -135,19 +138,19 @@ namespace Application.Services
         /// Get all phones that are added to the store. Including hidden.
         /// </summary>
         public async Task<PhonesPageFront> GetPhonesInStoreAsync(
-            PhonesFilter filter,
+            PhonesFilterForm filterForm,
             int page,
             int pageSize,
             CancellationToken token)
         {
             Expression<Func<Phone, bool>> condition = (phone) =>
-                EF.Functions.Like(phone.BrandSlug, $"%{filter.BrandName}%") &&
-                EF.Functions.Like(phone.PhoneName, $"%{filter.PhoneName}%") &&
-                filter.PriceMin <= phone.Price && phone.Price <= filter.PriceMax &&
-                ((!filter.InStock) || 1 <= phone.Stock);
+                EF.Functions.Like(phone.BrandSlug, $"%{filterForm.BrandName}%") &&
+                EF.Functions.Like(phone.PhoneName, $"%{filterForm.PhoneName}%") &&
+                filterForm.PriceMin <= phone.Price && phone.Price <= filterForm.PriceMax &&
+                ((!filterForm.InStock) || 1 <= phone.Stock);
 
             Expression<Func<Phone, object>> orderBy;
-            switch (filter.OrderBy)
+            switch (filterForm.OrderBy)
             {
                 default:
                     orderBy = (phone) => phone.PhoneName;
@@ -206,7 +209,7 @@ namespace Application.Services
                 PhoneSlug = phoneSlug
             };
 
-            var phoneModel = await _phonesRepository.GetPhoneBySlugAsync(phoneSlug, token);
+            var phoneModel = await _phonesRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug, token);
             if (phoneModel != null)
             {
                 phoneSpecFront.InStore = true;

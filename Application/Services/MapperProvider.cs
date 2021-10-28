@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Application.DTO.Frontend;
+using Application.DTO.Frontend.Forms;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using Application.Interfaces;
@@ -66,13 +67,13 @@ namespace Application.Services
                                 JsonConvert.DeserializeObject<List<SpecificationDto>>(x.Specifications)))
                         .ForAllOtherMembers(m => m.Ignore());
 
-                    cfg.CreateMap<PriceSubscriberFront, PriceSubscriber>()
+                    cfg.CreateMap<PriceSubscriberForm, PriceSubscriber>()
                         .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
                         .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
                         .ForMember(x => x.Email, m => m.MapFrom(x => x.Email))
                         .ForAllOtherMembers(m => m.Ignore());
 
-                    cfg.CreateMap<StockSubscriberFront, StockSubscriber>()
+                    cfg.CreateMap<StockSubscriberForm, StockSubscriber>()
                         .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
                         .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
                         .ForMember(x => x.Email, m => m.MapFrom(x => x.Email))

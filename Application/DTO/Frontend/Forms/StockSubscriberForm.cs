@@ -1,6 +1,6 @@
-namespace Application.DTO.Frontend
+namespace Application.DTO.Frontend.Forms
 {
-    public class StockSubscriberFront
+    public class StockSubscriberForm
     {
         public string BrandSlug { get; set; }
         public string PhoneSlug { get; set; }

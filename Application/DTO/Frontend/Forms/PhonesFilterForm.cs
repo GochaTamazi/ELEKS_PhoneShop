@@ -1,6 +1,6 @@
-namespace Application.DTO.Frontend
+namespace Application.DTO.Frontend.Forms
 {
-    public class PhonesFilter
+    public class PhonesFilterForm
     {
         public string BrandName { get; set; } = string.Empty;
         public string PhoneName { get; set; } = string.Empty;
