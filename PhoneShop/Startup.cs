@@ -40,12 +40,12 @@ namespace PhoneShop
                 options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 
             // DataAccess Repositories
-            services.AddScoped<IBrandsRepository, BrandsRepository>();
-            services.AddScoped<IPhonesRepository, PhonesRepository>();
-            services.AddScoped<IPriceSubscribersRepository, PriceSubscribersRepository>();
-            services.AddScoped<IStockSubscribersRepository, StockSubscribersRepository>();
-            services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<ICommentsRepository, CommentsRepository>();
+            services.AddScoped<IGeneralRepository<Brand>, GeneralRepository<Brand>>();
+            services.AddScoped<IGeneralRepository<Comment>, GeneralRepository<Comment>>();
+            services.AddScoped<IGeneralRepository<Phone>, GeneralRepository<Phone>>();
+            services.AddScoped<IGeneralRepository<PriceSubscriber>, GeneralRepository<PriceSubscriber>>();
+            services.AddScoped<IGeneralRepository<StockSubscriber>, GeneralRepository<StockSubscriber>>();
+            services.AddScoped<IGeneralRepository<User>, GeneralRepository<User>>();
 
             // Application Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();

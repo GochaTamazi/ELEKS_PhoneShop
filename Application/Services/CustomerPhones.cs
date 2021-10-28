@@ -15,25 +15,23 @@ namespace Application.Services
 {
     public class CustomerPhones : ICustomerPhones
     {
-        private readonly IBrandsRepository _brandsRepository;
         private readonly IMapperProvider _mapperProvider;
-        private readonly IPhonesRepository _phonesRepository;
-        private readonly IPriceSubscribersRepository _priceSubscribersRepository;
-        private readonly IStockSubscribersRepository _stockSubscribersRepository;
-        private readonly IUsersRepository _usersRepository;
-        private readonly ICommentsRepository _commentsRepository;
+
+        private readonly IGeneralRepository<Phone> _phonesRepository;
+        private readonly IGeneralRepository<PriceSubscriber> _priceSubscribersRepository;
+        private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
+        private readonly IGeneralRepository<User> _usersRepository;
+        private readonly IGeneralRepository<Comment> _commentsRepository;
 
         public CustomerPhones(
-            IBrandsRepository brandsRepository,
             IMapperProvider mapperProvider,
-            IPhonesRepository phonesRepository,
-            IPriceSubscribersRepository priceSubscribersRepository,
-            IStockSubscribersRepository stockSubscribersRepository,
-            IUsersRepository usersRepository,
-            ICommentsRepository commentsRepository
+            IGeneralRepository<Phone> phonesRepository,
+            IGeneralRepository<PriceSubscriber> priceSubscribersRepository,
+            IGeneralRepository<StockSubscriber> stockSubscribersRepository,
+            IGeneralRepository<User> usersRepository,
+            IGeneralRepository<Comment> commentsRepository
         )
         {
-            _brandsRepository = brandsRepository;
             _mapperProvider = mapperProvider;
             _phonesRepository = phonesRepository;
             _priceSubscribersRepository = priceSubscribersRepository;

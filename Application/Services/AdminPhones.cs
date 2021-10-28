@@ -15,28 +15,29 @@ namespace Application.Services
 {
     public class AdminPhones : IAdminPhones
     {
-        private readonly IBrandsRepository _brandsRepository;
         private readonly IMailNotification _mailNotification;
         private readonly IMapperProvider _mapperProvider;
         private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
-        private readonly IPhonesRepository _phonesRepository;
-        private readonly IPriceSubscribersRepository _priceSubscribersRepository;
-        private readonly IStockSubscribersRepository _stockSubscribersRepository;
+
+        private readonly IGeneralRepository<Brand> _brandsRepository;
+        private readonly IGeneralRepository<Phone> _phonesRepository;
+        private readonly IGeneralRepository<PriceSubscriber> _priceSubscribersRepository;
+        private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
 
         public AdminPhones(
-            IBrandsRepository brandsRepository,
             IMailNotification mailNotification,
             IMapperProvider mapperProvider,
-            IPhoneSpecificationsApi phoneSpecification,
-            IPhonesRepository phonesRepository,
-            IPriceSubscribersRepository priceSubscribersRepository,
-            IStockSubscribersRepository stockSubscribersRepository
+            IPhoneSpecificationsApi phoneSpecificationServiceApi,
+            IGeneralRepository<Brand> brandsRepository,
+            IGeneralRepository<Phone> phonesRepository,
+            IGeneralRepository<PriceSubscriber> priceSubscribersRepository,
+            IGeneralRepository<StockSubscriber> stockSubscribersRepository
         )
         {
-            _brandsRepository = brandsRepository;
             _mailNotification = mailNotification;
             _mapperProvider = mapperProvider;
-            _phoneSpecificationServiceApi = phoneSpecification;
+            _phoneSpecificationServiceApi = phoneSpecificationServiceApi;
+            _brandsRepository = brandsRepository;
             _phonesRepository = phonesRepository;
             _priceSubscribersRepository = priceSubscribersRepository;
             _stockSubscribersRepository = stockSubscribersRepository;
@@ -91,7 +92,7 @@ namespace Application.Services
             }
             else
             {
-                _phonesRepository.DetachEntityAsync(phoneModelFromDb, token);
+                _phonesRepository.DetachEntity(phoneModelFromDb);
                 phoneModelFromApi.Id = phoneModelFromDb.Id;
                 await _phonesRepository.UpdateAsync(phoneModelFromApi, token);
                 if (phoneModelFromApi.Price != phoneModelFromDb.Price)

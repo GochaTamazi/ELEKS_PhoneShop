@@ -19,11 +19,11 @@ namespace PhoneShop.Controllers
     [Route("account")]
     public class AccountController : Controller
     {
-        private readonly IUsersRepository _usersRepository;
+        private readonly IGeneralRepository<User> _usersRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
 
         public AccountController(
-            IUsersRepository usersRepository,
+            IGeneralRepository<User> usersRepository,
             IPasswordHasher<User> passwordHasher
         )
         {
