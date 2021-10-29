@@ -34,18 +34,18 @@ namespace PhoneShop.Controllers
         [HttpGet("test")]
         public IActionResult Test()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity?.IsAuthenticated != true)
             {
-
-                var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
-                var role1 = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
-                var asd = $"{User.Identity.Name} | " +
-                          $"{User.Identity.AuthenticationType} | " +
-                          $"{User.Identity.IsAuthenticated} | {role} {role1}";
-                return Content(asd);
+                return Content("Not authenticated");
             }
 
-            return Content("не аутентифицирован");
+            var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
+            var role1 = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+            var str =
+                $"{User.Identity?.Name} | " +
+                $"{User.Identity?.AuthenticationType} | " +
+                $"{User.Identity?.IsAuthenticated} | {role} {role1}";
+            return Content(str);
         }
     }
 }

@@ -40,80 +40,6 @@ namespace Application.Services
             _commentsRepository = commentsRepository;
         }
 
-        public async Task<bool> PostComment(CommentForm commentForm, CancellationToken token)
-        {
-            var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
-            if (user == null)
-            {
-                return false;
-            }
-
-            var commentNew = new Comment()
-            {
-                Comments = commentForm.Comments,
-                Rating = commentForm.Rating,
-                CreateTime = commentForm.CreateTime,
-                PhoneSlug = commentForm.PhoneSlug,
-                UserId = user.Id
-            };
-
-            var commentOld = await _commentsRepository.GetOneAsync(comment =>
-                    comment.UserId == commentNew.UserId &&
-                    comment.PhoneSlug == commentNew.PhoneSlug,
-                token);
-
-            if (commentOld == null)
-            {
-                await _commentsRepository.InsertAsync(commentNew, token);
-            }
-            else
-            {
-                commentNew.Id = commentOld.Id;
-                _commentsRepository.DetachEntity(commentOld);
-                await _commentsRepository.UpdateAsync(commentNew, token);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Subscription of a customer to change the price for a specific phone.
-        /// </summary>
-        public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
-        {
-            var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberForm);
-
-            var priceSubscriberModel = await _priceSubscribersRepository.GetOneAsync(sub =>
-                    sub.BrandSlug == priceSubscriber.BrandSlug &&
-                    sub.PhoneSlug == priceSubscriber.PhoneSlug &&
-                    sub.Email == priceSubscriber.Email,
-                token);
-
-            if (priceSubscriberModel == null)
-            {
-                await _priceSubscribersRepository.InsertAsync(priceSubscriber, token);
-            }
-        }
-
-        /// <summary>
-        /// Subscription of a customer to change the stock for a specific phone.
-        /// </summary>
-        public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
-        {
-            var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberForm);
-
-            var stockSubscriberModel = await _stockSubscribersRepository.GetOneAsync(sub =>
-                    sub.BrandSlug == stockSubscriber.BrandSlug &&
-                    sub.PhoneSlug == stockSubscriber.PhoneSlug &&
-                    sub.Email == stockSubscriber.Email,
-                token);
-
-            if (stockSubscriberModel == null)
-            {
-                await _stockSubscribersRepository.InsertAsync(stockSubscriber, token);
-            }
-        }
-
         /// <summary>
         /// Get phones by specified filter. 
         /// </summary>
@@ -198,6 +124,80 @@ namespace Application.Services
             }
 
             return phoneDto;
+        }
+
+        /// <summary>
+        /// Subscription of a customer to change the price for a specific phone.
+        /// </summary>
+        public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
+        {
+            var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberForm);
+
+            var priceSubscriberModel = await _priceSubscribersRepository.GetOneAsync(sub =>
+                    sub.BrandSlug == priceSubscriber.BrandSlug &&
+                    sub.PhoneSlug == priceSubscriber.PhoneSlug &&
+                    sub.Email == priceSubscriber.Email,
+                token);
+
+            if (priceSubscriberModel == null)
+            {
+                await _priceSubscribersRepository.InsertAsync(priceSubscriber, token);
+            }
+        }
+
+        /// <summary>
+        /// Subscription of a customer to change the stock for a specific phone.
+        /// </summary>
+        public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
+        {
+            var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberForm);
+
+            var stockSubscriberModel = await _stockSubscribersRepository.GetOneAsync(sub =>
+                    sub.BrandSlug == stockSubscriber.BrandSlug &&
+                    sub.PhoneSlug == stockSubscriber.PhoneSlug &&
+                    sub.Email == stockSubscriber.Email,
+                token);
+
+            if (stockSubscriberModel == null)
+            {
+                await _stockSubscribersRepository.InsertAsync(stockSubscriber, token);
+            }
+        }
+
+        public async Task<bool> PostCommentAsync(CommentForm commentForm, CancellationToken token)
+        {
+            var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var commentNew = new Comment()
+            {
+                Comments = commentForm.Comments,
+                Rating = commentForm.Rating,
+                CreateTime = commentForm.CreateTime,
+                PhoneSlug = commentForm.PhoneSlug,
+                UserId = user.Id
+            };
+
+            var commentOld = await _commentsRepository.GetOneAsync(comment =>
+                    comment.UserId == commentNew.UserId &&
+                    comment.PhoneSlug == commentNew.PhoneSlug,
+                token);
+
+            if (commentOld == null)
+            {
+                await _commentsRepository.InsertAsync(commentNew, token);
+            }
+            else
+            {
+                commentNew.Id = commentOld.Id;
+                _commentsRepository.DetachEntity(commentOld);
+                await _commentsRepository.UpdateAsync(commentNew, token);
+            }
+
+            return true;
         }
     }
 }

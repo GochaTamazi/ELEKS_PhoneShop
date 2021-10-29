@@ -68,7 +68,7 @@ namespace PhoneShop.Controllers
         )
         {
             const int pageSize = 10;
-            var phonesPageFront = await _adminPhones.GetPhonesInStoreAsync(filterForm, page, pageSize, token);
+            var phonesPageFront = await _adminPhones.GetPhonesAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
             return View(phonesPageFront);
         }
@@ -79,7 +79,7 @@ namespace PhoneShop.Controllers
             CancellationToken token
         )
         {
-            var phoneSpecFront = await _adminPhones.GetPhone(phoneSlug, token);
+            var phoneSpecFront = await _adminPhones.GetPhoneAsync(phoneSlug, token);
             return View(phoneSpecFront);
         }
 

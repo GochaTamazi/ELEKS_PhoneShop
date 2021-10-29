@@ -37,9 +37,11 @@ namespace DataAccess.Repositories
             return await table.Where(condition).ToListAsync(token);
         }
 
-        public async Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> condition,
+        public async Task<List<T>> GetAllAsync<TKey>(
+            Expression<Func<T, bool>> condition,
             Expression<Func<T, TKey>> orderBy,
-            CancellationToken token)
+            CancellationToken token
+        )
         {
             return await table.Where(condition).OrderBy(orderBy).ToListAsync(token);
         }

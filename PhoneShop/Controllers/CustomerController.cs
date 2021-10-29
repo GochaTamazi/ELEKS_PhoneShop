@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,8 +54,8 @@ namespace PhoneShop.Controllers
             CancellationToken token
         )
         {
-            commentForm.UserMail = User.Identity.Name;
-            bool result = await _customerPhones.PostComment(commentForm, token);
+            commentForm.UserMail = User.Identity?.Name;
+            var result = await _customerPhones.PostCommentAsync(commentForm, token);
             if (result)
             {
                 return RedirectToAction("ShowPhone", "Customer", new
