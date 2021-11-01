@@ -89,7 +89,8 @@ namespace PhoneShop.Controllers
                     {
                         Email = registerForm.Email,
                         Password = registerForm.Password,
-                        Role = "Customer"
+                        Role = "Customer",
+                        Name = registerForm.Name
                     };
                     userNew.Password = _passwordHasher.HashPassword(userNew, registerForm.Password);
 

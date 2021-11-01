@@ -13,5 +13,7 @@ namespace Database.Models
         public string Comments { get; set; }
         public int? Rating { get; set; }
         public DateTime? CreateTime { get; set; }
+
+        public virtual User User { get; set; }
     }
 }

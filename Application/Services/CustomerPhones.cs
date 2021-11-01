@@ -122,7 +122,8 @@ namespace Application.Services
             phoneDto.AverageRating = await _commentsRepository.AverageAsync(commentCondition,
                 phone => phone.Rating, token);
 
-            var comments = await _commentsRepository.GetAllAsync(commentCondition, token);
+            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition,
+                comment => comment.User, token);
             if (comments != null)
             {
                 phoneDto.Comments = comments;

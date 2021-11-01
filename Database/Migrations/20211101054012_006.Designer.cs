@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(MasterContext))]
-    [Migration("20211027013645_005")]
-    partial class _005
+    [Migration("20211101054012_006")]
+    partial class _006
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,6 +84,8 @@ namespace Database.Migrations
                     b.HasKey("Id")
                         .HasName("Comments_pk")
                         .IsClustered(false);
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments", "PhoneShop");
                 });
@@ -254,6 +256,12 @@ namespace Database.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -276,6 +284,21 @@ namespace Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", "PhoneShop");
+                });
+
+            modelBuilder.Entity("Database.Models.Comment", b =>
+                {
+                    b.HasOne("Database.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("Comments_Users_id_fk");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.Models.User", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

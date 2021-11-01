@@ -14,5 +14,8 @@ namespace Application.DTO.Frontend.Forms
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password entered incorrectly")]
         public string ConfirmPassword { get; set; }
+        
+        [Required(ErrorMessage = "Name not specified")]
+        public string Name { get; set; }
     }
 }

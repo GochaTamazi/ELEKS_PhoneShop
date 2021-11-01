@@ -74,6 +74,11 @@ namespace Database.Models
                 entity.Property(e => e.Rating).HasColumnName("rating");
 
                 entity.Property(e => e.UserId).HasColumnName("userId");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("Comments_Users_id_fk");
             });
 
             modelBuilder.Entity<Phone>(entity =>
@@ -211,6 +216,11 @@ namespace Database.Models
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("email");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
 
                 entity.Property(e => e.Password)
                     .IsRequired()

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class _005 : Migration
+    public partial class _006 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,25 +23,6 @@ namespace Database.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("Brands_pk", x => x.id)
-                        .Annotation("SqlServer:Clustered", false);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comments",
-                schema: "PhoneShop",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    phoneSlug = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    userId = table.Column<int>(type: "int", nullable: true),
-                    comments = table.Column<string>(type: "varchar(3000)", unicode: false, maxLength: 3000, nullable: true),
-                    rating = table.Column<int>(type: "int", nullable: true),
-                    createTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("Comments_pk", x => x.id)
                         .Annotation("SqlServer:Clustered", false);
                 });
 
@@ -115,13 +96,46 @@ namespace Database.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     email = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     password = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    role = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                    role = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
+                    name = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("Users_pk", x => x.id)
                         .Annotation("SqlServer:Clustered", false);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    phoneSlug = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
+                    userId = table.Column<int>(type: "int", nullable: true),
+                    comments = table.Column<string>(type: "varchar(3000)", unicode: false, maxLength: 3000, nullable: true),
+                    rating = table.Column<int>(type: "int", nullable: true),
+                    createTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Comments_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                    table.ForeignKey(
+                        name: "Comments_Users_id_fk",
+                        column: x => x.userId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_userId",
+                schema: "PhoneShop",
+                table: "Comments",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "Users_email_uindex",
