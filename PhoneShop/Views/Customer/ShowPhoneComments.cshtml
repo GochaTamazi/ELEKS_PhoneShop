@@ -1,0 +1,69 @@
+@model Application.DTO.Frontend.CommentsPage
+
+<h3>
+    Comments
+</h3>
+
+<div>Total Comments Count: @Model.TotalComments</div>
+<div>Page size: @Model.PageSize</div>
+<div>Page: @Model.Page / @Model.TotalPages</div>
+
+@for (var i = 1; i <= @Model.TotalPages; i++)
+{
+    var str = $"LoadPhoneComments('{Model.PhoneSlug}', {i})";
+    <span onclick="@str" class="showPhoneCommentsPages">
+        @i | 
+    </span>
+    
+}
+
+
+@foreach (var comment in Model.Comments)
+{
+    <hr/>
+    <div>
+        <b>Id:</b> @comment.Id <br/>
+        <b>PhoneSlug:</b> @comment.PhoneSlug <br/>
+        <b>UserId:</b> @comment.UserId <br/>
+        <b>UserName:</b> @comment.User.Name <br/>
+        <b>Rating:</b> @comment.Rating <br/>
+        <b>CreateTime:</b> @comment.CreateTime <br/>
+        <b>Comments:</b> @comment.Comments <br/>
+    </div>
+}
+
+
+<h4>
+    Post comment
+</h4>
+<form asp-controller="Customer" asp-action="PostComment" method="post">
+    <input type="hidden" name="PhoneSlug" value="@Model.PhoneSlug"/>
+    <div>
+        <div>
+            <b>Comments:</b>
+        </div>
+        <textarea class="customerComments" name="Comments" maxlength="3000"></textarea>
+    </div>
+    <div>
+        <label class="pRating">Rating: </label>
+        @{
+            var list = new List<SelectListItem>
+            {
+                new() {Value = "1", Text = "1"},
+                new() {Value = "2", Text = "2"},
+                new() {Value = "3", Text = "3"},
+                new() {Value = "4", Text = "4"},
+                new() {Value = "5", Text = "5"}
+            };
+            var orderBy = new SelectList(list,
+                "Value",
+                "Text",
+                5);
+        }
+        @Html.DropDownList("Rating",
+            selectList: orderBy,
+            htmlAttributes: new {name = "Rating"}
+            )
+    </div>
+    <input type="submit" value="Post Comment"/>
+</form>

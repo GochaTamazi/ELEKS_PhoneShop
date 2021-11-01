@@ -48,6 +48,18 @@ namespace PhoneShop.Controllers
             return View(phone);
         }
 
+        [HttpGet("showPhoneComments")]
+        public async Task<ActionResult> ShowPhoneCommentsAsync(
+            CancellationToken token,
+            [FromQuery] string phoneSlug,
+            [FromQuery] int page = 1
+        )
+        {
+            const int pageSize = 10;
+            var commentsPage = await _customerPhones.GetPhoneCommentsAsync(phoneSlug, page, pageSize, token);
+            return PartialView(commentsPage);
+        }
+
         [HttpPost("postComment")]
         public async Task<ActionResult> PostComment(
             [FromForm] CommentForm commentForm,

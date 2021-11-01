@@ -119,17 +119,42 @@ namespace Application.Services
             Expression<Func<Comment, bool>> commentCondition = (comment) =>
                 comment.PhoneSlug == phoneSlug;
 
-            phoneDto.AverageRating = await _commentsRepository.AverageAsync(commentCondition,
+            var averageRating = await _commentsRepository.AverageAsync(commentCondition,
                 phone => phone.Rating, token);
 
-            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition,
-                comment => comment.User, token);
-            if (comments != null)
+            if (averageRating != null)
             {
-                phoneDto.Comments = comments;
+                phoneDto.AverageRating = Math.Round((double) averageRating, 1);
             }
 
             return phoneDto;
+        }
+
+        public async Task<CommentsPage> GetPhoneCommentsAsync(
+            string phoneSlug,
+            int page,
+            int pageSize,
+            CancellationToken token)
+        {
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
+            Expression<Func<Comment, bool>> commentCondition = (comment) => comment.PhoneSlug == phoneSlug;
+
+            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition,
+                comment => comment.User, token);
+
+            return new CommentsPage()
+            {
+                PhoneSlug = phoneSlug,
+                TotalComments = comments.Count,
+                TotalPages = (int) Math.Ceiling((double) comments.Count / pageSize),
+                PageSize = pageSize,
+                Page = page,
+                Comments = comments.ToPagedList(page, pageSize).ToList()
+            };
         }
 
         /// <summary>
