@@ -104,11 +104,11 @@ namespace Application.Services
         /// </summary>
         public async Task<DTO.Frontend.PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token)
         {
-            Expression<Func<Phone, bool>> condition = (phone) =>
+            Expression<Func<Phone, bool>> phoneCondition = (phone) =>
                 phone.PhoneSlug == phoneSlug &&
                 phone.Hided == false;
 
-            var phoneModel = await _phonesRepository.GetOneAsync(condition, token);
+            var phoneModel = await _phonesRepository.GetOneAsync(phoneCondition, token);
             if (phoneModel == null)
             {
                 return new PhoneDto();
@@ -116,8 +116,13 @@ namespace Application.Services
 
             var phoneDto = _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
 
-            var comments = await _commentsRepository.GetAllAsync(comment =>
-                comment.PhoneSlug == phoneSlug, token);
+            Expression<Func<Comment, bool>> commentCondition = (comment) =>
+                comment.PhoneSlug == phoneSlug;
+
+            phoneDto.AverageRating = await _commentsRepository.AverageAsync(commentCondition,
+                phone => phone.Rating, token);
+
+            var comments = await _commentsRepository.GetAllAsync(commentCondition, token);
             if (comments != null)
             {
                 phoneDto.Comments = comments;

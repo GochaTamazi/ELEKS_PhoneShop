@@ -19,5 +19,7 @@ namespace DataAccess.Interfaces
         Task UpdateAsync(T model, CancellationToken token);
         
         void DetachEntity(T model);
+
+        Task<double?> AverageAsync(Expression<Func<T, bool>> condition, Expression<Func<T, int?>> selector, CancellationToken token);
     }
 }

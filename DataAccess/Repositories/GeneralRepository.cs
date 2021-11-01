@@ -14,27 +14,27 @@ namespace DataAccess.Repositories
     {
         private readonly MasterContext _masterContext;
 
-        private DbSet<T> table = null;
+        private readonly DbSet<T> _table = null;
 
         public GeneralRepository(MasterContext masterContext)
         {
             _masterContext = masterContext;
-            table = _masterContext.Set<T>();
+            _table = _masterContext.Set<T>();
         }
 
         public async Task<T> GetOneAsync(Expression<Func<T, bool>> condition, CancellationToken token)
         {
-            return await table.Where(condition).FirstOrDefaultAsync(token);
+            return await _table.Where(condition).FirstOrDefaultAsync(token);
         }
 
         public async Task<List<T>> GetAllAsync(CancellationToken token)
         {
-            return await table.ToListAsync(token);
+            return await _table.ToListAsync(token);
         }
 
         public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> condition, CancellationToken token)
         {
-            return await table.Where(condition).ToListAsync(token);
+            return await _table.Where(condition).ToListAsync(token);
         }
 
         public async Task<List<T>> GetAllAsync<TKey>(
@@ -43,24 +43,33 @@ namespace DataAccess.Repositories
             CancellationToken token
         )
         {
-            return await table.Where(condition).OrderBy(orderBy).ToListAsync(token);
+            return await _table.Where(condition).OrderBy(orderBy).ToListAsync(token);
         }
 
         public async Task InsertAsync(T model, CancellationToken token)
         {
-            await table.AddAsync(model, token);
+            await _table.AddAsync(model, token);
             await _masterContext.SaveChangesAsync(token);
         }
 
         public async Task UpdateAsync(T model, CancellationToken token)
         {
-            table.Update(model);
+            _table.Update(model);
             await _masterContext.SaveChangesAsync(token);
         }
 
         public void DetachEntity(T model)
         {
             _masterContext.Entry(model).State = EntityState.Detached;
+        }
+
+        public async Task<double?> AverageAsync(
+            Expression<Func<T, bool>> condition,
+            Expression<Func<T, int?>> selector,
+            CancellationToken token
+        )
+        {
+            return await _table.Where(condition).AverageAsync(selector, token);
         }
     }
 }

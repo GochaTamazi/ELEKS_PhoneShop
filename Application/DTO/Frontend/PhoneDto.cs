@@ -21,5 +21,6 @@ namespace Application.DTO.Frontend
         public int? Stock { get; set; }
         public bool? Hided { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public double? AverageRating { get; set; } = 0;
     }
 }
