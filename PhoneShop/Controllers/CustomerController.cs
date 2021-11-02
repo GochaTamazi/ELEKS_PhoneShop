@@ -58,6 +58,16 @@ namespace PhoneShop.Controllers
             return Ok("AddToWishListAsync ok");
         }
 
+        public async Task<ActionResult> RemoveFromWishListAsync(
+            [FromQuery] string phoneSlug,
+            CancellationToken token
+        )
+        {
+            var userMail = User.Identity?.Name;
+            await _customerPhones.RemoveFromWishListAsync(phoneSlug, userMail, token);
+            return Ok("RemoveFromWishListAsync ok");
+        }
+
         [HttpGet("showPhoneComments")]
         public async Task<ActionResult> ShowPhoneCommentsAsync(
             CancellationToken token,

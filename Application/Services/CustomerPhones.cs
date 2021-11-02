@@ -268,5 +268,34 @@ namespace Application.Services
                 }
             }
         }
+
+        public async Task RemoveFromWishListAsync(string phoneSlug, string userMail,
+            CancellationToken token)
+        {
+            var phone = await _phonesRepository.GetOneAsync(phone =>
+                    phone.PhoneSlug == phoneSlug &&
+                    phone.Hided != true,
+                token);
+
+            if (phone != null)
+            {
+                var user = await _usersRepository.GetOneAsync(user =>
+                        user.Email == userMail,
+                    token);
+
+                if (user != null)
+                {
+                    var wishList = await _wishListRepository.GetOneAsync(list =>
+                            list.UserId == user.Id &&
+                            list.PhoneId == phone.Id,
+                        token);
+
+                    if (wishList != null)
+                    {
+                        await _wishListRepository.RemoveAsync(wishList, token);
+                    }
+                }
+            }
+        }
     }
 }

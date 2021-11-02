@@ -27,5 +27,8 @@ namespace Application.Interfaces
 
         Task AddToWishListAsync(string phoneSlug, string userMail,
             CancellationToken token);
+
+        Task RemoveFromWishListAsync(string phoneSlug, string userMail,
+            CancellationToken token);
     }
 }

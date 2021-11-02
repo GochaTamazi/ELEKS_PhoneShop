@@ -74,6 +74,12 @@ namespace DataAccess.Repositories
             _masterContext.Entry(model).State = EntityState.Detached;
         }
 
+        public async Task RemoveAsync(T model, CancellationToken token)
+        {
+            _table.Remove(model);
+            await _masterContext.SaveChangesAsync(token);
+        }
+
         public async Task<double?> AverageAsync(
             Expression<Func<T, bool>> condition,
             Expression<Func<T, int?>> selector,
