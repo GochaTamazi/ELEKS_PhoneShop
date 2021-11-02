@@ -8,6 +8,8 @@
 
 }
 
+<a asp-controller="Customer" asp-action="AddToWishList" asp-route-phoneSlug="@phone.PhoneSlug">Add To Wish List</a>
+
 <form asp-controller="Customer" asp-action="SubscribePrice" method="post">
     <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
     <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
@@ -108,7 +110,7 @@
 
 
 <div id="showPhoneComments">
-    
+
 </div>
 
 
@@ -124,4 +126,3 @@ function LoadPhoneComments(phoneSlug, page = 1) {
 
 LoadPhoneComments("@phone.PhoneSlug", page = 1);
 </script>
-

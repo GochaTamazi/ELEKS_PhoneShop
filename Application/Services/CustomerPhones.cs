@@ -22,6 +22,7 @@ namespace Application.Services
         private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
         private readonly IGeneralRepository<User> _usersRepository;
         private readonly IGeneralRepository<Comment> _commentsRepository;
+        private readonly IGeneralRepository<WishList> _wishListRepository;
 
         public CustomerPhones(
             IMapperProvider mapperProvider,
@@ -29,7 +30,8 @@ namespace Application.Services
             IGeneralRepository<PriceSubscriber> priceSubscribersRepository,
             IGeneralRepository<StockSubscriber> stockSubscribersRepository,
             IGeneralRepository<User> usersRepository,
-            IGeneralRepository<Comment> commentsRepository
+            IGeneralRepository<Comment> commentsRepository,
+            IGeneralRepository<WishList> wishListRepository
         )
         {
             _mapperProvider = mapperProvider;
@@ -38,6 +40,7 @@ namespace Application.Services
             _stockSubscribersRepository = stockSubscribersRepository;
             _usersRepository = usersRepository;
             _commentsRepository = commentsRepository;
+            _wishListRepository = wishListRepository;
         }
 
         /// <summary>
@@ -229,6 +232,41 @@ namespace Application.Services
             }
 
             return true;
+        }
+
+        public async Task AddToWishListAsync(string phoneSlug, string userMail,
+            CancellationToken token)
+        {
+            var phone = await _phonesRepository.GetOneAsync(phone =>
+                    phone.PhoneSlug == phoneSlug &&
+                    phone.Hided != true,
+                token);
+
+            if (phone != null)
+            {
+                var user = await _usersRepository.GetOneAsync(user =>
+                        user.Email == userMail,
+                    token);
+
+                if (user != null)
+                {
+                    var wishList = await _wishListRepository.GetOneAsync(list =>
+                            list.UserId == user.Id &&
+                            list.PhoneId == phone.Id,
+                        token);
+
+                    if (wishList == null)
+                    {
+                        var wishListNew = new WishList()
+                        {
+                            UserId = user.Id,
+                            PhoneId = phone.Id
+                        };
+
+                        await _wishListRepository.InsertAsync(wishListNew, token);
+                    }
+                }
+            }
         }
     }
 }

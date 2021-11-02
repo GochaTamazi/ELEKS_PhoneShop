@@ -23,6 +23,7 @@ namespace Database.Models
         public virtual DbSet<PriceSubscriber> PriceSubscribers { get; set; }
         public virtual DbSet<StockSubscriber> StockSubscribers { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<WishList> WishLists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -233,6 +234,31 @@ namespace Database.Models
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("role");
+            });
+
+            modelBuilder.Entity<WishList>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("WishList_pk")
+                    .IsClustered(false);
+
+                entity.ToTable("WishList", "PhoneShop");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.PhoneId).HasColumnName("phoneId");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
+
+                entity.HasOne(d => d.Phone)
+                    .WithMany(p => p.WishLists)
+                    .HasForeignKey(d => d.PhoneId)
+                    .HasConstraintName("WishList_Phones_id_fk");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.WishLists)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("WishList_Users_id_fk");
             });
 
             OnModelCreatingPartial(modelBuilder);

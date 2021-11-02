@@ -46,6 +46,7 @@ namespace PhoneShop
             services.AddScoped<IGeneralRepository<PriceSubscriber>, GeneralRepository<PriceSubscriber>>();
             services.AddScoped<IGeneralRepository<StockSubscriber>, GeneralRepository<StockSubscriber>>();
             services.AddScoped<IGeneralRepository<User>, GeneralRepository<User>>();
+            services.AddScoped<IGeneralRepository<WishList>, GeneralRepository<WishList>>();
 
             // Application Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();

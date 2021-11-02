@@ -7,6 +7,11 @@ namespace Database.Models
 {
     public partial class Phone
     {
+        public Phone()
+        {
+            WishLists = new HashSet<WishList>();
+        }
+
         public int Id { get; set; }
         public string BrandSlug { get; set; }
         public string PhoneSlug { get; set; }
@@ -21,5 +26,7 @@ namespace Database.Models
         public int? Price { get; set; }
         public int? Stock { get; set; }
         public bool? Hided { get; set; }
+
+        public virtual ICollection<WishList> WishLists { get; set; }
     }
 }

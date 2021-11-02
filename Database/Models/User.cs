@@ -10,6 +10,7 @@ namespace Database.Models
         public User()
         {
             Comments = new HashSet<Comment>();
+            WishLists = new HashSet<WishList>();
         }
 
         public int Id { get; set; }
@@ -19,5 +20,6 @@ namespace Database.Models
         public string Name { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<WishList> WishLists { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class _006 : Migration
+    public partial class _007 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -131,6 +131,36 @@ namespace Database.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WishList",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    userId = table.Column<int>(type: "int", nullable: true),
+                    phoneId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("WishList_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                    table.ForeignKey(
+                        name: "WishList_Phones_id_fk",
+                        column: x => x.phoneId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Phones",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "WishList_Users_id_fk",
+                        column: x => x.userId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_userId",
                 schema: "PhoneShop",
@@ -143,6 +173,18 @@ namespace Database.Migrations
                 table: "Users",
                 column: "email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishList_phoneId",
+                schema: "PhoneShop",
+                table: "WishList",
+                column: "phoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishList_userId",
+                schema: "PhoneShop",
+                table: "WishList",
+                column: "userId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -156,15 +198,19 @@ namespace Database.Migrations
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(
-                name: "Phones",
-                schema: "PhoneShop");
-
-            migrationBuilder.DropTable(
                 name: "PriceSubscribers",
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(
                 name: "StockSubscribers",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
+                name: "WishList",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
+                name: "Phones",
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(

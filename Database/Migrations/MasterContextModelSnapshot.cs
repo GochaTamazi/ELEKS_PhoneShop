@@ -284,6 +284,33 @@ namespace Database.Migrations
                     b.ToTable("Users", "PhoneShop");
                 });
 
+            modelBuilder.Entity("Database.Models.WishList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("PhoneId")
+                        .HasColumnType("int")
+                        .HasColumnName("phoneId");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
+                        .HasName("WishList_pk")
+                        .IsClustered(false);
+
+                    b.HasIndex("PhoneId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("WishList", "PhoneShop");
+                });
+
             modelBuilder.Entity("Database.Models.Comment", b =>
                 {
                     b.HasOne("Database.Models.User", "User")
@@ -294,9 +321,33 @@ namespace Database.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Database.Models.WishList", b =>
+                {
+                    b.HasOne("Database.Models.Phone", "Phone")
+                        .WithMany("WishLists")
+                        .HasForeignKey("PhoneId")
+                        .HasConstraintName("WishList_Phones_id_fk");
+
+                    b.HasOne("Database.Models.User", "User")
+                        .WithMany("WishLists")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("WishList_Users_id_fk");
+
+                    b.Navigation("Phone");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.Models.Phone", b =>
+                {
+                    b.Navigation("WishLists");
+                });
+
             modelBuilder.Entity("Database.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("WishLists");
                 });
 #pragma warning restore 612, 618
         }
