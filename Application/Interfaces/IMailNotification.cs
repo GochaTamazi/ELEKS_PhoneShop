@@ -7,7 +7,13 @@ namespace Application.Interfaces
 {
     public interface IMailNotification
     {
-        Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone, CancellationToken token);
-        Task StockSubscribersNotificationAsync(List<StockSubscriber> subscribers, Phone phone, CancellationToken token);
+        Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone,
+            CancellationToken token);
+
+        Task PriceWishListCustomerNotificationAsync(List<WishList> subscribers, Phone phone,
+            CancellationToken token);
+
+        Task StockSubscribersNotificationAsync(List<StockSubscriber> subscribers, Phone phone,
+            CancellationToken token);
     }
 }

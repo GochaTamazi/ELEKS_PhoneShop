@@ -34,7 +34,7 @@ namespace Application.Services
         public async Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone,
             CancellationToken token)
         {
-            var subject = $"Phone {phone.PhoneName} price has changed";
+            var subject = $"PriceSubscribers Phone {phone.PhoneName} price has changed";
 
             var url = $"http://localhost:5000/customer/showPhone?phoneSlug={phone.PhoneSlug}";
             var body = $@"
@@ -45,6 +45,25 @@ namespace Application.Services
 
             var tasks = subscribers
                 .Select(sub => SendMailAsync(sub.Email, subject, body, token))
+                .ToList();
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task PriceWishListCustomerNotificationAsync(List<WishList> subscribers, Phone phone,
+            CancellationToken token)
+        {
+            var subject = $"WishList Phone {phone.PhoneName} price has changed";
+
+            var url = $"http://localhost:5000/customer/showPhone?phoneSlug={phone.PhoneSlug}";
+            var body = $@"
+                <b>Phone {phone.PhoneName} price has changed</b> <br/>
+                <b>New price:</b> {phone.Price}<br/>
+                <b><a href='{url}'>Check it out!</a></b> 
+            ";
+
+            var tasks = subscribers
+                .Select(sub => SendMailAsync(sub.User.Email, subject, body, token))
                 .ToList();
 
             await Task.WhenAll(tasks);

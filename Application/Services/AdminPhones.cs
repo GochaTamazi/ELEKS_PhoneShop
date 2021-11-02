@@ -23,6 +23,7 @@ namespace Application.Services
         private readonly IGeneralRepository<Phone> _phonesRepository;
         private readonly IGeneralRepository<PriceSubscriber> _priceSubscribersRepository;
         private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
+        private readonly IGeneralRepository<WishList> _wishListRepository;
 
         public AdminPhones(
             IMailNotification mailNotification,
@@ -31,7 +32,8 @@ namespace Application.Services
             IGeneralRepository<Brand> brandsRepository,
             IGeneralRepository<Phone> phonesRepository,
             IGeneralRepository<PriceSubscriber> priceSubscribersRepository,
-            IGeneralRepository<StockSubscriber> stockSubscribersRepository
+            IGeneralRepository<StockSubscriber> stockSubscribersRepository,
+            IGeneralRepository<WishList> wishListRepository
         )
         {
             _mailNotification = mailNotification;
@@ -41,6 +43,7 @@ namespace Application.Services
             _phonesRepository = phonesRepository;
             _priceSubscribersRepository = priceSubscribersRepository;
             _stockSubscribersRepository = stockSubscribersRepository;
+            _wishListRepository = wishListRepository;
         }
 
         /// <summary>
@@ -182,6 +185,7 @@ namespace Application.Services
                 if (phoneModelFromApi.Price != phoneModelFromDb.Price)
                 {
                     await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
+                    await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
                 }
 
                 //Stock notification
@@ -225,6 +229,15 @@ namespace Application.Services
                     subscriber.BrandSlug == phone.BrandSlug &&
                     subscriber.PhoneSlug == phone.PhoneSlug, token);
             await _mailNotification.PriceSubscribersNotificationAsync(subscribers, phone, token);
+        }
+
+        private async Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token)
+        {
+            var wishList = await _wishListRepository.GetAllIncludeAsync(
+                list => list.PhoneId == phone.Id,
+                list => list.User,
+                token);
+            await _mailNotification.PriceWishListCustomerNotificationAsync(wishList, phone, token);
         }
 
         /// <summary>
