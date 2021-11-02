@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using Application.DTO.Frontend;
 using System.Threading.Tasks;
 using System.Threading;
 using Application.DTO.Frontend.Forms;
+using Database.Models;
 
 namespace Application.Interfaces
 {
@@ -29,6 +31,9 @@ namespace Application.Interfaces
             CancellationToken token);
 
         Task RemoveFromWishListAsync(string phoneSlug, string userMail,
+            CancellationToken token);
+
+        Task<List<WishList>> ShowWishListAsync(string userMail,
             CancellationToken token);
     }
 }

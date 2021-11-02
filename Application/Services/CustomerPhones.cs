@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.DTO.Frontend.Forms;
 using PagedList;
@@ -296,6 +297,21 @@ namespace Application.Services
                     }
                 }
             }
+        }
+
+        public async Task<List<WishList>> ShowWishListAsync(string userMail,
+            CancellationToken token)
+        {
+            var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
+            if (user != null)
+            {
+                return await _wishListRepository.GetAllIncludeAsync(
+                    list => list.UserId == user.Id,
+                    list => list.Phone,
+                    token);
+            }
+
+            return new List<WishList>();
         }
     }
 }

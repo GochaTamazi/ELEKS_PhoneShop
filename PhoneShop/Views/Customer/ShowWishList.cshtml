@@ -1,0 +1,55 @@
+@model System.Collections.Generic.List<Database.Models.WishList>
+
+@{
+    ViewBag.Title = "WishList";
+    Layout = "_Layout";
+}
+
+<h2>Customer Wish List</h2>
+<div>Total Phones Count: @Model.Count</div>
+
+<ul class="pUl">
+    @foreach (var val in @Model)
+    {
+        var phone = val.Phone;
+
+        var phoneClass = "";
+        if (phone.Hided == true)
+        {
+            phoneClass = "pHided";
+        }
+        else if (phone.Stock <= 0)
+        {
+            phoneClass = "pStockEmpty";
+        }
+
+        <li class="pLi @phoneClass">
+            <a asp-controller="Customer" 
+               asp-action="RemoveFromWishList"
+               asp-route-phoneSlug="@phone.PhoneSlug">Remove From Wish List</a>
+            
+            <a class="pUrl"
+               asp-controller="Customer"
+               asp-action="ShowPhone"
+               asp-route-phoneSlug="@phone.PhoneSlug">
+                <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
+                <div class="pRow">
+                    <span class="pColKey">BrandSlug:</span>
+                    <span class="pColVal">@phone.BrandSlug</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">PhoneName:</span>
+                    <span class="pColVal">@phone.PhoneName</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Price:</span>
+                    <span class="pColVal">@phone.Price</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Stock:</span>
+                    <span class="pColVal">@phone.Stock</span>
+                </div>
+            </a>
+        </li>
+    }
+</ul>

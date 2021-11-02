@@ -48,6 +48,7 @@ namespace PhoneShop.Controllers
             return View(phone);
         }
 
+        [HttpGet("AddToWishList")]
         public async Task<ActionResult> AddToWishListAsync(
             [FromQuery] string phoneSlug,
             CancellationToken token
@@ -58,6 +59,7 @@ namespace PhoneShop.Controllers
             return Ok("AddToWishListAsync ok");
         }
 
+        [HttpGet("RemoveFromWishList")]
         public async Task<ActionResult> RemoveFromWishListAsync(
             [FromQuery] string phoneSlug,
             CancellationToken token
@@ -66,6 +68,14 @@ namespace PhoneShop.Controllers
             var userMail = User.Identity?.Name;
             await _customerPhones.RemoveFromWishListAsync(phoneSlug, userMail, token);
             return Ok("RemoveFromWishListAsync ok");
+        }
+
+        [HttpGet("ShowWishList")]
+        public async Task<ActionResult> ShowWishListAsync(CancellationToken token)
+        {
+            var userMail = User.Identity?.Name;
+            var wishList = await _customerPhones.ShowWishListAsync(userMail, token);
+            return View(wishList);
         }
 
         [HttpGet("showPhoneComments")]
