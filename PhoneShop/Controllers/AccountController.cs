@@ -1,15 +1,15 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading;
 using Application.DTO.Frontend.Forms;
 using DataAccess.Interfaces;
 using Database.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PhoneShop.Controllers
 {
@@ -38,10 +38,8 @@ namespace PhoneShop.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginAsync(
-            [FromForm] LoginForm loginForm,
-            CancellationToken token
-        )
+        public async Task<IActionResult> LoginAsync([FromForm] LoginForm loginForm,
+            CancellationToken token)
         {
             if (ModelState.IsValid)
             {
@@ -75,10 +73,8 @@ namespace PhoneShop.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterAsync(
-            [FromForm] RegisterForm registerForm,
-            CancellationToken token
-        )
+        public async Task<IActionResult> RegisterAsync([FromForm] RegisterForm registerForm,
+            CancellationToken token)
         {
             if (ModelState.IsValid)
             {

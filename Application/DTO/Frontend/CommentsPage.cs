@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Database.Models;
+using System.Collections.Generic;
 
 namespace Application.DTO.Frontend
 {

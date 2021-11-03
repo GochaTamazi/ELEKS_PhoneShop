@@ -1,8 +1,3 @@
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.DTO.Options;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
@@ -12,16 +7,17 @@ using Application.DTO.PhoneSpecificationsAPI.Search;
 using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
-using Flurl;
 using Flurl.Http;
+using Flurl;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Json;
+using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Application.Services
 {
-    /// <summary>
-    /// Phone Specifications API
-    /// https://github.com/azharimm/phone-specs-api
-    /// </summary>
     public class PhoneSpecificationsApi : IPhoneSpecificationsApi
     {
         private readonly PhoneSpecificationsApiOptions _options;
@@ -57,10 +53,8 @@ namespace Application.Services
             return new ListBrandsDto();
         }
 
-        /// <summary>
-        /// ListPhones Flurl request
-        /// </summary>
-        public async Task<ListPhonesDto> ListPhonesAsync(string brandSlug, int page, CancellationToken token)
+        public async Task<ListPhonesDto> ListPhonesAsync(string brandSlug, int page,
+            CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
                 .SetQueryParams(new {page = page})
@@ -74,10 +68,8 @@ namespace Application.Services
             return new ListPhonesDto();
         }
 
-        /// <summary>
-        /// ListPhones System.Net.Http.HttpClient request
-        /// </summary>
-        public async Task<ListPhonesDto> ListPhonesAsync2(string brandSlug, int page, CancellationToken token)
+        public async Task<ListPhonesDto> ListPhonesAsync2(string brandSlug, int page,
+            CancellationToken token)
         {
             using var httpClient = new HttpClient();
             var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/brands/{brandSlug}?page={page}", token);
@@ -90,10 +82,8 @@ namespace Application.Services
             return new ListPhonesDto();
         }
 
-        /// <summary>
-        /// PhoneSpecifications Flurl request
-        /// </summary>
-        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
+        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync(string phoneSlug,
+            CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
 
@@ -105,10 +95,8 @@ namespace Application.Services
             return new PhoneSpecificationsDto();
         }
 
-        /// <summary>
-        /// PhoneSpecifications System.Net.Http.HttpClient request 
-        /// </summary>
-        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync2(string phoneSlug, CancellationToken token)
+        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync2(string phoneSlug,
+            CancellationToken token)
         {
             using var httpClient = new HttpClient();
             var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/{phoneSlug}", token);
@@ -121,7 +109,8 @@ namespace Application.Services
             return new PhoneSpecificationsDto();
         }
 
-        public async Task<SearchDto> SearchAsync(string query, CancellationToken token)
+        public async Task<SearchDto> SearchAsync(string query,
+            CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "search")
                 .SetQueryParams(new {query = query})

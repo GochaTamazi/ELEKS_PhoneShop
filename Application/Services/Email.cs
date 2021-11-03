@@ -18,7 +18,8 @@ namespace Application.Services
             _emailOptions = emailOptions.Value;
         }
 
-        public async Task SendEmailAsync(MailAddress to, string subject, string html, CancellationToken token)
+        public async Task SendEmailAsync(MailAddress to, string subject, string html,
+            CancellationToken token)
         {
             Console.WriteLine("Email.SendMailAsync");
             Console.WriteLine($"SmtpHost: {_emailOptions.SmtpHost}");

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Application.DTO.Frontend.Forms;
 using Database.Models;
+using System.Collections.Generic;
 
 namespace Application.DTO.Frontend
 {

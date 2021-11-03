@@ -1,55 +1,99 @@
+using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.Interfaces;
 using DataAccess.Interfaces;
 using Database.Models;
+using Microsoft.EntityFrameworkCore;
+using PagedList;
+using System.Linq.Expressions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using System.Linq.Expressions;
-using Application.DTO.Frontend.Forms;
-using Microsoft.EntityFrameworkCore;
-using PagedList;
 
 namespace Application.Services
 {
     public class AdminPhones : IAdminPhones
     {
-        private readonly IMailNotification _mailNotification;
-        private readonly IMapperProvider _mapperProvider;
-        private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
-
         private readonly IGeneralRepository<Brand> _brandsRepository;
         private readonly IGeneralRepository<Phone> _phonesRepository;
         private readonly IGeneralRepository<PriceSubscriber> _priceSubscribersRepository;
         private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
         private readonly IGeneralRepository<WishList> _wishListRepository;
+        private readonly IMailNotification _mailNotification;
+        private readonly IMapperProvider _mapperProvider;
+        private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
 
         public AdminPhones(
-            IMailNotification mailNotification,
-            IMapperProvider mapperProvider,
-            IPhoneSpecificationsApi phoneSpecificationServiceApi,
             IGeneralRepository<Brand> brandsRepository,
             IGeneralRepository<Phone> phonesRepository,
             IGeneralRepository<PriceSubscriber> priceSubscribersRepository,
             IGeneralRepository<StockSubscriber> stockSubscribersRepository,
-            IGeneralRepository<WishList> wishListRepository
+            IGeneralRepository<WishList> wishListRepository,
+            IMailNotification mailNotification,
+            IMapperProvider mapperProvider,
+            IPhoneSpecificationsApi phoneSpecificationServiceApi
         )
         {
-            _mailNotification = mailNotification;
-            _mapperProvider = mapperProvider;
-            _phoneSpecificationServiceApi = phoneSpecificationServiceApi;
             _brandsRepository = brandsRepository;
             _phonesRepository = phonesRepository;
             _priceSubscribersRepository = priceSubscribersRepository;
             _stockSubscribersRepository = stockSubscribersRepository;
             _wishListRepository = wishListRepository;
+            _mailNotification = mailNotification;
+            _mapperProvider = mapperProvider;
+            _phoneSpecificationServiceApi = phoneSpecificationServiceApi;
         }
 
-        /// <summary>
-        /// Get information about the phone from the remote api. Or from a local database if one already exists in the store.
-        /// </summary>
-        public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug, CancellationToken token)
+        public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront,
+            CancellationToken token)
+        {
+            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(
+                phoneSpecFront.PhoneSlug,
+                token);
+            if (phoneSpecificationsDto.Status == false)
+            {
+                throw new Exception("PhoneSpecificationsApi not responds");
+            }
+
+            var phoneModelFromApi = _mapperProvider.GetMapper().Map<Phone>(phoneSpecificationsDto);
+            phoneModelFromApi.BrandSlug = phoneSpecFront.BrandSlug;
+            phoneModelFromApi.PhoneSlug = phoneSpecFront.PhoneSlug;
+            phoneModelFromApi.Price = phoneSpecFront.Price;
+            phoneModelFromApi.Stock = phoneSpecFront.Stock;
+            phoneModelFromApi.Hided = phoneSpecFront.Hided;
+
+            var phoneModelFromDb = await _phonesRepository.GetOneAsync(phone =>
+                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, token);
+            if (phoneModelFromDb == null)
+            {
+                await _phonesRepository.InsertAsync(phoneModelFromApi, token);
+            }
+            else
+            {
+                _phonesRepository.DetachEntity(phoneModelFromDb);
+                phoneModelFromApi.Id = phoneModelFromDb.Id;
+                await _phonesRepository.UpdateAsync(phoneModelFromApi, token);
+
+                //Price notification
+                if (phoneModelFromApi.Price != phoneModelFromDb.Price)
+                {
+                    await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
+                    await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
+                }
+
+                //Stock notification
+                if (phoneModelFromApi.Stock != phoneModelFromDb.Stock && phoneModelFromDb.Stock <= 0)
+                {
+                    await StockSubscribersNotificationAsync(phoneModelFromApi, token);
+                }
+            }
+
+            await BrandInsertIfNotExistAsync(phoneModelFromApi.BrandSlug, token);
+        }
+
+        public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug,
+            CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(phoneSlug, token);
             if (phoneSpecificationsDto.Status == false)
@@ -70,7 +114,10 @@ namespace Application.Services
                 phoneSpecFront.BrandSlug = phoneModel.BrandSlug;
                 phoneSpecFront.Price = phoneModel.Price;
                 phoneSpecFront.Stock = phoneModel.Stock;
-                phoneSpecFront.Hided = (bool) phoneModel.Hided;
+                if (phoneModel.Hided != null)
+                {
+                    phoneSpecFront.Hided = (bool) phoneModel.Hided;
+                }
             }
             else
             {
@@ -92,13 +139,7 @@ namespace Application.Services
             return phoneSpecFront;
         }
 
-        /// <summary>
-        /// Get all phones that are added to the store. Including hidden.
-        /// </summary>
-        public async Task<PhonesPageFront> GetPhonesAsync(
-            PhonesFilterForm filterForm,
-            int page,
-            int pageSize,
+        public async Task<PhonesPageFront> GetPhonesAsync(PhonesFilterForm filterForm, int page, int pageSize,
             CancellationToken token)
         {
             Expression<Func<Phone, bool>> condition = (phone) =>
@@ -149,59 +190,9 @@ namespace Application.Services
             };
         }
 
-        /// <summary>
-        /// Update or add information about the specified phone.
-        /// </summary>
-        public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
-        {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(
-                phoneSpecFront.PhoneSlug,
-                token);
-            if (phoneSpecificationsDto.Status == false)
-            {
-                throw new Exception("PhoneSpecificationsApi not responds");
-            }
 
-            var phoneModelFromApi = _mapperProvider.GetMapper().Map<Phone>(phoneSpecificationsDto);
-            phoneModelFromApi.BrandSlug = phoneSpecFront.BrandSlug;
-            phoneModelFromApi.PhoneSlug = phoneSpecFront.PhoneSlug;
-            phoneModelFromApi.Price = phoneSpecFront.Price;
-            phoneModelFromApi.Stock = phoneSpecFront.Stock;
-            phoneModelFromApi.Hided = phoneSpecFront.Hided;
-
-            var phoneModelFromDb = await _phonesRepository.GetOneAsync(phone =>
-                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, token);
-            if (phoneModelFromDb == null)
-            {
-                await _phonesRepository.InsertAsync(phoneModelFromApi, token);
-            }
-            else
-            {
-                _phonesRepository.DetachEntity(phoneModelFromDb);
-                phoneModelFromApi.Id = phoneModelFromDb.Id;
-                await _phonesRepository.UpdateAsync(phoneModelFromApi, token);
-
-                //Price notification
-                if (phoneModelFromApi.Price != phoneModelFromDb.Price)
-                {
-                    await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
-                    await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
-                }
-
-                //Stock notification
-                if (phoneModelFromApi.Stock != phoneModelFromDb.Stock && phoneModelFromDb.Stock <= 0)
-                {
-                    await StockSubscribersNotificationAsync(phoneModelFromApi, token);
-                }
-            }
-
-            await BrandInsertIfNotExistAsync(phoneModelFromApi.BrandSlug, token);
-        }
-
-        /// <summary>
-        /// Add a new brand if it is not in the database.
-        /// </summary>
-        private async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
+        private async Task BrandInsertIfNotExistAsync(string brandSlug,
+            CancellationToken token)
         {
             var brandModelFromDb = await _brandsRepository.GetOneAsync(brand => brand.Slug == brandSlug, token);
 
@@ -219,10 +210,8 @@ namespace Application.Services
             }
         }
 
-        /// <summary>
-        /// Price change notification to subscribers.
-        /// </summary>
-        private async Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        private async Task PriceSubscribersNotificationAsync(Phone phone,
+            CancellationToken token)
         {
             var subscribers = await _priceSubscribersRepository
                 .GetAllAsync(subscriber =>
@@ -231,7 +220,8 @@ namespace Application.Services
             await _mailNotification.PriceSubscribersNotificationAsync(subscribers, phone, token);
         }
 
-        private async Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token)
+        private async Task PriceWishListCustomerNotificationAsync(Phone phone,
+            CancellationToken token)
         {
             var wishList = await _wishListRepository.GetAllIncludeAsync(
                 list => list.PhoneId == phone.Id,
@@ -240,10 +230,8 @@ namespace Application.Services
             await _mailNotification.PriceWishListCustomerNotificationAsync(wishList, phone, token);
         }
 
-        /// <summary>
-        /// Stock change notification to subscribers.
-        /// </summary>
-        private async Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        private async Task StockSubscribersNotificationAsync(Phone phone,
+            CancellationToken token)
         {
             var subscribers = await _stockSubscribersRepository
                 .GetAllAsync(subscriber =>

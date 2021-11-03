@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
-using System.Security.Claims;
-using System.Threading;
-using Application.DTO.Frontend;
+﻿using Application.DTO.Frontend;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Threading;
 
 namespace PhoneShop.Controllers
 {

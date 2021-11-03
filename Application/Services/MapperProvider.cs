@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
@@ -6,6 +5,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Database.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Application.Services
 {

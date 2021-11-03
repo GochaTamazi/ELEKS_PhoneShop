@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.DTO.Frontend;
 using Application.DTO.Frontend.Forms;
+using Application.DTO.Frontend;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.ListPhones;
@@ -12,6 +9,9 @@ using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PhoneShop.Controllers
 {
@@ -19,16 +19,16 @@ namespace PhoneShop.Controllers
     [Route("admin")]
     public class AdminController : Controller
     {
-        private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
         private readonly IAdminPhones _adminPhones;
+        private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
 
         public AdminController(
-            IPhoneSpecificationsApi phoneSpecificationsServiceApiApi,
-            IAdminPhones adminPhones
+            IAdminPhones adminPhones,
+            IPhoneSpecificationsApi phoneSpecificationsServiceApiApi
         )
         {
-            _phoneSpecificationServiceApi = phoneSpecificationsServiceApiApi;
             _adminPhones = adminPhones;
+            _phoneSpecificationServiceApi = phoneSpecificationsServiceApiApi;
         }
 
         [HttpGet("index"), HttpGet("")]

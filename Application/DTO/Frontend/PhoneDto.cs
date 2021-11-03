@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
-using Database.Models;
+using System.Collections.Generic;
 
 namespace Application.DTO.Frontend
 {
