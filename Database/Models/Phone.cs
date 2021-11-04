@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.Interfaces;
 
 #nullable disable
 
 namespace Database.Models
 {
-    public partial class Phone
+    public partial class Phone : IEntity
     {
         public Phone()
         {

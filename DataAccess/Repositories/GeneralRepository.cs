@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using Database.Interfaces;
 
 namespace DataAccess.Repositories
 {
@@ -21,22 +22,48 @@ namespace DataAccess.Repositories
             _table = _masterContext.Set<T>();
         }
 
-        public async Task InsertAsync(T model, CancellationToken token)
+        public async Task<T> InsertAsync(T model,
+            CancellationToken token)
         {
-            await _table.AddAsync(model, token);
+            var entityEntry = await _table.AddAsync(model, token);
             await _masterContext.SaveChangesAsync(token);
+            return entityEntry.Entity;
         }
 
-        public async Task RemoveAsync(T model, CancellationToken token)
+        public async Task<T> InsertOrUpdateAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token)
         {
-            _table.Remove(model);
-            await _masterContext.SaveChangesAsync(token);
+            await using var transaction = await _masterContext.Database.BeginTransactionAsync(token);
+            var result = await GetOneAsync(condition, token);
+            T modelRes;
+            if (result == null)
+            {
+                modelRes = await InsertAsync(model, token);
+            }
+            else
+            {
+                DetachEntity(result);
+                ((IEntity) model).Id = ((IEntity) result).Id;
+                modelRes = await UpdateAsync(model, token);
+            }
+
+            await transaction.CommitAsync(token);
+            return modelRes;
         }
 
-        public async Task UpdateAsync(T model, CancellationToken token)
+        public async Task<T> RemoveAsync(T model,
+            CancellationToken token)
         {
-            _table.Update(model);
+            var entityEntry = _table.Remove(model);
             await _masterContext.SaveChangesAsync(token);
+            return entityEntry.Entity;
+        }
+
+        public async Task<T> UpdateAsync(T model,
+            CancellationToken token)
+        {
+            var entityEntry = _table.Update(model);
+            await _masterContext.SaveChangesAsync(token);
+            return entityEntry.Entity;
         }
 
         public async Task<List<T>> GetAllAsync(CancellationToken token)
@@ -50,8 +77,7 @@ namespace DataAccess.Repositories
             return await _table.Where(condition).ToListAsync(token);
         }
 
-        public async Task<List<T>> GetAllAsync<TKey>(
-            Expression<Func<T, bool>> condition,
+        public async Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> condition,
             Expression<Func<T, TKey>> orderBy,
             CancellationToken token
         )
@@ -59,8 +85,7 @@ namespace DataAccess.Repositories
             return await _table.Where(condition).OrderBy(orderBy).ToListAsync(token);
         }
 
-        public async Task<List<T>> GetAllIncludeAsync<TKey>(
-            Expression<Func<T, bool>> condition,
+        public async Task<List<T>> GetAllIncludeAsync<TKey>(Expression<Func<T, bool>> condition,
             Expression<Func<T, TKey>> include,
             CancellationToken token
         )
@@ -77,9 +102,7 @@ namespace DataAccess.Repositories
             return await _table.Where(condition).FirstOrDefaultAsync(token);
         }
 
-        public async Task<double?> AverageAsync(
-            Expression<Func<T, bool>> condition,
-            Expression<Func<T, int?>> selector,
+        public async Task<double?> AverageAsync(Expression<Func<T, bool>> condition, Expression<Func<T, int?>> selector,
             CancellationToken token
         )
         {

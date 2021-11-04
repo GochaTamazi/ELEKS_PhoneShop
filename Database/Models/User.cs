@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.Interfaces;
 
 #nullable disable
 
 namespace Database.Models
 {
-    public partial class User
+    public partial class User : IEntity
     {
         public User()
         {

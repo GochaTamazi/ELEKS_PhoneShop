@@ -8,15 +8,22 @@ namespace DataAccess.Interfaces
 {
     public interface IGeneralRepository<T>
     {
-        Task InsertAsync(T model, CancellationToken token);
+        Task<T> InsertAsync(T model,
+            CancellationToken token);
 
-        Task RemoveAsync(T model, CancellationToken token);
+        Task<T> InsertOrUpdateAsync(Expression<Func<T, bool>> condition, T model,
+            CancellationToken token);
 
-        Task UpdateAsync(T model, CancellationToken token);
+        Task<T> RemoveAsync(T model,
+            CancellationToken token);
+
+        Task<T> UpdateAsync(T model,
+            CancellationToken token);
 
         Task<List<T>> GetAllAsync(CancellationToken token);
 
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> condition, CancellationToken token);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> condition,
+            CancellationToken token);
 
         Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> condition, Expression<Func<T, TKey>> orderBy,
             CancellationToken token);

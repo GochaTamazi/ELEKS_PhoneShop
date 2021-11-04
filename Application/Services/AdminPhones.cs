@@ -60,6 +60,7 @@ namespace Application.Services
 
             var phoneModelFromDb = await _phonesRepository.GetOneAsync(phone =>
                 phone.PhoneSlug == phoneModelFromApi.PhoneSlug, token);
+
             if (phoneModelFromDb == null)
             {
                 await _phonesRepository.InsertAsync(phoneModelFromApi, token);
@@ -100,6 +101,7 @@ namespace Application.Services
             };
 
             var phoneModel = await _phonesRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug, token);
+
             if (phoneModel != null)
             {
                 phoneSpecFront.InStore = true;

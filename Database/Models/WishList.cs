@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.Interfaces;
 
 #nullable disable
 
 namespace Database.Models
 {
-    public partial class WishList
+    public partial class WishList : IEntity
     {
         public int Id { get; set; }
         public int? UserId { get; set; }

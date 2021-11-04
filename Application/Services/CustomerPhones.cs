@@ -279,21 +279,9 @@ namespace Application.Services
                 UserId = user.Id
             };
 
-            var commentOld = await _commentsRepository.GetOneAsync(comment =>
-                    comment.UserId == commentNew.UserId &&
-                    comment.PhoneSlug == commentNew.PhoneSlug,
-                token);
-
-            if (commentOld == null)
-            {
-                await _commentsRepository.InsertAsync(commentNew, token);
-            }
-            else
-            {
-                commentNew.Id = commentOld.Id;
-                _commentsRepository.DetachEntity(commentOld);
-                await _commentsRepository.UpdateAsync(commentNew, token);
-            }
+            await _commentsRepository.InsertOrUpdateAsync(comment =>
+                comment.UserId == commentNew.UserId &&
+                comment.PhoneSlug == commentNew.PhoneSlug, commentNew, token);
 
             return true;
         }

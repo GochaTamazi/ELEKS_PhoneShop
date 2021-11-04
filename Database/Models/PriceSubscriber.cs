@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.Interfaces;
 
 #nullable disable
 
 namespace Database.Models
 {
-    public partial class PriceSubscriber
+    public partial class PriceSubscriber : IEntity
     {
         public int Id { get; set; }
         public string BrandSlug { get; set; }
