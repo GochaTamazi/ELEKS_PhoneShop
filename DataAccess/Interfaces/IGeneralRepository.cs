@@ -11,6 +11,9 @@ namespace DataAccess.Interfaces
         Task<T> InsertAsync(T model,
             CancellationToken token);
 
+        Task<T> InsertIfNotExistAsync(Expression<Func<T, bool>> condition, T model,
+            CancellationToken token);
+
         Task<T> InsertOrUpdateAsync(Expression<Func<T, bool>> condition, T model,
             CancellationToken token);
 

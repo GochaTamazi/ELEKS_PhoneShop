@@ -58,31 +58,20 @@ namespace Application.Services
             phoneModelFromApi.Stock = phoneSpecFront.Stock;
             phoneModelFromApi.Hided = phoneSpecFront.Hided;
 
-            var phoneModelFromDb = await _phonesRepository.GetOneAsync(phone =>
-                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, token);
+            var phoneModelFromDb = await _phonesRepository.InsertOrUpdateAsync(phone =>
+                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, phoneModelFromApi, token);
 
-            if (phoneModelFromDb == null)
+            //Price notification
+            if (phoneModelFromApi.Price != phoneModelFromDb.Price)
             {
-                await _phonesRepository.InsertAsync(phoneModelFromApi, token);
+                await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
+                await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
             }
-            else
+
+            //Stock notification
+            if (phoneModelFromApi.Stock != phoneModelFromDb.Stock && phoneModelFromDb.Stock <= 0)
             {
-                _phonesRepository.DetachEntity(phoneModelFromDb);
-                phoneModelFromApi.Id = phoneModelFromDb.Id;
-                await _phonesRepository.UpdateAsync(phoneModelFromApi, token);
-
-                //Price notification
-                if (phoneModelFromApi.Price != phoneModelFromDb.Price)
-                {
-                    await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
-                    await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
-                }
-
-                //Stock notification
-                if (phoneModelFromApi.Stock != phoneModelFromDb.Stock && phoneModelFromDb.Stock <= 0)
-                {
-                    await StockSubscribersNotificationAsync(phoneModelFromApi, token);
-                }
+                await StockSubscribersNotificationAsync(phoneModelFromApi, token);
             }
 
             await BrandInsertIfNotExistAsync(phoneModelFromApi.BrandSlug, token);
@@ -138,30 +127,16 @@ namespace Application.Services
                 filterForm.PriceMin <= phone.Price && phone.Price <= filterForm.PriceMax &&
                 ((!filterForm.InStock) || 1 <= phone.Stock);
 
-            Expression<Func<Phone, object>> orderBy;
-            switch (filterForm.OrderBy)
+            Expression<Func<Phone, object>> orderBy = filterForm.OrderBy switch
             {
-                default:
-                    orderBy = (phone) => phone.PhoneName;
-                    break;
-                case "PhoneName":
-                    orderBy = (phone) => phone.PhoneName;
-                    break;
-                case "BrandSlug":
-                    orderBy = (phone) => phone.BrandSlug;
-                    break;
-                case "Price":
-                    orderBy = (phone) => phone.Price;
-                    break;
-                case "Stock":
-                    orderBy = (phone) => phone.Stock;
-                    break;
-            }
+                "PhoneName" => (phone) => phone.PhoneName,
+                "BrandSlug" => (phone) => phone.BrandSlug,
+                "Price" => (phone) => phone.Price,
+                "Stock" => (phone) => phone.Stock,
+                _ => (phone) => phone.PhoneName
+            };
 
-            var phones = await _phonesRepository.GetAllAsync(
-                condition,
-                orderBy,
-                token);
+            var phones = await _phonesRepository.GetAllAsync(condition, orderBy, token);
 
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 
@@ -185,7 +160,6 @@ namespace Application.Services
             CancellationToken token)
         {
             var brandModelFromDb = await _brandsRepository.GetOneAsync(brand => brand.Slug == brandSlug, token);
-
             if (brandModelFromDb == null)
             {
                 var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
@@ -196,8 +170,7 @@ namespace Application.Services
             }
         }
 
-        private async Task PriceSubscribersNotificationAsync(Phone phone,
-            CancellationToken token)
+        private async Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token)
         {
             var subscribers = await _priceSubscribersRepository
                 .GetAllAsync(subscriber =>

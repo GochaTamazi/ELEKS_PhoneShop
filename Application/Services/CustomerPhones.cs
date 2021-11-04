@@ -43,26 +43,18 @@ namespace Application.Services
             _mapperProvider = mapperProvider;
         }
 
-        public async Task AddToWishListAsync(string phoneSlug, string userMail,
-            CancellationToken token)
+        public async Task AddToWishListAsync(string phoneSlug, string userMail, CancellationToken token)
         {
-            var phone = await _phonesRepository.GetOneAsync(phone =>
-                    phone.PhoneSlug == phoneSlug &&
-                    phone.Hided != true,
-                token);
+            var phone = await _phonesRepository.GetOneAsync(
+                phone => phone.PhoneSlug == phoneSlug && phone.Hided != true, token);
 
             if (phone != null)
             {
-                var user = await _usersRepository.GetOneAsync(user =>
-                        user.Email == userMail,
-                    token);
-
+                var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
                 if (user != null)
                 {
-                    var wishList = await _wishListRepository.GetOneAsync(list =>
-                            list.UserId == user.Id &&
-                            list.PhoneId == phone.Id,
-                        token);
+                    var wishList = await _wishListRepository.GetOneAsync(
+                        list => list.UserId == user.Id && list.PhoneId == phone.Id, token);
 
                     if (wishList == null)
                     {
@@ -78,19 +70,14 @@ namespace Application.Services
             }
         }
 
-        public async Task RemoveFromWishListAsync(string phoneSlug, string userMail,
-            CancellationToken token)
+        public async Task RemoveFromWishListAsync(string phoneSlug, string userMail, CancellationToken token)
         {
-            var phone = await _phonesRepository.GetOneAsync(phone =>
-                    phone.PhoneSlug == phoneSlug &&
-                    phone.Hided != true,
-                token);
+            var phone = await _phonesRepository.GetOneAsync(
+                phone => phone.PhoneSlug == phoneSlug && phone.Hided != true, token);
 
             if (phone != null)
             {
-                var user = await _usersRepository.GetOneAsync(user =>
-                        user.Email == userMail,
-                    token);
+                var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
 
                 if (user != null)
                 {
@@ -165,8 +152,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<List<WishList>> ShowWishListAsync(string userMail,
-            CancellationToken token)
+        public async Task<List<WishList>> ShowWishListAsync(string userMail, CancellationToken token)
         {
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
             if (user != null)
@@ -219,25 +205,14 @@ namespace Application.Services
                 ((!filterForm.InStock) || 1 <= phone.Stock) &&
                 phone.Hided == false;
 
-            Expression<Func<Phone, object>> orderBy;
-            switch (filterForm.OrderBy)
+            Expression<Func<Phone, object>> orderBy = filterForm.OrderBy switch
             {
-                default:
-                    orderBy = (phone) => phone.PhoneName;
-                    break;
-                case "PhoneName":
-                    orderBy = (phone) => phone.PhoneName;
-                    break;
-                case "BrandSlug":
-                    orderBy = (phone) => phone.BrandSlug;
-                    break;
-                case "Price":
-                    orderBy = (phone) => phone.Price;
-                    break;
-                case "Stock":
-                    orderBy = (phone) => phone.Stock;
-                    break;
-            }
+                "PhoneName" => (phone) => phone.PhoneName,
+                "BrandSlug" => (phone) => phone.BrandSlug,
+                "Price" => (phone) => phone.Price,
+                "Stock" => (phone) => phone.Stock,
+                _ => (phone) => phone.PhoneName
+            };
 
             var phones = await _phonesRepository.GetAllAsync(
                 condition,
