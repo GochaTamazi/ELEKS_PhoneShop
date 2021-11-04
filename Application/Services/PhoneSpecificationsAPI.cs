@@ -1,3 +1,4 @@
+using System;
 using Application.DTO.Options;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
@@ -29,7 +30,7 @@ namespace Application.Services
             _baseUrl = _options.BaseUrl;
         }
 
-        public async Task<LatestDto> LatestAsync(CancellationToken token)
+        public async Task<LatestDto> GetLatestAsync(CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
 
@@ -41,19 +42,22 @@ namespace Application.Services
             return new LatestDto();
         }
 
-        public async Task<ListBrandsDto> ListBrandsAsync(CancellationToken token)
+        public async Task<ListBrandsDto> GetListBrandsOrThrowAsync(CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
-
             if (response.Result.StatusCode == 200)
             {
-                return await response.ReceiveJson<ListBrandsDto>();
+                var listBrandsDto = await response.ReceiveJson<ListBrandsDto>();
+                if (listBrandsDto.Status)
+                {
+                    return listBrandsDto;
+                }
             }
 
-            return new ListBrandsDto();
+            throw new Exception("PhoneSpecificationsApi not responds");
         }
 
-        public async Task<ListPhonesDto> ListPhonesAsync(string brandSlug, int page,
+        public async Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page,
             CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
@@ -68,7 +72,7 @@ namespace Application.Services
             return new ListPhonesDto();
         }
 
-        public async Task<ListPhonesDto> ListPhonesAsync2(string brandSlug, int page,
+        public async Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page,
             CancellationToken token)
         {
             using var httpClient = new HttpClient();
@@ -82,20 +86,23 @@ namespace Application.Services
             return new ListPhonesDto();
         }
 
-        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync(string phoneSlug,
+        public async Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug,
             CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
-
             if (response.Result.StatusCode == 200)
             {
-                return await response.ReceiveJson<PhoneSpecificationsDto>();
+                var phoneSpecificationsDto = await response.ReceiveJson<PhoneSpecificationsDto>();
+                if (phoneSpecificationsDto.Status)
+                {
+                    return phoneSpecificationsDto;
+                }
             }
 
-            return new PhoneSpecificationsDto();
+            throw new Exception("PhoneSpecificationsApi not responds");
         }
 
-        public async Task<PhoneSpecificationsDto> PhoneSpecificationsAsync2(string phoneSlug,
+        public async Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug,
             CancellationToken token)
         {
             using var httpClient = new HttpClient();
@@ -124,7 +131,7 @@ namespace Application.Services
             return new SearchDto();
         }
 
-        public async Task<TopByFansDto> TopByFansAsync(CancellationToken token)
+        public async Task<TopByFansDto> GetTopByFansAsync(CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
 
@@ -136,7 +143,7 @@ namespace Application.Services
             return new TopByFansDto();
         }
 
-        public async Task<TopByInterestDto> TopByInterestAsync(CancellationToken token)
+        public async Task<TopByInterestDto> GetTopByInterestAsync(CancellationToken token)
         {
             var response = _baseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
 

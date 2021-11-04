@@ -48,13 +48,8 @@ namespace Application.Services
         public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront,
             CancellationToken token)
         {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(
-                phoneSpecFront.PhoneSlug,
-                token);
-            if (phoneSpecificationsDto.Status == false)
-            {
-                throw new Exception("PhoneSpecificationsApi not responds");
-            }
+            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsOrThrowAsync(
+                phoneSpecFront.PhoneSlug, token);
 
             var phoneModelFromApi = _mapperProvider.GetMapper().Map<Phone>(phoneSpecificationsDto);
             phoneModelFromApi.BrandSlug = phoneSpecFront.BrandSlug;
@@ -95,11 +90,8 @@ namespace Application.Services
         public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug,
             CancellationToken token)
         {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.PhoneSpecificationsAsync(phoneSlug, token);
-            if (phoneSpecificationsDto.Status == false)
-            {
-                throw new Exception("PhoneSpecificationsApi not responds");
-            }
+            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsOrThrowAsync(
+                phoneSlug, token);
 
             var phoneSpecFront = new PhoneSpecFront()
             {
@@ -121,14 +113,10 @@ namespace Application.Services
             }
             else
             {
-                var listBrandsDto = await _phoneSpecificationServiceApi.ListBrandsAsync(token);
-                if (listBrandsDto.Status == false)
-                {
-                    throw new Exception("PhoneSpecificationsApi not responds");
-                }
+                var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
 
-                var brandDto = listBrandsDto.Data
-                    .FirstOrDefault(brandDto => brandDto.Brand_name == phoneSpecificationsDto.Data.Brand);
+                var brandDto = listBrandsDto.Data.FirstOrDefault(brandDto =>
+                    brandDto.Brand_name == phoneSpecificationsDto.Data.Brand);
 
                 if (brandDto != null)
                 {
@@ -198,11 +186,7 @@ namespace Application.Services
 
             if (brandModelFromDb == null)
             {
-                var listBrandsDto = await _phoneSpecificationServiceApi.ListBrandsAsync(token);
-                if (listBrandsDto.Status == false)
-                {
-                    throw new Exception("PhoneSpecificationsApi not responds");
-                }
+                var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
 
                 var brandDto = listBrandsDto.Data.FirstOrDefault(brandDto => brandDto.Brand_slug == brandSlug);
                 var brandModelFromApi = _mapperProvider.GetMapper().Map<Brand>(brandDto);

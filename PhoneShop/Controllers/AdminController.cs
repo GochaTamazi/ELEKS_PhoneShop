@@ -40,7 +40,7 @@ namespace PhoneShop.Controllers
         [HttpGet("listBrands")]
         public async Task<ActionResult<ListBrandsDto>> ListBrandsAsync(CancellationToken token)
         {
-            var listBrands = await _phoneSpecificationServiceApi.ListBrandsAsync(token);
+            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
             return View(listBrands);
         }
 
@@ -53,7 +53,7 @@ namespace PhoneShop.Controllers
         {
             var listPhonesRes = new ListPhonesFront()
             {
-                Phones = await _phoneSpecificationServiceApi.ListPhonesAsync(brandSlug, page, token),
+                Phones = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token),
                 BrandSlug = brandSlug,
                 Page = page
             };
@@ -106,21 +106,21 @@ namespace PhoneShop.Controllers
         [HttpGet("latest")]
         public async Task<ActionResult<LatestDto>> LatestAsync(CancellationToken token)
         {
-            var latest = await _phoneSpecificationServiceApi.LatestAsync(token);
+            var latest = await _phoneSpecificationServiceApi.GetLatestAsync(token);
             return View(latest);
         }
 
         [HttpGet("topByInterest")]
         public async Task<ActionResult<TopByInterestDto>> TopByInterestAsync(CancellationToken token)
         {
-            var topByInterest = await _phoneSpecificationServiceApi.TopByInterestAsync(token);
+            var topByInterest = await _phoneSpecificationServiceApi.GetTopByInterestAsync(token);
             return View(topByInterest);
         }
 
         [HttpGet("topByFans")]
         public async Task<ActionResult<TopByFansDto>> TopByFansAsync(CancellationToken token)
         {
-            var topByFans = await _phoneSpecificationServiceApi.TopByFansAsync(token);
+            var topByFans = await _phoneSpecificationServiceApi.GetTopByFansAsync(token);
             return View(topByFans);
         }
     }

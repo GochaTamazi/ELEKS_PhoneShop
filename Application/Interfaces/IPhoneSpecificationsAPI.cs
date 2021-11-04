@@ -16,27 +16,27 @@ namespace Application.Interfaces
     /// </summary>
     public interface IPhoneSpecificationsApi
     {
-        Task<LatestDto> LatestAsync(CancellationToken token);
+        Task<LatestDto> GetLatestAsync(CancellationToken token);
 
-        Task<ListBrandsDto> ListBrandsAsync(CancellationToken token);
+        Task<ListBrandsDto> GetListBrandsOrThrowAsync(CancellationToken token);
 
-        Task<ListPhonesDto> ListPhonesAsync(string brandSlug, int page,
+        Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page,
             CancellationToken token);
 
-        Task<ListPhonesDto> ListPhonesAsync2(string brandSlug, int page,
+        Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page,
             CancellationToken token);
 
-        Task<PhoneSpecificationsDto> PhoneSpecificationsAsync(string phoneSlug,
+        Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug,
             CancellationToken token);
 
-        Task<PhoneSpecificationsDto> PhoneSpecificationsAsync2(string phoneSlug,
+        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug,
             CancellationToken token);
 
         Task<SearchDto> SearchAsync(string query,
             CancellationToken token);
 
-        Task<TopByFansDto> TopByFansAsync(CancellationToken token);
+        Task<TopByFansDto> GetTopByFansAsync(CancellationToken token);
 
-        Task<TopByInterestDto> TopByInterestAsync(CancellationToken token);
+        Task<TopByInterestDto> GetTopByInterestAsync(CancellationToken token);
     }
 }
