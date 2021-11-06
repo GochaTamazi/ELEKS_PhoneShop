@@ -53,7 +53,7 @@ namespace Application.Services
                         .ForMember(x => x.Stock, m => m.MapFrom(x => x.Stock))
                         .ForMember(x => x.Hided, m => m.MapFrom(x => x.Hided))
                         .ForAllOtherMembers(m => m.Ignore());
-                    
+
                     cfg.CreateMap<Phone, PhoneSpecFront>()
                         .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
                         .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
@@ -93,6 +93,13 @@ namespace Application.Services
                         .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
                         .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
                         .ForMember(x => x.Email, m => m.MapFrom(x => x.Email))
+                        .ForAllOtherMembers(m => m.Ignore());
+
+                    cfg.CreateMap<CommentForm, Comment>()
+                        .ForMember(x => x.Comments, m => m.MapFrom(x => x.Comments))
+                        .ForMember(x => x.Rating, m => m.MapFrom(x => x.Rating))
+                        .ForMember(x => x.CreateTime, m => m.MapFrom(x => x.CreateTime))
+                        .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
                         .ForAllOtherMembers(m => m.Ignore());
                 }
             );

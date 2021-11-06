@@ -45,87 +45,51 @@ namespace Application.Services
 
         public async Task AddToWishListAsync(string phoneSlug, string userMail, CancellationToken token)
         {
-            var phone = await _phonesRepository.GetOneAsync(
-                phone => phone.PhoneSlug == phoneSlug && phone.Hided != true, token);
-
-            if (phone != null)
+            var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
+            var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
+            if (phone != null && user != null)
             {
-                var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
-                if (user != null)
+                var wishList = new WishList()
                 {
-                    var wishList = await _wishListRepository.GetOneAsync(
-                        list => list.UserId == user.Id && list.PhoneId == phone.Id, token);
+                    UserId = user.Id,
+                    PhoneId = phone.Id
+                };
 
-                    if (wishList == null)
-                    {
-                        var wishListNew = new WishList()
-                        {
-                            UserId = user.Id,
-                            PhoneId = phone.Id
-                        };
-
-                        await _wishListRepository.InsertAsync(wishListNew, token);
-                    }
-                }
+                await _wishListRepository.InsertIfNotExistAsync(l => l.UserId == user.Id && l.PhoneId == phone.Id,
+                    wishList, token);
             }
         }
 
         public async Task RemoveFromWishListAsync(string phoneSlug, string userMail, CancellationToken token)
         {
-            var phone = await _phonesRepository.GetOneAsync(
-                phone => phone.PhoneSlug == phoneSlug && phone.Hided != true, token);
-
-            if (phone != null)
+            var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
+            var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
+            if (phone != null && user != null)
             {
-                var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
-
-                if (user != null)
-                {
-                    var wishList = await _wishListRepository.GetOneAsync(list =>
-                            list.UserId == user.Id &&
-                            list.PhoneId == phone.Id,
-                        token);
-
-                    if (wishList != null)
-                    {
-                        await _wishListRepository.RemoveAsync(wishList, token);
-                    }
-                }
+                await _wishListRepository.RemoveIfExistAsync(l => l.UserId == user.Id && l.PhoneId == phone.Id, token);
             }
         }
 
-        public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm,
-            CancellationToken token)
+        public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
         {
             var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberForm);
 
-            var priceSubscriberModel = await _priceSubscribersRepository.GetOneAsync(sub =>
-                    sub.BrandSlug == priceSubscriber.BrandSlug &&
-                    sub.PhoneSlug == priceSubscriber.PhoneSlug &&
-                    sub.Email == priceSubscriber.Email,
-                token);
-
-            if (priceSubscriberModel == null)
-            {
-                await _priceSubscribersRepository.InsertAsync(priceSubscriber, token);
-            }
+            await _priceSubscribersRepository.InsertIfNotExistAsync(s =>
+                    s.BrandSlug == priceSubscriber.BrandSlug &&
+                    s.PhoneSlug == priceSubscriber.PhoneSlug &&
+                    s.Email == priceSubscriber.Email,
+                priceSubscriber, token);
         }
 
-        public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm,
-            CancellationToken token)
+        public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
         {
             var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberForm);
 
-            var stockSubscriberModel = await _stockSubscribersRepository.GetOneAsync(sub =>
-                    sub.BrandSlug == stockSubscriber.BrandSlug &&
-                    sub.PhoneSlug == stockSubscriber.PhoneSlug &&
-                    sub.Email == stockSubscriber.Email,
-                token);
-
-            if (stockSubscriberModel == null)
-            {
-                await _stockSubscribersRepository.InsertAsync(stockSubscriber, token);
-            }
+            await _stockSubscribersRepository.InsertIfNotExistAsync(s =>
+                    s.BrandSlug == stockSubscriber.BrandSlug &&
+                    s.PhoneSlug == stockSubscriber.PhoneSlug &&
+                    s.Email == stockSubscriber.Email,
+                stockSubscriber, token);
         }
 
         public async Task<CommentsPage> GetPhoneCommentsAsync(string phoneSlug, int page, int pageSize,
@@ -138,8 +102,8 @@ namespace Application.Services
 
             Expression<Func<Comment, bool>> commentCondition = (comment) => comment.PhoneSlug == phoneSlug;
 
-            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition,
-                comment => comment.User, token);
+            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition, comment => comment.User,
+                token);
 
             return new CommentsPage()
             {
@@ -157,17 +121,14 @@ namespace Application.Services
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
             if (user != null)
             {
-                return await _wishListRepository.GetAllIncludeAsync(
-                    list => list.UserId == user.Id,
-                    list => list.Phone,
+                return await _wishListRepository.GetAllIncludeAsync(list => list.UserId == user.Id, list => list.Phone,
                     token);
             }
 
             return new List<WishList>();
         }
 
-        public async Task<DTO.Frontend.PhoneDto> GetPhoneAsync(string phoneSlug,
-            CancellationToken token)
+        public async Task<PhoneDto> GetPhoneAsync(string phoneSlug, CancellationToken token)
         {
             Expression<Func<Phone, bool>> phoneCondition = (phone) =>
                 phone.PhoneSlug == phoneSlug &&
@@ -181,11 +142,9 @@ namespace Application.Services
 
             var phoneDto = _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
 
-            Expression<Func<Comment, bool>> commentCondition = (comment) =>
-                comment.PhoneSlug == phoneSlug;
+            Expression<Func<Comment, bool>> commentCondition = (comment) => comment.PhoneSlug == phoneSlug;
 
-            var averageRating = await _commentsRepository.AverageAsync(commentCondition,
-                phone => phone.Rating, token);
+            var averageRating = await _commentsRepository.AverageAsync(commentCondition, phone => phone.Rating, token);
 
             if (averageRating != null)
             {
@@ -214,10 +173,7 @@ namespace Application.Services
                 _ => (phone) => phone.PhoneName
             };
 
-            var phones = await _phonesRepository.GetAllAsync(
-                condition,
-                orderBy,
-                token);
+            var phones = await _phonesRepository.GetAllAsync(condition, orderBy, token);
 
             var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
 
@@ -236,8 +192,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<bool> PostCommentAsync(CommentForm commentForm,
-            CancellationToken token)
+        public async Task<bool> PostCommentAsync(CommentForm commentForm, CancellationToken token)
         {
             var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
             if (user == null)
@@ -245,18 +200,12 @@ namespace Application.Services
                 return false;
             }
 
-            var commentNew = new Comment()
-            {
-                Comments = commentForm.Comments,
-                Rating = commentForm.Rating,
-                CreateTime = commentForm.CreateTime,
-                PhoneSlug = commentForm.PhoneSlug,
-                UserId = user.Id
-            };
+            var comment = _mapperProvider.GetMapper().Map<Comment>(commentForm);
+            comment.UserId = user.Id;
 
-            await _commentsRepository.InsertOrUpdateAsync(comment =>
-                comment.UserId == commentNew.UserId &&
-                comment.PhoneSlug == commentNew.PhoneSlug, commentNew, token);
+            await _commentsRepository.InsertOrUpdateAsync(
+                c => c.UserId == comment.UserId && c.PhoneSlug == comment.PhoneSlug,
+                comment, token);
 
             return true;
         }
