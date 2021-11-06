@@ -6,6 +6,7 @@ using AutoMapper;
 using Database.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Application.DTO.Frontend;
 
 namespace Application.Services
 {
@@ -43,6 +44,22 @@ namespace Application.Services
                         .ForMember(x => x.Specifications,
                             m => m.MapFrom(x =>
                                 JsonConvert.SerializeObject(x.Data.Specifications, Formatting.None)))
+                        .ForAllOtherMembers(m => m.Ignore());
+
+                    cfg.CreateMap<PhoneSpecFront, Phone>()
+                        .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
+                        .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
+                        .ForMember(x => x.Price, m => m.MapFrom(x => x.Price))
+                        .ForMember(x => x.Stock, m => m.MapFrom(x => x.Stock))
+                        .ForMember(x => x.Hided, m => m.MapFrom(x => x.Hided))
+                        .ForAllOtherMembers(m => m.Ignore());
+                    
+                    cfg.CreateMap<Phone, PhoneSpecFront>()
+                        .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
+                        .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
+                        .ForMember(x => x.Price, m => m.MapFrom(x => x.Price))
+                        .ForMember(x => x.Stock, m => m.MapFrom(x => x.Stock))
+                        .ForMember(x => x.Hided, m => m.MapFrom(x => x.Hided))
                         .ForAllOtherMembers(m => m.Ignore());
 
                     cfg.CreateMap<Phone, Application.DTO.Frontend.PhoneDto>()

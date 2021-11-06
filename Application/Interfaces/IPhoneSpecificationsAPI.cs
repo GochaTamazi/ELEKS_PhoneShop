@@ -20,20 +20,15 @@ namespace Application.Interfaces
 
         Task<ListBrandsDto> GetListBrandsOrThrowAsync(CancellationToken token);
 
-        Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page,
-            CancellationToken token);
+        Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page, CancellationToken token);
 
-        Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page,
-            CancellationToken token);
+        Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page, CancellationToken token);
 
-        Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug,
-            CancellationToken token);
+        Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug, CancellationToken token);
 
-        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug,
-            CancellationToken token);
+        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug, CancellationToken token);
 
-        Task<SearchDto> SearchAsync(string query,
-            CancellationToken token);
+        Task<SearchDto> SearchAsync(string query, CancellationToken token);
 
         Task<TopByFansDto> GetTopByFansAsync(CancellationToken token);
 

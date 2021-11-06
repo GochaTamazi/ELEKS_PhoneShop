@@ -95,10 +95,8 @@ namespace PhoneShop.Controllers
                     await AuthenticateAsync(userNew.Email, userNew.Role);
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Incorrect login or password");
-                }
+
+                ModelState.AddModelError("", "Incorrect login or password");
             }
 
             return View(registerForm);

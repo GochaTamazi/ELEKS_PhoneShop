@@ -6,7 +6,6 @@ namespace Application.Interfaces
 {
     public interface IEmail
     {
-        public Task SendEmailAsync(MailAddress to, string subject, string html,
-            CancellationToken token);
+        public Task SendEmailAsync(MailAddress to, string subject, string html, CancellationToken token);
     }
 }

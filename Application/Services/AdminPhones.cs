@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 
 namespace Application.Services
 {
@@ -45,75 +46,56 @@ namespace Application.Services
             _phoneSpecificationServiceApi = phoneSpecificationServiceApi;
         }
 
-        public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront,
-            CancellationToken token)
+        public async Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsOrThrowAsync(
                 phoneSpecFront.PhoneSlug, token);
 
-            var phoneModelFromApi = _mapperProvider.GetMapper().Map<Phone>(phoneSpecificationsDto);
-            phoneModelFromApi.BrandSlug = phoneSpecFront.BrandSlug;
-            phoneModelFromApi.PhoneSlug = phoneSpecFront.PhoneSlug;
-            phoneModelFromApi.Price = phoneSpecFront.Price;
-            phoneModelFromApi.Stock = phoneSpecFront.Stock;
-            phoneModelFromApi.Hided = phoneSpecFront.Hided;
+            var phoneFromApi = _mapperProvider.GetMapper().Map<PhoneSpecificationsDto, Phone>(phoneSpecificationsDto);
+            phoneFromApi = _mapperProvider.GetMapper().Map<PhoneSpecFront, Phone>(phoneSpecFront, phoneFromApi);
 
-            var phoneModelFromDb = await _phonesRepository.InsertOrUpdateAsync(phone =>
-                phone.PhoneSlug == phoneModelFromApi.PhoneSlug, phoneModelFromApi, token);
+            var phoneFromDb = await _phonesRepository.InsertOrUpdateAsync(phone =>
+                phone.PhoneSlug == phoneFromApi.PhoneSlug, phoneFromApi, token);
 
             //Price notification
-            if (phoneModelFromApi.Price != phoneModelFromDb.Price)
+            if (phoneFromApi.Price != phoneFromDb.Price)
             {
-                await PriceSubscribersNotificationAsync(phoneModelFromApi, token);
-                await PriceWishListCustomerNotificationAsync(phoneModelFromDb, token);
+                await PriceSubscribersNotificationAsync(phoneFromApi, token);
+                await PriceWishListCustomerNotificationAsync(phoneFromDb, token);
             }
 
             //Stock notification
-            if (phoneModelFromApi.Stock != phoneModelFromDb.Stock && phoneModelFromDb.Stock <= 0)
+            if (phoneFromApi.Stock != phoneFromDb.Stock && phoneFromDb.Stock <= 0)
             {
-                await StockSubscribersNotificationAsync(phoneModelFromApi, token);
+                await StockSubscribersNotificationAsync(phoneFromApi, token);
             }
 
-            await BrandInsertIfNotExistAsync(phoneModelFromApi.BrandSlug, token);
+            await BrandInsertIfNotExistAsync(phoneFromApi.BrandSlug, token);
         }
 
-        public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug,
-            CancellationToken token)
+        public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug, CancellationToken token)
         {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsOrThrowAsync(
-                phoneSlug, token);
+            var phoneSpecificationsDto =
+                await _phoneSpecificationServiceApi.GetPhoneSpecificationsOrThrowAsync(phoneSlug, token);
+
+            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
+            var brand = listBrands.Data.FirstOrDefault(brand => brand.Brand_name == phoneSpecificationsDto.Data.Brand);
 
             var phoneSpecFront = new PhoneSpecFront()
             {
-                PhoneDetail = phoneSpecificationsDto.Data,
-                PhoneSlug = phoneSlug
+                PhoneSlug = phoneSlug,
+                BrandSlug = brand.Brand_slug,
             };
 
-            var phoneModel = await _phonesRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug, token);
+            var phone = await _phonesRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug, token);
 
-            if (phoneModel != null)
+            if (phone != null)
             {
+                phoneSpecFront = _mapperProvider.GetMapper().Map<Phone, PhoneSpecFront>(phone);
                 phoneSpecFront.InStore = true;
-                phoneSpecFront.BrandSlug = phoneModel.BrandSlug;
-                phoneSpecFront.Price = phoneModel.Price;
-                phoneSpecFront.Stock = phoneModel.Stock;
-                if (phoneModel.Hided != null)
-                {
-                    phoneSpecFront.Hided = (bool) phoneModel.Hided;
-                }
             }
-            else
-            {
-                var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
 
-                var brandDto = listBrandsDto.Data.FirstOrDefault(brandDto =>
-                    brandDto.Brand_name == phoneSpecificationsDto.Data.Brand);
-
-                if (brandDto != null)
-                {
-                    phoneSpecFront.BrandSlug = brandDto.Brand_slug;
-                }
-            }
+            phoneSpecFront.PhoneDetail = phoneSpecificationsDto.Data;
 
             return phoneSpecFront;
         }
@@ -155,15 +137,12 @@ namespace Application.Services
             };
         }
 
-
-        private async Task BrandInsertIfNotExistAsync(string brandSlug,
-            CancellationToken token)
+        private async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
         {
             var brandModelFromDb = await _brandsRepository.GetOneAsync(brand => brand.Slug == brandSlug, token);
             if (brandModelFromDb == null)
             {
                 var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
-
                 var brandDto = listBrandsDto.Data.FirstOrDefault(brandDto => brandDto.Brand_slug == brandSlug);
                 var brandModelFromApi = _mapperProvider.GetMapper().Map<Brand>(brandDto);
                 await _brandsRepository.InsertAsync(brandModelFromApi, token);
@@ -179,8 +158,7 @@ namespace Application.Services
             await _mailNotification.PriceSubscribersNotificationAsync(subscribers, phone, token);
         }
 
-        private async Task PriceWishListCustomerNotificationAsync(Phone phone,
-            CancellationToken token)
+        private async Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token)
         {
             var wishList = await _wishListRepository.GetAllIncludeAsync(
                 list => list.PhoneId == phone.Id,
@@ -189,8 +167,7 @@ namespace Application.Services
             await _mailNotification.PriceWishListCustomerNotificationAsync(wishList, phone, token);
         }
 
-        private async Task StockSubscribersNotificationAsync(Phone phone,
-            CancellationToken token)
+        private async Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token)
         {
             var subscribers = await _stockSubscribersRepository
                 .GetAllAsync(subscriber =>
