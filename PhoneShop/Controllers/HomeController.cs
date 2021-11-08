@@ -20,32 +20,15 @@ namespace PhoneShop.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public ActionResult Error(CancellationToken token)
+        public ActionResult Error()
         {
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
         [HttpGet("index"), HttpGet("")]
-        public ActionResult Index(CancellationToken token)
+        public ActionResult Index()
         {
             return View();
-        }
-
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            if (User.Identity?.IsAuthenticated != true)
-            {
-                return Content("Not authenticated");
-            }
-
-            var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
-            var role1 = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
-            var str =
-                $"{User.Identity?.Name} | " +
-                $"{User.Identity?.AuthenticationType} | " +
-                $"{User.Identity?.IsAuthenticated} | {role} {role1}";
-            return Content(str);
         }
     }
 }

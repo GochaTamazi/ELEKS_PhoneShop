@@ -18,8 +18,7 @@ namespace Application.Services
             _emailOptions = emailOptions.Value;
         }
 
-        public async Task SendEmailAsync(MailAddress to, string subject, string html,
-            CancellationToken token)
+        public async Task SendEmailAsync(MailAddress to, string subject, string html, CancellationToken token)
         {
             Console.WriteLine("Email.SendMailAsync");
             Console.WriteLine($"SmtpHost: {_emailOptions.SmtpHost}");
@@ -38,7 +37,8 @@ namespace Application.Services
 
             var smptClient = new SmtpClient(_emailOptions.SmtpHost, Convert.ToInt32(_emailOptions.SmtpPort))
             {
-                Credentials = new NetworkCredential(_emailOptions.SmtpUser, _emailOptions.SmtpPass), EnableSsl = true
+                Credentials = new NetworkCredential(_emailOptions.SmtpUser, _emailOptions.SmtpPass),
+                EnableSsl = true
             };
 
             await smptClient.SendMailAsync(message, token);

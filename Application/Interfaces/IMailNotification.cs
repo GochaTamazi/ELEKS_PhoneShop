@@ -1,5 +1,4 @@
 using Database.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 
@@ -7,10 +6,10 @@ namespace Application.Interfaces
 {
     public interface IMailNotification
     {
-        Task PriceSubscribersNotificationAsync(List<PriceSubscriber> subscribers, Phone phone, CancellationToken token);
+        Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token);
 
-        Task PriceWishListCustomerNotificationAsync(List<WishList> subscribers, Phone phone, CancellationToken token);
+        Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token);
 
-        Task StockSubscribersNotificationAsync(List<StockSubscriber> subscribers, Phone phone, CancellationToken token);
+        Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token);
     }
 }

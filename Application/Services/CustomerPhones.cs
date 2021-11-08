@@ -121,8 +121,7 @@ namespace Application.Services
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
             if (user != null)
             {
-                return await _wishListRepository.GetAllIncludeAsync(list => list.UserId == user.Id, list => list.Phone,
-                    token);
+                return await _wishListRepository.GetAllIncludeAsync(l => l.UserId == user.Id, l => l.Phone, token);
             }
 
             return new List<WishList>();

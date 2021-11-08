@@ -21,138 +21,218 @@ namespace Application.Services
 {
     public class PhoneSpecificationsApi : IPhoneSpecificationsApi
     {
-        private readonly PhoneSpecificationsApiOptions _options;
         private readonly string _baseUrl;
 
         public PhoneSpecificationsApi(IOptions<PhoneSpecificationsApiOptions> options)
         {
-            _options = options.Value;
-            _baseUrl = _options.BaseUrl;
+            _baseUrl = options.Value.BaseUrl;
         }
 
         public async Task<LatestDto> GetLatestAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
+            try
             {
-                return await response.ReceiveJson<LatestDto>();
-            }
-
-            return new LatestDto();
-        }
-
-        public async Task<ListBrandsDto> GetListBrandsOrThrowAsync(CancellationToken token)
-        {
-            var response = _baseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
-            if (response.Result.StatusCode == 200)
-            {
-                var listBrandsDto = await response.ReceiveJson<ListBrandsDto>();
-                if (listBrandsDto.Status)
+                var response = await _baseUrl.AppendPathSegments("v2", "latest").GetAsync(token);
+                if (response.StatusCode == 200)
                 {
-                    return listBrandsDto;
+                    var latestDto = await response.GetJsonAsync<LatestDto>();
+                    if (latestDto.Status)
+                    {
+                        return latestDto;
+                    }
                 }
             }
-
-            throw new Exception("PhoneSpecificationsApi not responds");
-        }
-
-        public async Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page,
-            CancellationToken token)
-        {
-            var response = _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
-                .SetQueryParams(new {page = page})
-                .GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
+            catch (Exception)
             {
-                return await response.ReceiveJson<ListPhonesDto>();
+                // ignored
             }
 
-            return new ListPhonesDto();
+            return null;
         }
 
-        public async Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page,
-            CancellationToken token)
+        public async Task<ListBrandsDto> GetListBrandsAsync(CancellationToken token)
         {
-            using var httpClient = new HttpClient();
-            var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/brands/{brandSlug}?page={page}", token);
-
-            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return await httpResponse.Content.ReadFromJsonAsync<ListPhonesDto>(cancellationToken: token);
-            }
-
-            return new ListPhonesDto();
-        }
-
-        public async Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug,
-            CancellationToken token)
-        {
-            var response = _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
-            if (response.Result.StatusCode == 200)
-            {
-                var phoneSpecificationsDto = await response.ReceiveJson<PhoneSpecificationsDto>();
-                if (phoneSpecificationsDto.Status)
+                var response = await _baseUrl.AppendPathSegments("v2", "brands").GetAsync(token);
+                if (response.StatusCode == 200)
                 {
-                    return phoneSpecificationsDto;
+                    var listBrandsDto = await response.GetJsonAsync<ListBrandsDto>();
+                    if (listBrandsDto.Status)
+                    {
+                        return listBrandsDto;
+                    }
                 }
             }
+            catch (Exception)
+            {
+                // ignored
+            }
 
-            throw new Exception("PhoneSpecificationsApi not responds");
+            return null;
+        }
+
+        public async Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page, CancellationToken token)
+        {
+            try
+            {
+                var response = await _baseUrl.AppendPathSegments("v2", "brands", brandSlug)
+                    .SetQueryParams(new {page = page})
+                    .GetAsync(token);
+                if (response.StatusCode == 200)
+                {
+                    var listPhonesDto = await response.GetJsonAsync<ListPhonesDto>();
+                    if (listPhonesDto.Status)
+                    {
+                        return listPhonesDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return null;
+        }
+
+        public async Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page, CancellationToken token)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/brands/{brandSlug}?page={page}", token);
+                if (httpResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    var listPhonesDto =
+                        await httpResponse.Content.ReadFromJsonAsync<ListPhonesDto>(cancellationToken: token);
+                    if (listPhonesDto.Status)
+                    {
+                        return listPhonesDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return null;
+        }
+
+        public async Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync(string phoneSlug, CancellationToken token)
+        {
+            try
+            {
+                var response = await _baseUrl.AppendPathSegments("v2", phoneSlug).GetAsync(token);
+                if (response.StatusCode == 200)
+                {
+                    var phoneSpecificationsDto = await response.GetJsonAsync<PhoneSpecificationsDto>();
+                    if (phoneSpecificationsDto.Status)
+                    {
+                        return phoneSpecificationsDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return null;
         }
 
         public async Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug,
             CancellationToken token)
         {
-            using var httpClient = new HttpClient();
-            var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/{phoneSlug}", token);
-
-            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return await httpResponse.Content.ReadFromJsonAsync<PhoneSpecificationsDto>(cancellationToken: token);
+                using var httpClient = new HttpClient();
+                var httpResponse = await httpClient.GetAsync($"{_baseUrl}/v2/{phoneSlug}", token);
+                if (httpResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    var phoneSpecificationsDto = await httpResponse.Content.ReadFromJsonAsync<PhoneSpecificationsDto>(
+                        cancellationToken: token);
+                    if (phoneSpecificationsDto.Status)
+                    {
+                        return phoneSpecificationsDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
             }
 
-            return new PhoneSpecificationsDto();
+            return null;
         }
 
-        public async Task<SearchDto> SearchAsync(string query,
-            CancellationToken token)
+        public async Task<SearchDto> SearchAsync(string query, CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "search")
-                .SetQueryParams(new {query = query})
-                .GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
+            try
             {
-                return await response.ReceiveJson<SearchDto>();
+                var response = await _baseUrl.AppendPathSegments("v2", "search")
+                    .SetQueryParams(new {query = query})
+                    .GetAsync(token);
+                if (response.StatusCode == 200)
+                {
+                    var searchDto = await response.GetJsonAsync<SearchDto>();
+                    if (searchDto.Status)
+                    {
+                        return searchDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
             }
 
-            return new SearchDto();
+            return null;
         }
 
         public async Task<TopByFansDto> GetTopByFansAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
+            try
             {
-                return await response.ReceiveJson<TopByFansDto>();
+                var response = await _baseUrl.AppendPathSegments("v2", "top-by-fans").GetAsync(token);
+                if (response.StatusCode == 200)
+                {
+                    var topByFansDto = await response.GetJsonAsync<TopByFansDto>();
+                    if (topByFansDto.Status)
+                    {
+                        return topByFansDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
             }
 
-            return new TopByFansDto();
+            return null;
         }
 
         public async Task<TopByInterestDto> GetTopByInterestAsync(CancellationToken token)
         {
-            var response = _baseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
-
-            if (response.Result.StatusCode == 200)
+            try
             {
-                return await response.ReceiveJson<TopByInterestDto>();
+                var response = await _baseUrl.AppendPathSegments("v2", "top-by-interest").GetAsync(token);
+                if (response.StatusCode == 200)
+                {
+                    var topByInterestDto = await response.GetJsonAsync<TopByInterestDto>();
+                    if (topByInterestDto.Status)
+                    {
+                        return topByInterestDto;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
             }
 
-            return new TopByInterestDto();
+            return null;
         }
     }
 }

@@ -18,13 +18,13 @@ namespace Application.Interfaces
     {
         Task<LatestDto> GetLatestAsync(CancellationToken token);
 
-        Task<ListBrandsDto> GetListBrandsOrThrowAsync(CancellationToken token);
+        Task<ListBrandsDto> GetListBrandsAsync(CancellationToken token);
 
         Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page, CancellationToken token);
 
         Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page, CancellationToken token);
 
-        Task<PhoneSpecificationsDto> GetPhoneSpecificationsOrThrowAsync(string phoneSlug, CancellationToken token);
+        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
 
         Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug, CancellationToken token);
 

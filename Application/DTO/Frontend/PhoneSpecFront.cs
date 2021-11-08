@@ -4,7 +4,7 @@ namespace Application.DTO.Frontend
 {
     public class PhoneSpecFront
     {
-        public PhoneDetailDto PhoneDetail { set; get; }
+        public PhoneDetailDto PhoneDetail { set; get; } = new PhoneDetailDto();
         public string BrandSlug { set; get; }
         public string PhoneSlug { set; get; }
         public bool InStore { set; get; } = false;

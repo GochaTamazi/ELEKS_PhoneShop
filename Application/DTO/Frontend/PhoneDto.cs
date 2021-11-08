@@ -5,20 +5,20 @@ namespace Application.DTO.Frontend
 {
     public class PhoneDto
     {
-        public int Id { get; set; }
-        public string BrandSlug { get; set; }
-        public string PhoneSlug { get; set; }
-        public string PhoneName { get; set; }
-        public string Dimension { get; set; }
-        public string Os { get; set; }
-        public string Storage { get; set; }
-        public string Thumbnail { get; set; }
-        public string ReleaseDate { get; set; }
+        public int Id { get; set; } = 0;
+        public string BrandSlug { get; set; } = string.Empty;
+        public string PhoneSlug { get; set; } = string.Empty;
+        public string PhoneName { get; set; } = string.Empty;
+        public string Dimension { get; set; } = string.Empty;
+        public string Os { get; set; } = string.Empty;
+        public string Storage { get; set; } = string.Empty;
+        public string Thumbnail { get; set; } = string.Empty;
+        public string ReleaseDate { get; set; } = string.Empty;
         public List<string> Images { get; set; } = new List<string>();
         public ICollection<SpecificationDto> Specifications { get; set; } = new List<SpecificationDto>();
-        public int? Price { get; set; }
-        public int? Stock { get; set; }
-        public bool? Hided { get; set; }
+        public int? Price { get; set; } = 0;
+        public int? Stock { get; set; } = 0;
+        public bool? Hided { get; set; } = false;
         public double? AverageRating { get; set; } = 0;
     }
 }

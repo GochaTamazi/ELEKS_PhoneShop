@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
@@ -32,7 +34,7 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("index"), HttpGet("")]
-        public ActionResult Index(CancellationToken token)
+        public ActionResult Index()
         {
             return View();
         }
@@ -40,16 +42,13 @@ namespace PhoneShop.Controllers
         [HttpGet("listBrands")]
         public async Task<ActionResult<ListBrandsDto>> ListBrandsAsync(CancellationToken token)
         {
-            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsOrThrowAsync(token);
+            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
             return View(listBrands);
         }
 
         [HttpGet("listPhones")]
-        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync(
-            [FromQuery] string brandSlug,
-            [FromQuery] int page,
-            CancellationToken token
-        )
+        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync([FromQuery] string brandSlug,
+            [FromQuery] int page, CancellationToken token)
         {
             var listPhonesRes = new ListPhonesFront()
             {
@@ -61,11 +60,8 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("showAllPhones")]
-        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(
-            CancellationToken token,
-            [FromQuery] PhonesFilterForm filterForm,
-            [FromQuery] int page = 1
-        )
+        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
+            [FromQuery] PhonesFilterForm filterForm, [FromQuery] int page = 1)
         {
             const int pageSize = 10;
             var phonesPageFront = await _adminPhones.GetPhonesAsync(filterForm, page, pageSize, token);
@@ -75,29 +71,28 @@ namespace PhoneShop.Controllers
 
         [HttpGet("phoneSpecifications")]
         public async Task<ActionResult<PhoneSpecificationsDto>> PhoneSpecificationsAsync(
-            [FromQuery] string phoneSlug,
-            CancellationToken token
-        )
+            [FromQuery(Name = "phoneSlug")] [Required] string phoneSlug,
+            CancellationToken token)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
             var phoneSpecFront = await _adminPhones.GetPhoneAsync(phoneSlug, token);
             return View(phoneSpecFront);
         }
 
         [HttpPost("phoneInsertOrUpdate")]
-        public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync(
-            [FromForm] PhoneSpecFront phoneSpecFront,
-            CancellationToken token
-        )
+        public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync([FromForm] PhoneSpecFront phoneSpecFront,
+            CancellationToken token)
         {
             await _adminPhones.PhoneInsertOrUpdateAsync(phoneSpecFront, token);
             return Ok("PhoneInsertOrUpdateAsync Done");
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<SearchDto>> SearchAsync(
-            [FromQuery] string query,
-            CancellationToken token
-        )
+        public async Task<ActionResult<SearchDto>> SearchAsync([FromQuery] string query, CancellationToken token)
         {
             var search = await _phoneSpecificationServiceApi.SearchAsync(query, token);
             return View(search);

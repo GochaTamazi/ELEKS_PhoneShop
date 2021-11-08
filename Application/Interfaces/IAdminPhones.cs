@@ -2,12 +2,13 @@ using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using System.Threading.Tasks;
 using System.Threading;
+using Database.Models;
 
 namespace Application.Interfaces
 {
     public interface IAdminPhones
     {
-        Task PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
+        Task<Phone> PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
 
         Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug, CancellationToken token);
 
