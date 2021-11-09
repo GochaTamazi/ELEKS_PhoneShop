@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
@@ -43,35 +42,60 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<ListBrandsDto>> ListBrandsAsync(CancellationToken token)
         {
             var listBrands = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+
+            if (listBrands == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return View(listBrands);
         }
 
         [HttpGet("listPhones")]
-        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync([FromQuery] string brandSlug,
-            [FromQuery] int page, CancellationToken token)
+        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync(CancellationToken token,
+            [FromQuery] [Required] string brandSlug,
+            [FromQuery] int page = 1
+        )
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("brandSlug not set");
+            }
+
+            var phones = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token);
+
+            if (phones == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             var listPhonesRes = new ListPhonesFront()
             {
-                Phones = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token),
+                Phones = phones,
                 BrandSlug = brandSlug,
                 Page = page
             };
+
             return View(listPhonesRes);
         }
 
         [HttpGet("showAllPhones")]
         public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
-            [FromQuery] PhonesFilterForm filterForm, [FromQuery] int page = 1)
+            [FromQuery] PhonesFilterForm filterForm,
+            [FromQuery] int page = 1
+        )
         {
             const int pageSize = 10;
+
             var phonesPageFront = await _adminPhones.GetPhonesAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
+
             return View(phonesPageFront);
         }
 
         [HttpGet("phoneSpecifications")]
         public async Task<ActionResult<PhoneSpecificationsDto>> PhoneSpecificationsAsync(
-            [FromQuery(Name = "phoneSlug")] [Required] string phoneSlug,
+            [FromQuery] [Required] string phoneSlug,
             CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -87,14 +111,32 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync([FromForm] PhoneSpecFront phoneSpecFront,
             CancellationToken token)
         {
-            await _adminPhones.PhoneInsertOrUpdateAsync(phoneSpecFront, token);
+            var phone = await _adminPhones.PhoneInsertOrUpdateAsync(phoneSpecFront, token);
+
+            if (phone == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return Ok("PhoneInsertOrUpdateAsync Done");
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<SearchDto>> SearchAsync([FromQuery] string query, CancellationToken token)
+        public async Task<ActionResult<SearchDto>> SearchAsync([FromQuery] [Required] string query,
+            CancellationToken token)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("query not set");
+            }
+
             var search = await _phoneSpecificationServiceApi.SearchAsync(query, token);
+
+            if (search == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return View(search);
         }
 
@@ -102,6 +144,12 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<LatestDto>> LatestAsync(CancellationToken token)
         {
             var latest = await _phoneSpecificationServiceApi.GetLatestAsync(token);
+
+            if (latest == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return View(latest);
         }
 
@@ -109,6 +157,12 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<TopByInterestDto>> TopByInterestAsync(CancellationToken token)
         {
             var topByInterest = await _phoneSpecificationServiceApi.GetTopByInterestAsync(token);
+
+            if (topByInterest == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return View(topByInterest);
         }
 
@@ -116,6 +170,12 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<TopByFansDto>> TopByFansAsync(CancellationToken token)
         {
             var topByFans = await _phoneSpecificationServiceApi.GetTopByFansAsync(token);
+
+            if (topByFans == null)
+            {
+                return BadRequest("Api not respond");
+            }
+
             return View(topByFans);
         }
     }

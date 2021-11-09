@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.Interfaces;
@@ -30,29 +31,54 @@ namespace PhoneShop.Controllers
             [FromQuery] PhonesFilterForm filterForm, [FromQuery] int page = 1)
         {
             const int pageSize = 10;
+
             var phonesPageFront = await _customerPhones.GetPhonesAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
+
             return View(phonesPageFront);
         }
 
         [HttpGet("showPhone")]
-        public async Task<ActionResult> ShowPhoneAsync([FromQuery] string phoneSlug, CancellationToken token)
+        public async Task<ActionResult> ShowPhoneAsync([FromQuery] [Required] string phoneSlug, CancellationToken token)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
             var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
+
+            if (phone == null)
+            {
+                return NoContent();
+            }
+
             return View(phone);
         }
 
         [HttpGet("AddToWishList")]
-        public async Task<ActionResult> AddToWishListAsync([FromQuery] string phoneSlug, CancellationToken token)
+        public async Task<ActionResult> AddToWishListAsync([FromQuery] [Required] string phoneSlug,
+            CancellationToken token)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
             var userMail = User.Identity?.Name;
             await _customerPhones.AddToWishListAsync(phoneSlug, userMail, token);
             return Ok("AddToWishListAsync ok");
         }
 
         [HttpGet("RemoveFromWishList")]
-        public async Task<ActionResult> RemoveFromWishListAsync([FromQuery] string phoneSlug, CancellationToken token)
+        public async Task<ActionResult> RemoveFromWishListAsync([FromQuery] [Required] string phoneSlug,
+            CancellationToken token)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
             var userMail = User.Identity?.Name;
             await _customerPhones.RemoveFromWishListAsync(phoneSlug, userMail, token);
             return Ok("RemoveFromWishListAsync ok");
@@ -67,9 +93,15 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("showPhoneComments")]
-        public async Task<ActionResult> ShowPhoneCommentsAsync(CancellationToken token, [FromQuery] string phoneSlug,
+        public async Task<ActionResult> ShowPhoneCommentsAsync(CancellationToken token,
+            [FromQuery] [Required] string phoneSlug,
             [FromQuery] int page = 1)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
             const int pageSize = 10;
             var commentsPage = await _customerPhones.GetPhoneCommentsAsync(phoneSlug, page, pageSize, token);
             return PartialView(commentsPage);

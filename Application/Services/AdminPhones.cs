@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using System.Diagnostics;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 
 namespace Application.Services
@@ -125,14 +124,17 @@ namespace Application.Services
 
             var phones = await _phonesRepository.GetAllAsync(condition, orderBy, token);
 
-            var totalPages = (int) Math.Ceiling((double) phones.Count / pageSize);
+            if (page < 1)
+            {
+                page = 1;
+            }
 
             return new PhonesPageFront()
             {
                 TotalPhones = phones.Count,
-                TotalPages = totalPages,
+                TotalPages = (int) Math.Ceiling((double) phones.Count / pageSize),
                 PageSize = pageSize,
-                Page = page > 0 ? page : 1,
+                Page = page,
                 Phones = phones.ToPagedList(page, pageSize).ToList()
             };
         }

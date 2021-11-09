@@ -95,15 +95,13 @@ namespace Application.Services
         public async Task<CommentsPage> GetPhoneCommentsAsync(string phoneSlug, int page, int pageSize,
             CancellationToken token)
         {
-            if (page <= 0)
+            var comments = await _commentsRepository.GetAllIncludeAsync(
+                comment => comment.PhoneSlug == phoneSlug, comment => comment.User, token) ?? new List<Comment>();
+
+            if (page < 1)
             {
                 page = 1;
             }
-
-            Expression<Func<Comment, bool>> commentCondition = (comment) => comment.PhoneSlug == phoneSlug;
-
-            var comments = await _commentsRepository.GetAllIncludeAsync(commentCondition, comment => comment.User,
-                token);
 
             return new CommentsPage()
             {
@@ -136,7 +134,7 @@ namespace Application.Services
             var phoneModel = await _phonesRepository.GetOneAsync(phoneCondition, token);
             if (phoneModel == null)
             {
-                return new PhoneDto();
+                return null;
             }
 
             var phoneDto = _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
