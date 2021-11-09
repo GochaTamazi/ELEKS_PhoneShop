@@ -57,6 +57,11 @@ namespace PhoneShop.Controllers
             [FromQuery] int page = 1
         )
         {
+            if (page < 1)
+            {
+                page = 1;
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest("brandSlug not set");
@@ -104,6 +109,12 @@ namespace PhoneShop.Controllers
             }
 
             var phoneSpecFront = await _adminPhones.GetPhoneAsync(phoneSlug, token);
+
+            if (phoneSpecFront == null)
+            {
+                return NoContent();
+            }
+
             return View(phoneSpecFront);
         }
 
