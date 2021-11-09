@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
+using AutoMapper;
 
 namespace Application.Services
 {
@@ -19,22 +20,22 @@ namespace Application.Services
         private readonly IGeneralRepository<Brand> _brandsRepository;
         private readonly IGeneralRepository<Phone> _phonesRepository;
         private readonly IMailNotification _mailNotification;
-        private readonly IMapperProvider _mapperProvider;
         private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
+        private readonly IMapper _mapper;
 
         public AdminPhones(
             IGeneralRepository<Brand> brandsRepository,
             IGeneralRepository<Phone> phonesRepository,
             IMailNotification mailNotification,
-            IMapperProvider mapperProvider,
-            IPhoneSpecificationsApi phoneSpecificationServiceApi
+            IPhoneSpecificationsApi phoneSpecificationServiceApi,
+            IMapper mapper
         )
         {
             _brandsRepository = brandsRepository;
             _phonesRepository = phonesRepository;
             _mailNotification = mailNotification;
-            _mapperProvider = mapperProvider;
             _phoneSpecificationServiceApi = phoneSpecificationServiceApi;
+            _mapper = mapper;
         }
 
         public async Task<Phone> PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
@@ -47,8 +48,8 @@ namespace Application.Services
                 return null;
             }
 
-            var phoneFromApi = _mapperProvider.GetMapper().Map<PhoneSpecificationsDto, Phone>(phoneSpecificationsDto);
-            phoneFromApi = _mapperProvider.GetMapper().Map<PhoneSpecFront, Phone>(phoneSpecFront, phoneFromApi);
+            var phoneFromApi = _mapper.Map<PhoneSpecificationsDto, Phone>(phoneSpecificationsDto);
+            phoneFromApi = _mapper.Map<PhoneSpecFront, Phone>(phoneSpecFront, phoneFromApi);
 
             var phoneFromDb = await _phonesRepository.InsertOrUpdateAsync(phone =>
                 phone.PhoneSlug == phoneFromApi.PhoneSlug, phoneFromApi, token);
@@ -95,7 +96,7 @@ namespace Application.Services
 
             if (phone != null)
             {
-                phoneSpecFront = _mapperProvider.GetMapper().Map<Phone, PhoneSpecFront>(phone);
+                phoneSpecFront = _mapper.Map<Phone, PhoneSpecFront>(phone);
                 phoneSpecFront.InStore = true;
             }
 
@@ -143,7 +144,7 @@ namespace Application.Services
         {
             var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
             var brandDto = listBrandsDto?.Data.FirstOrDefault(brandDto => brandDto.Brand_slug == brandSlug);
-            var brandModelFromApi = _mapperProvider.GetMapper().Map<Brand>(brandDto);
+            var brandModelFromApi = _mapper.Map<Brand>(brandDto);
             await _brandsRepository.InsertIfNotExistAsync(b => b.Slug == brandSlug, brandModelFromApi, token);
         }
     }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using AutoMapper;
 
 namespace Application.Services
 {
@@ -22,7 +23,7 @@ namespace Application.Services
         private readonly IGeneralRepository<StockSubscriber> _stockSubscribersRepository;
         private readonly IGeneralRepository<User> _usersRepository;
         private readonly IGeneralRepository<WishList> _wishListRepository;
-        private readonly IMapperProvider _mapperProvider;
+        private readonly IMapper _mapper;
 
         public CustomerPhones(
             IGeneralRepository<Comment> commentsRepository,
@@ -31,7 +32,7 @@ namespace Application.Services
             IGeneralRepository<StockSubscriber> stockSubscribersRepository,
             IGeneralRepository<User> usersRepository,
             IGeneralRepository<WishList> wishListRepository,
-            IMapperProvider mapperProvider
+            IMapper mapper
         )
         {
             _commentsRepository = commentsRepository;
@@ -40,7 +41,7 @@ namespace Application.Services
             _stockSubscribersRepository = stockSubscribersRepository;
             _usersRepository = usersRepository;
             _wishListRepository = wishListRepository;
-            _mapperProvider = mapperProvider;
+            _mapper = mapper;
         }
 
         public async Task AddToWishListAsync(string phoneSlug, string userMail, CancellationToken token)
@@ -72,7 +73,7 @@ namespace Application.Services
 
         public async Task SubscribePriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
         {
-            var priceSubscriber = _mapperProvider.GetMapper().Map<PriceSubscriber>(priceSubscriberForm);
+            var priceSubscriber = _mapper.Map<PriceSubscriber>(priceSubscriberForm);
 
             await _priceSubscribersRepository.InsertIfNotExistAsync(s =>
                     s.BrandSlug == priceSubscriber.BrandSlug &&
@@ -83,7 +84,7 @@ namespace Application.Services
 
         public async Task SubscribeStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
         {
-            var stockSubscriber = _mapperProvider.GetMapper().Map<StockSubscriber>(stockSubscriberForm);
+            var stockSubscriber = _mapper.Map<StockSubscriber>(stockSubscriberForm);
 
             await _stockSubscribersRepository.InsertIfNotExistAsync(s =>
                     s.BrandSlug == stockSubscriber.BrandSlug &&
@@ -137,7 +138,7 @@ namespace Application.Services
                 return null;
             }
 
-            var phoneDto = _mapperProvider.GetMapper().Map<PhoneDto>(phoneModel);
+            var phoneDto = _mapper.Map<PhoneDto>(phoneModel);
 
             Expression<Func<Comment, bool>> commentCondition = (comment) => comment.PhoneSlug == phoneSlug;
 
@@ -197,7 +198,7 @@ namespace Application.Services
                 return false;
             }
 
-            var comment = _mapperProvider.GetMapper().Map<Comment>(commentForm);
+            var comment = _mapper.Map<Comment>(commentForm);
             comment.UserId = user.Id;
 
             await _commentsRepository.InsertOrUpdateAsync(
