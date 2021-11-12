@@ -43,11 +43,15 @@ namespace PhoneShop
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
 
             // Business Services
-            services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IAdminPhones, AdminPhones>();
+            services.AddScoped<ICustomerCart, CustomerCart>();
+            services.AddScoped<ICustomerComments, CustomerComments>();
             services.AddScoped<ICustomerPhones, CustomerPhones>();
+            services.AddScoped<ICustomerWishList, CustomerWishList>();
             services.AddScoped<IEmail, Email>();
             services.AddScoped<IMailNotification, MailNotification>();
+            services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
+            services.AddScoped<ISubscribers, Subscribers>();
 
             // Mapper
             services.AddSingleton<IMapperProvider, MapperProvider>();

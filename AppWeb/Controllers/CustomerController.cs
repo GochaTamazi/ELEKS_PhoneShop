@@ -14,10 +14,21 @@ namespace PhoneShop.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerPhones _customerPhones;
+        private readonly ICustomerWishList _customerWishList;
+        private readonly ISubscribers _subscribers;
+        private readonly ICustomerComments _customerComments;
 
-        public CustomerController(ICustomerPhones customerPhones)
+        public CustomerController(
+            ICustomerPhones customerPhones,
+            ICustomerWishList customerWishList,
+            ISubscribers subscribers,
+            ICustomerComments customerComments
+        )
         {
             _customerPhones = customerPhones;
+            _customerWishList = customerWishList;
+            _subscribers = subscribers;
+            _customerComments = customerComments;
         }
 
         [HttpGet("index"), HttpGet("")]
@@ -32,7 +43,7 @@ namespace PhoneShop.Controllers
         {
             const int pageSize = 10;
 
-            var phonesPageFront = await _customerPhones.GetPhonesAsync(filterForm, page, pageSize, token);
+            var phonesPageFront = await _customerPhones.GetAllAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
 
             return View(phonesPageFront);
@@ -46,7 +57,7 @@ namespace PhoneShop.Controllers
                 return BadRequest("phoneSlug not set");
             }
 
-            var phone = await _customerPhones.GetPhoneAsync(phoneSlug, token);
+            var phone = await _customerPhones.GetOneAsync(phoneSlug, token);
 
             if (phone == null)
             {
@@ -66,7 +77,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerPhones.AddToWishListAsync(phoneSlug, userMail, token);
+            await _customerWishList.AddAsync(phoneSlug, userMail, token);
             return Ok("AddToWishListAsync ok");
         }
 
@@ -80,7 +91,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerPhones.RemoveFromWishListAsync(phoneSlug, userMail, token);
+            await _customerWishList.RemoveAsync(phoneSlug, userMail, token);
             return Ok("RemoveFromWishListAsync ok");
         }
 
@@ -88,7 +99,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> ShowWishListAsync(CancellationToken token)
         {
             var userMail = User.Identity?.Name;
-            var wishList = await _customerPhones.ShowWishListAsync(userMail, token);
+            var wishList = await _customerWishList.GetAllAsync(userMail, token);
             return View(wishList);
         }
 
@@ -103,7 +114,7 @@ namespace PhoneShop.Controllers
             }
 
             const int pageSize = 10;
-            var commentsPage = await _customerPhones.GetPhoneCommentsAsync(phoneSlug, page, pageSize, token);
+            var commentsPage = await _customerComments.GetAllAsync(phoneSlug, page, pageSize, token);
             return PartialView(commentsPage);
         }
 
@@ -111,7 +122,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> PostComment([FromForm] CommentForm commentForm, CancellationToken token)
         {
             commentForm.UserMail = User.Identity?.Name;
-            var result = await _customerPhones.PostCommentAsync(commentForm, token);
+            var result = await _customerComments.PostAsync(commentForm, token);
             if (result)
             {
                 return RedirectToAction("ShowPhone", "Customer", new
@@ -127,7 +138,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberForm priceSubscriber,
             CancellationToken token)
         {
-            await _customerPhones.SubscribePriceAsync(priceSubscriber, token);
+            await _subscribers.PriceChangingAsync(priceSubscriber, token);
             return Ok("SubscribePriceAsync ok");
         }
 
@@ -135,7 +146,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberForm stockSubscriber,
             CancellationToken token)
         {
-            await _customerPhones.SubscribeStockAsync(stockSubscriber, token);
+            await _subscribers.StockChangingAsync(stockSubscriber, token);
             return Ok("SubscribeStockAsync ok");
         }
     }
