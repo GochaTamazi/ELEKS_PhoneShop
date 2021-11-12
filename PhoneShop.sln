@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneShop", "PhoneShop\PhoneShop.csproj", "{A28D6014-A1BE-46BA-A180-6E4A431D5831}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppWeb", "AppWeb\AppWeb.csproj", "{A28D6014-A1BE-46BA-A180-6E4A431D5831}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{60F7853E-0D21-4AF4-A8E3-E1B479A0F3C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{A2342723-7E9D-49E9-B238-744853EA58B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{A2342723-7E9D-49E9-B238-744853EA58B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{EAFD6D7D-605E-4E18-A943-4DCA4C6E0F2F}"
 EndProject

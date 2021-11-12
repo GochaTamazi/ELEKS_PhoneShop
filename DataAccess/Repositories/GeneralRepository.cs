@@ -22,8 +22,7 @@ namespace DataAccess.Repositories
             _table = _masterContext.Set<T>();
         }
 
-        public async Task<T> InsertAsync(T model,
-            CancellationToken token)
+        public async Task<T> InsertAsync(T model, CancellationToken token)
         {
             var entityEntry = await _table.AddAsync(model, token);
             await _masterContext.SaveChangesAsync(token);
@@ -65,8 +64,7 @@ namespace DataAccess.Repositories
             return modelRes;
         }
 
-        public async Task<T> RemoveAsync(T model,
-            CancellationToken token)
+        public async Task<T> RemoveAsync(T model, CancellationToken token)
         {
             var entityEntry = _table.Remove(model);
             await _masterContext.SaveChangesAsync(token);
@@ -87,8 +85,7 @@ namespace DataAccess.Repositories
             return modelRes;
         }
 
-        public async Task<T> UpdateAsync(T model,
-            CancellationToken token)
+        public async Task<T> UpdateAsync(T model, CancellationToken token)
         {
             var entityEntry = _table.Update(model);
             await _masterContext.SaveChangesAsync(token);
@@ -100,24 +97,19 @@ namespace DataAccess.Repositories
             return await _table.ToListAsync(token);
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> condition,
-            CancellationToken token)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> condition, CancellationToken token)
         {
             return await _table.Where(condition).ToListAsync(token);
         }
 
         public async Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> condition,
-            Expression<Func<T, TKey>> orderBy,
-            CancellationToken token
-        )
+            Expression<Func<T, TKey>> orderBy, CancellationToken token)
         {
             return await _table.Where(condition).OrderBy(orderBy).ToListAsync(token);
         }
 
         public async Task<List<T>> GetAllIncludeAsync<TKey>(Expression<Func<T, bool>> condition,
-            Expression<Func<T, TKey>> include,
-            CancellationToken token
-        )
+            Expression<Func<T, TKey>> include, CancellationToken token)
         {
             return await _table
                 .Where(condition)
@@ -125,15 +117,13 @@ namespace DataAccess.Repositories
                 .ToListAsync(token);
         }
 
-        public async Task<T> GetOneAsync(Expression<Func<T, bool>> condition,
-            CancellationToken token)
+        public async Task<T> GetOneAsync(Expression<Func<T, bool>> condition, CancellationToken token)
         {
             return await _table.Where(condition).FirstOrDefaultAsync(token);
         }
 
         public async Task<double?> AverageAsync(Expression<Func<T, bool>> condition, Expression<Func<T, int?>> selector,
-            CancellationToken token
-        )
+            CancellationToken token)
         {
             return await _table.Where(condition).AverageAsync(selector, token);
         }

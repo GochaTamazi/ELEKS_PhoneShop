@@ -42,7 +42,7 @@ namespace PhoneShop
             // DataAccess Repositories
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
 
-            // Application Services
+            // Business Services
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IAdminPhones, AdminPhones>();
             services.AddScoped<ICustomerPhones, CustomerPhones>();
