@@ -7,10 +7,10 @@ namespace Application.Interfaces
 {
     public interface ICustomerWishList
     {
-        Task AddAsync(string phoneSlug, string userMail, CancellationToken token);
-
-        Task RemoveAsync(string phoneSlug, string userMail, CancellationToken token);
-
         Task<List<WishList>> GetAllAsync(string userMail, CancellationToken token);
+
+        Task InsertAsync(string phoneSlug, string userMail, CancellationToken token);
+
+        Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token);
     }
 }

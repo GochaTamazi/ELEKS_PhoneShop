@@ -92,7 +92,7 @@ namespace PhoneShop.Controllers
         {
             const int pageSize = 10;
 
-            var phonesPageFront = await _adminPhones.GetPhonesAsync(filterForm, page, pageSize, token);
+            var phonesPageFront = await _adminPhones.GetAllAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
 
             return View(phonesPageFront);
@@ -108,7 +108,7 @@ namespace PhoneShop.Controllers
                 return BadRequest("phoneSlug not set");
             }
 
-            var phoneSpecFront = await _adminPhones.GetPhoneAsync(phoneSlug, token);
+            var phoneSpecFront = await _adminPhones.GetOneAsync(phoneSlug, token);
 
             if (phoneSpecFront == null)
             {
@@ -122,7 +122,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync([FromForm] PhoneSpecFront phoneSpecFront,
             CancellationToken token)
         {
-            var phone = await _adminPhones.PhoneInsertOrUpdateAsync(phoneSpecFront, token);
+            var phone = await _adminPhones.InsertOrUpdateAsync(phoneSpecFront, token);
 
             if (phone == null)
             {

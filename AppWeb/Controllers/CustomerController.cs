@@ -17,18 +17,21 @@ namespace PhoneShop.Controllers
         private readonly ICustomerWishList _customerWishList;
         private readonly ISubscribers _subscribers;
         private readonly ICustomerComments _customerComments;
+        private readonly ICustomerCart _customerCart;
 
         public CustomerController(
             ICustomerPhones customerPhones,
             ICustomerWishList customerWishList,
             ISubscribers subscribers,
-            ICustomerComments customerComments
+            ICustomerComments customerComments,
+            ICustomerCart customerCart
         )
         {
             _customerPhones = customerPhones;
             _customerWishList = customerWishList;
             _subscribers = subscribers;
             _customerComments = customerComments;
+            _customerCart = customerCart;
         }
 
         [HttpGet("index"), HttpGet("")]
@@ -77,7 +80,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerWishList.AddAsync(phoneSlug, userMail, token);
+            await _customerWishList.InsertAsync(phoneSlug, userMail, token);
             return Ok("AddToWishListAsync ok");
         }
 
@@ -91,7 +94,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerWishList.RemoveAsync(phoneSlug, userMail, token);
+            await _customerWishList.DeleteAsync(phoneSlug, userMail, token);
             return Ok("RemoveFromWishListAsync ok");
         }
 
@@ -122,7 +125,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> PostComment([FromForm] CommentForm commentForm, CancellationToken token)
         {
             commentForm.UserMail = User.Identity?.Name;
-            var result = await _customerComments.PostAsync(commentForm, token);
+            var result = await _customerComments.InsertAsync(commentForm, token);
             if (result)
             {
                 return RedirectToAction("ShowPhone", "Customer", new
@@ -138,7 +141,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberForm priceSubscriber,
             CancellationToken token)
         {
-            await _subscribers.PriceChangingAsync(priceSubscriber, token);
+            await _subscribers.SubscribeOnPriceAsync(priceSubscriber, token);
             return Ok("SubscribePriceAsync ok");
         }
 
@@ -146,8 +149,36 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberForm stockSubscriber,
             CancellationToken token)
         {
-            await _subscribers.StockChangingAsync(stockSubscriber, token);
+            await _subscribers.SubscribeOnStockAsync(stockSubscriber, token);
             return Ok("SubscribeStockAsync ok");
+        }
+
+        [HttpGet("insertToCart")]
+        public async Task<ActionResult> InsertToCartAsync([FromQuery] [Required] string phoneSlug,
+            CancellationToken token)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
+            var userMail = User.Identity?.Name;
+            await _customerCart.InsertAsync(phoneSlug, userMail, token);
+            return Ok("InsertToCartAsync ok");
+        }
+
+        [HttpGet("deleteFromCart")]
+        public async Task<ActionResult> DeleteFromCartAsync([FromQuery] [Required] string phoneSlug,
+            CancellationToken token)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("phoneSlug not set");
+            }
+
+            var userMail = User.Identity?.Name;
+            await _customerCart.DeleteAsync(phoneSlug, userMail, token);
+            return Ok("DeleteFromCartAsync ok");
         }
     }
 }

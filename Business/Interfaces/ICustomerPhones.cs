@@ -9,7 +9,6 @@ namespace Application.Interfaces
     {
         Task<PhoneDto> GetOneAsync(string phoneSlug, CancellationToken token);
 
-        Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize,
-            CancellationToken token);
+        Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize, CancellationToken token);
     }
 }

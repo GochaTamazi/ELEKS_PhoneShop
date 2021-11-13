@@ -6,8 +6,8 @@ namespace Application.Interfaces
 {
     public interface ISubscribers
     {
-        Task PriceChangingAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token);
+        Task SubscribeOnPriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token);
 
-        Task StockChangingAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token);
+        Task SubscribeOnStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token);
     }
 }

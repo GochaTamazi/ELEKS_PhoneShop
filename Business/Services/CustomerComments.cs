@@ -51,7 +51,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<bool> PostAsync(CommentForm commentForm, CancellationToken token)
+        public async Task<bool> InsertAsync(CommentForm commentForm, CancellationToken token)
         {
             var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
             if (user == null)

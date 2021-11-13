@@ -8,11 +8,10 @@ namespace Application.Interfaces
 {
     public interface IAdminPhones
     {
-        Task<Phone> PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
+        Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token);
 
-        Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug, CancellationToken token);
+        Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize, CancellationToken token);
 
-        Task<PhonesPageFront> GetPhonesAsync(PhonesFilterForm filterForm, int page, int pageSize,
-            CancellationToken token);
+        Task<Phone> InsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
     }
 }

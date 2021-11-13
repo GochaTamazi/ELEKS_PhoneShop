@@ -29,7 +29,7 @@ namespace Application.Services
             _wishListRepository = wishListRepository;
         }
 
-        public async Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        public async Task NotifyStockSubscribersAsync(Phone phone, CancellationToken token)
         {
             var subscribers = await _stockSubscribersRepository.GetAllAsync(s =>
                 s.BrandSlug == phone.BrandSlug && s.PhoneSlug == phone.PhoneSlug, token);
@@ -46,7 +46,7 @@ namespace Application.Services
             await Task.WhenAll(tasks);
         }
 
-        public async Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token)
+        public async Task NotifyPriceWishListCustomerAsync(Phone phone, CancellationToken token)
         {
             var subscribers = await _wishListRepository.GetAllIncludeAsync(l => l.PhoneId == phone.Id,
                 l => l.User, token);
@@ -63,7 +63,7 @@ namespace Application.Services
             await Task.WhenAll(tasks);
         }
 
-        public async Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token)
+        public async Task NotifyPriceSubscribersAsync(Phone phone, CancellationToken token)
         {
             var subscribers = await _priceSubscribersRepository.GetAllAsync(s =>
                 s.BrandSlug == phone.BrandSlug && s.PhoneSlug == phone.PhoneSlug, token);

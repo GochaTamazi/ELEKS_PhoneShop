@@ -8,12 +8,12 @@ namespace Application.Services
 {
     public class CustomerCart : ICustomerCart
     {
-        public Task AddAsync(string phoneSlug, string userMail, CancellationToken token)
+        public Task InsertAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task RemoveAsync(string phoneSlug, string userMail, CancellationToken token)
+        public Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             throw new System.NotImplementedException();
         }

@@ -6,10 +6,10 @@ namespace Application.Interfaces
 {
     public interface IMailNotification
     {
-        Task PriceSubscribersNotificationAsync(Phone phone, CancellationToken token);
+        Task NotifyPriceSubscribersAsync(Phone phone, CancellationToken token);
 
-        Task PriceWishListCustomerNotificationAsync(Phone phone, CancellationToken token);
+        Task NotifyPriceWishListCustomerAsync(Phone phone, CancellationToken token);
 
-        Task StockSubscribersNotificationAsync(Phone phone, CancellationToken token);
+        Task NotifyStockSubscribersAsync(Phone phone, CancellationToken token);
     }
 }

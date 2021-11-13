@@ -25,7 +25,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task PriceChangingAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
+        public async Task SubscribeOnPriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
         {
             var priceSubscriber = _mapper.Map<PriceSubscriber>(priceSubscriberForm);
 
@@ -36,7 +36,7 @@ namespace Application.Services
                 priceSubscriber, token);
         }
 
-        public async Task StockChangingAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
+        public async Task SubscribeOnStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
         {
             var stockSubscriber = _mapper.Map<StockSubscriber>(stockSubscriberForm);
 

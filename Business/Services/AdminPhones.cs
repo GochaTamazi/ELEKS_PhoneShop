@@ -38,7 +38,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Phone> PhoneInsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
+        public async Task<Phone> InsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
                 phoneSpecFront.PhoneSlug, token);
@@ -57,14 +57,14 @@ namespace Application.Services
             //Price notification
             if (phoneFromApi.Price != phoneFromDb.Price)
             {
-                await _mailNotification.PriceSubscribersNotificationAsync(phoneFromApi, token);
-                await _mailNotification.PriceWishListCustomerNotificationAsync(phoneFromApi, token);
+                await _mailNotification.NotifyPriceSubscribersAsync(phoneFromApi, token);
+                await _mailNotification.NotifyPriceWishListCustomerAsync(phoneFromApi, token);
             }
 
             //Stock notification
             if (phoneFromApi.Stock != phoneFromDb.Stock && phoneFromDb.Stock <= 0)
             {
-                await _mailNotification.StockSubscribersNotificationAsync(phoneFromApi, token);
+                await _mailNotification.NotifyStockSubscribersAsync(phoneFromApi, token);
             }
 
             await BrandInsertIfNotExistAsync(phoneFromApi.BrandSlug, token);
@@ -72,7 +72,7 @@ namespace Application.Services
             return phoneFromApi;
         }
 
-        public async Task<PhoneSpecFront> GetPhoneAsync(string phoneSlug, CancellationToken token)
+        public async Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
                 phoneSlug, token);
@@ -105,7 +105,7 @@ namespace Application.Services
             return phoneSpecFront;
         }
 
-        public async Task<PhonesPageFront> GetPhonesAsync(PhonesFilterForm filterForm, int page, int pageSize,
+        public async Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize,
             CancellationToken token)
         {
             Expression<Func<Phone, bool>> condition = (phone) =>
