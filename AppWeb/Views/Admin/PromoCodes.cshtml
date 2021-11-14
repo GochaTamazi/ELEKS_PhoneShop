@@ -1,0 +1,49 @@
+@model System.Collections.Generic.List<Database.Models.PromoCode>
+
+@{
+    ViewBag.Title = "Promo Codes";
+    Layout = "_Layout";
+}
+
+<h2>Promo Codes</h2>
+
+<div>
+    <div>Create Promo Code</div>
+    <form asp-controller="Admin" asp-action="CreateCode" method="get">
+        <div>
+            <label class="filterLabel">PhoneSlug:</label>
+            <input type="text" name="PhoneSlug" placeholder="PhoneSlug" value=""/>
+        </div>
+        <div>
+            <label class="filterLabel">Key:</label>
+            <input type="text" name="Key" id="Key" placeholder="Key" value=""/>
+            
+            <button type="button" onclick="setRandKey()">GetRandKey</button>
+        </div>
+        <div>
+            <label class="filterLabel">Amount:</label>
+            <input type="number" min="1" name="Amount" placeholder="Amount" value="1"/>
+        </div>
+        <div>
+            <label class="filterLabel">Discount:</label>
+            <input type="number" min="0" max="100" name="Discount" placeholder="Discount" value="0"/>
+        </div>
+        <div>
+
+            <input type="submit" value="Create"/>
+        </div>
+
+    </form>
+</div>
+
+<script>
+function setRandKey() {
+    document.getElementById('Key').value = Math.random().toString(36).substring(2, 15);
+}
+setRandKey();
+</script>
+
+
+@foreach (var v in @Model)
+{
+}

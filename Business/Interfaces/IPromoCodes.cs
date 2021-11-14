@@ -1,12 +1,12 @@
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Database.Models;
+
 namespace Application.Interfaces
 {
     public interface IPromoCodes
     {
-        void GetAll();
-        void GetOne();
-        void Insert();
-        void Update();
-        void Delete();
-        void Check();
+        Task<List<PromoCode>> GetAllAsync(CancellationToken token);
     }
 }

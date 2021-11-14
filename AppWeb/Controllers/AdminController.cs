@@ -22,14 +22,17 @@ namespace PhoneShop.Controllers
     {
         private readonly IAdminPhones _adminPhones;
         private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
+        private readonly IPromoCodes _promoCodes;
 
         public AdminController(
             IAdminPhones adminPhones,
-            IPhoneSpecificationsApi phoneSpecificationsServiceApiApi
+            IPhoneSpecificationsApi phoneSpecificationsServiceApiApi,
+            IPromoCodes promoCodes
         )
         {
             _adminPhones = adminPhones;
             _phoneSpecificationServiceApi = phoneSpecificationsServiceApiApi;
+            _promoCodes = promoCodes;
         }
 
         [HttpGet("index"), HttpGet("")]
@@ -188,6 +191,20 @@ namespace PhoneShop.Controllers
             }
 
             return View(topByFans);
+        }
+
+
+        [HttpGet("promoCodes")]
+        public async Task<ActionResult<TopByFansDto>> PromoCodesAsync(CancellationToken token)
+        {
+            var codes = await _promoCodes.GetAllAsync(token);
+            return View(codes);
+        }
+
+        [HttpGet("createCode")]
+        public async Task<ActionResult<TopByFansDto>> CreateCodeAsync(CancellationToken token)
+        {
+            return Ok("CreateCodeAsync Done");
         }
     }
 }

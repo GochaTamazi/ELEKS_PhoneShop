@@ -51,6 +51,7 @@ namespace PhoneShop
             services.AddScoped<IEmail, Email>();
             services.AddScoped<IMailNotification, MailNotification>();
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
+            services.AddScoped<IPromoCodes, PromoCodes>();
             services.AddScoped<ISubscribers, Subscribers>();
 
             // Mapper
