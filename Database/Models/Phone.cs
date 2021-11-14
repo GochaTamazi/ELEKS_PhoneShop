@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Database.Interfaces;
 
 #nullable disable
@@ -9,6 +10,8 @@ namespace Database.Models
     {
         public Phone()
         {
+            Carts = new HashSet<Cart>();
+            PromoCodes = new HashSet<PromoCode>();
             WishLists = new HashSet<WishList>();
         }
 
@@ -27,6 +30,8 @@ namespace Database.Models
         public int? Stock { get; set; }
         public bool? Hided { get; set; }
 
+        public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<PromoCode> PromoCodes { get; set; }
         public virtual ICollection<WishList> WishLists { get; set; }
     }
 }

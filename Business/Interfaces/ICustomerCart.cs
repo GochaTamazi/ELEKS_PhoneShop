@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.DTO.PhoneSpecificationsAPI.TopByFans;
+using Database.Models;
 
 namespace Application.Interfaces
 {
     public interface ICustomerCart
     {
-        Task<List<PhoneDto>> GetAllAsync();
-        
-        Task InsertAsync(string phoneSlug, string userMail, CancellationToken token);
+        Task<List<Cart>> GetAllAsync(string userMail, CancellationToken token);
+
+        Task InsertAsync(string phoneSlug, string userMail, int amount, CancellationToken token);
 
         Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token);
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class _007 : Migration
+    public partial class _008 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -106,6 +106,62 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PromoCodes",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    key = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true),
+                    amount = table.Column<int>(type: "int", nullable: true),
+                    discount = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((0))"),
+                    phoneId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PromoCodes_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                    table.ForeignKey(
+                        name: "PromoCodes_Phones_id_fk",
+                        column: x => x.phoneId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Phones",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                schema: "PhoneShop",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    userId = table.Column<int>(type: "int", nullable: true),
+                    phoneId = table.Column<int>(type: "int", nullable: true),
+                    amount = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Cart_pk", x => x.id)
+                        .Annotation("SqlServer:Clustered", false);
+                    table.ForeignKey(
+                        name: "Carts_Phones_id_fk",
+                        column: x => x.phoneId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Phones",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Carts_Users_id_fk",
+                        column: x => x.userId,
+                        principalSchema: "PhoneShop",
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 schema: "PhoneShop",
                 columns: table => new
@@ -162,10 +218,28 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Carts_phoneId",
+                schema: "PhoneShop",
+                table: "Carts",
+                column: "phoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_userId",
+                schema: "PhoneShop",
+                table: "Carts",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_userId",
                 schema: "PhoneShop",
                 table: "Comments",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromoCodes_phoneId",
+                schema: "PhoneShop",
+                table: "PromoCodes",
+                column: "phoneId");
 
             migrationBuilder.CreateIndex(
                 name: "Users_email_uindex",
@@ -194,11 +268,19 @@ namespace Database.Migrations
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(
+                name: "Carts",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
                 name: "Comments",
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(
                 name: "PriceSubscribers",
+                schema: "PhoneShop");
+
+            migrationBuilder.DropTable(
+                name: "PromoCodes",
                 schema: "PhoneShop");
 
             migrationBuilder.DropTable(

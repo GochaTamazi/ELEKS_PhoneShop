@@ -44,6 +44,17 @@
 
 <h2>Customer Phone Specifications</h2>
 
+<form asp-controller="Customer" asp-action="InsertToCart" method="get">
+    <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
+    <p>
+        <label>
+            <b>amount:</b>
+        </label>
+        <input type="number" min="1" max="@phone.Stock" placeholder="Amount" name="amount" value="1"/>
+        <input type="submit" value="Add to cart"/>
+    </p>
+</form>
+
 <div>
     <b>Price:</b> @phone.Price
 </div>

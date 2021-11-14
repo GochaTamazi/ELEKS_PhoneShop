@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Database.Interfaces;
 
 #nullable disable
@@ -9,6 +10,7 @@ namespace Database.Models
     {
         public User()
         {
+            Carts = new HashSet<Cart>();
             Comments = new HashSet<Comment>();
             WishLists = new HashSet<WishList>();
         }
@@ -19,6 +21,7 @@ namespace Database.Models
         public string Role { get; set; }
         public string Name { get; set; }
 
+        public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<WishList> WishLists { get; set; }
     }

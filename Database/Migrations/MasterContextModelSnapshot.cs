@@ -47,6 +47,37 @@ namespace Database.Migrations
                     b.ToTable("Brands", "PhoneShop");
                 });
 
+            modelBuilder.Entity("Database.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("Amount")
+                        .HasColumnType("int")
+                        .HasColumnName("amount");
+
+                    b.Property<int?>("PhoneId")
+                        .HasColumnType("int")
+                        .HasColumnName("phoneId");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
+                        .HasName("Cart_pk")
+                        .IsClustered(false);
+
+                    b.HasIndex("PhoneId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Carts", "PhoneShop");
+                });
+
             modelBuilder.Entity("Database.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -206,6 +237,43 @@ namespace Database.Migrations
                     b.ToTable("PriceSubscribers", "PhoneShop");
                 });
 
+            modelBuilder.Entity("Database.Models.PromoCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("Amount")
+                        .HasColumnType("int")
+                        .HasColumnName("amount");
+
+                    b.Property<int?>("Discount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("discount")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("Key")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("key");
+
+                    b.Property<int?>("PhoneId")
+                        .HasColumnType("int")
+                        .HasColumnName("phoneId");
+
+                    b.HasKey("Id")
+                        .HasName("PromoCodes_pk")
+                        .IsClustered(false);
+
+                    b.HasIndex("PhoneId");
+
+                    b.ToTable("PromoCodes", "PhoneShop");
+                });
+
             modelBuilder.Entity("Database.Models.StockSubscriber", b =>
                 {
                     b.Property<int>("Id")
@@ -311,6 +379,23 @@ namespace Database.Migrations
                     b.ToTable("WishList", "PhoneShop");
                 });
 
+            modelBuilder.Entity("Database.Models.Cart", b =>
+                {
+                    b.HasOne("Database.Models.Phone", "Phone")
+                        .WithMany("Carts")
+                        .HasForeignKey("PhoneId")
+                        .HasConstraintName("Carts_Phones_id_fk");
+
+                    b.HasOne("Database.Models.User", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("Carts_Users_id_fk");
+
+                    b.Navigation("Phone");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Database.Models.Comment", b =>
                 {
                     b.HasOne("Database.Models.User", "User")
@@ -319,6 +404,16 @@ namespace Database.Migrations
                         .HasConstraintName("Comments_Users_id_fk");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.Models.PromoCode", b =>
+                {
+                    b.HasOne("Database.Models.Phone", "Phone")
+                        .WithMany("PromoCodes")
+                        .HasForeignKey("PhoneId")
+                        .HasConstraintName("PromoCodes_Phones_id_fk");
+
+                    b.Navigation("Phone");
                 });
 
             modelBuilder.Entity("Database.Models.WishList", b =>
@@ -340,11 +435,17 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Models.Phone", b =>
                 {
+                    b.Navigation("Carts");
+
+                    b.Navigation("PromoCodes");
+
                     b.Navigation("WishLists");
                 });
 
             modelBuilder.Entity("Database.Models.User", b =>
                 {
+                    b.Navigation("Carts");
+
                     b.Navigation("Comments");
 
                     b.Navigation("WishLists");

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -16,9 +18,11 @@ namespace Database.Models
         }
 
         public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Phone> Phones { get; set; }
         public virtual DbSet<PriceSubscriber> PriceSubscribers { get; set; }
+        public virtual DbSet<PromoCode> PromoCodes { get; set; }
         public virtual DbSet<StockSubscriber> StockSubscribers { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WishList> WishLists { get; set; }
@@ -46,6 +50,33 @@ namespace Database.Models
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("slug");
+            });
+
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("Cart_pk")
+                    .IsClustered(false);
+
+                entity.ToTable("Carts", "PhoneShop");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Amount).HasColumnName("amount");
+
+                entity.Property(e => e.PhoneId).HasColumnName("phoneId");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
+
+                entity.HasOne(d => d.Phone)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.PhoneId)
+                    .HasConstraintName("Carts_Phones_id_fk");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("Carts_Users_id_fk");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -169,6 +200,35 @@ namespace Database.Models
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("phoneSlug");
+            });
+
+            modelBuilder.Entity<PromoCode>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PromoCodes_pk")
+                    .IsClustered(false);
+
+                entity.ToTable("PromoCodes", "PhoneShop");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Amount).HasColumnName("amount");
+
+                entity.Property(e => e.Discount)
+                    .HasColumnName("discount")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Key)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("key");
+
+                entity.Property(e => e.PhoneId).HasColumnName("phoneId");
+
+                entity.HasOne(d => d.Phone)
+                    .WithMany(p => p.PromoCodes)
+                    .HasForeignKey(d => d.PhoneId)
+                    .HasConstraintName("PromoCodes_Phones_id_fk");
             });
 
             modelBuilder.Entity<StockSubscriber>(entity =>

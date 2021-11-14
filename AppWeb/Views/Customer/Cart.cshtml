@@ -1,0 +1,73 @@
+@model System.Collections.Generic.List<Database.Models.Cart>
+
+@{
+    ViewBag.Title = "Cart";
+    Layout = "_Layout";
+}
+
+<h2>Cart</h2>
+
+<ul class="pUl">
+    @{
+        int? totalSumCart = 0;
+    }
+    @foreach (var v in @Model)
+    {
+        var phone = v.Phone;
+        var phoneClass = "";
+        if (phone.Hided == true)
+        {
+            phoneClass = "pHided";
+        }
+        else if (phone.Stock <= 0)
+        {
+            phoneClass = "pStockEmpty";
+        }
+
+        <li class="pLi @phoneClass">
+            <a class="pUrl"
+               asp-controller="Customer"
+               asp-action="ShowPhone"
+               asp-route-phoneSlug="@phone.PhoneSlug">
+                <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
+                <div class="pRow">
+                    <span class="pColKey">BrandSlug:</span>
+                    <span class="pColVal">@phone.BrandSlug</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">PhoneName:</span>
+                    <span class="pColVal">@phone.PhoneName</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Price:</span>
+                    <span class="pColVal">@phone.Price</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Stock:</span>
+                    <span class="pColVal">@phone.Stock</span>
+                </div>
+                <div class="pRow">
+                    <span class="pColKey">Amount in Cart:</span>
+                    <span class="pColVal">@v.Amount</span>
+                </div>
+
+                @{
+                    var totalPrice = v.Amount * phone.Price;
+                    totalSumCart += totalPrice;
+                }
+                <div class="pRow">
+                    <span class="pColKey">Total price:</span>
+                    <span class="pColVal">@totalPrice</span>
+                </div>
+            </a>
+
+            <a asp-controller="Customer"
+               asp-action="DeleteFromCart"
+               asp-route-phoneSlug="@phone.PhoneSlug">
+                Remover From Cart
+            </a>
+        </li>
+    }
+</ul>
+
+<h4>Total Sum Cart: @totalSumCart</h4>

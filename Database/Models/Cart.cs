@@ -6,15 +6,14 @@ using Database.Interfaces;
 
 namespace Database.Models
 {
-    public partial class Comment : IEntity
+    public partial class Cart : IEntity
     {
         public int Id { get; set; }
-        public string PhoneSlug { get; set; }
         public int? UserId { get; set; }
-        public string Comments { get; set; }
-        public int? Rating { get; set; }
-        public DateTime? CreateTime { get; set; }
+        public int? PhoneId { get; set; }
+        public int? Amount { get; set; }
 
+        public virtual Phone Phone { get; set; }
         public virtual User User { get; set; }
     }
 }

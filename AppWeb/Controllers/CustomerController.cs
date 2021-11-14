@@ -153,17 +153,27 @@ namespace PhoneShop.Controllers
             return Ok("SubscribeStockAsync ok");
         }
 
+        [HttpGet("Cart")]
+        public async Task<ActionResult> CartAsync(CancellationToken token)
+        {
+            var userMail = User.Identity?.Name;
+            var cart = await _customerCart.GetAllAsync(userMail, token);
+            return View(cart);
+        }
+
+
         [HttpGet("insertToCart")]
         public async Task<ActionResult> InsertToCartAsync([FromQuery] [Required] string phoneSlug,
+            [FromQuery] [Required] int amount,
             CancellationToken token)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("phoneSlug not set");
+                return BadRequest("phoneSlug or amount not set");
             }
 
             var userMail = User.Identity?.Name;
-            await _customerCart.InsertAsync(phoneSlug, userMail, token);
+            await _customerCart.InsertAsync(phoneSlug, userMail, amount, token);
             return Ok("InsertToCartAsync ok");
         }
 
