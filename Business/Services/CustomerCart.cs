@@ -25,7 +25,7 @@ namespace Application.Services
             _cartsRepository = cartsRepository;
         }
 
-        public async Task InsertAsync(string phoneSlug, string userMail, int amount, CancellationToken token)
+        public async Task InsertOrUpdateAsync(string phoneSlug, string userMail, int amount, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p =>
                     p.PhoneSlug == phoneSlug &&

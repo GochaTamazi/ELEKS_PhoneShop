@@ -9,7 +9,7 @@ namespace Application.Interfaces
     {
         Task<List<Cart>> GetAllAsync(string userMail, CancellationToken token);
 
-        Task InsertAsync(string phoneSlug, string userMail, int amount, CancellationToken token);
+        Task InsertOrUpdateAsync(string phoneSlug, string userMail, int amount, CancellationToken token);
 
         Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token);
 

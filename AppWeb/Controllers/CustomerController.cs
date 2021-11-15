@@ -80,7 +80,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerWishList.InsertAsync(phoneSlug, userMail, token);
+            await _customerWishList.InsertIfNotExistAsync(phoneSlug, userMail, token);
             return Ok("AddToWishListAsync ok");
         }
 
@@ -125,7 +125,7 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult> PostComment([FromForm] CommentForm commentForm, CancellationToken token)
         {
             commentForm.UserMail = User.Identity?.Name;
-            var result = await _customerComments.InsertAsync(commentForm, token);
+            var result = await _customerComments.InsertOrUpdateAsync(commentForm, token);
             if (result)
             {
                 return RedirectToAction("ShowPhone", "Customer", new
@@ -173,7 +173,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerCart.InsertAsync(phoneSlug, userMail, amount, token);
+            await _customerCart.InsertOrUpdateAsync(phoneSlug, userMail, amount, token);
             return Ok("InsertToCartAsync ok");
         }
 

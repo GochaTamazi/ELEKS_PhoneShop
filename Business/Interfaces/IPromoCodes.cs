@@ -8,5 +8,9 @@ namespace Application.Interfaces
     public interface IPromoCodes
     {
         Task<List<PromoCode>> GetAllAsync(CancellationToken token);
+
+        Task InsertOrUpdateAsync(string phoneSlug, string key, int amount, int discount, CancellationToken token);
+
+        Task RemoveIfExistAsync(string key, CancellationToken token);
     }
 }

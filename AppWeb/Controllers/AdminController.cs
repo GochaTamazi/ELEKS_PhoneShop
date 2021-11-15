@@ -202,9 +202,32 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("createCode")]
-        public async Task<ActionResult<TopByFansDto>> CreateCodeAsync(CancellationToken token)
+        public async Task<ActionResult<TopByFansDto>> CreateCodeAsync([FromQuery] [Required] string phoneSlug,
+            [FromQuery] [Required] string key,
+            [FromQuery] [Required] int amount,
+            [FromQuery] [Required] int discount,
+            CancellationToken token)
         {
-            return Ok("CreateCodeAsync Done");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Not all fields are set");
+            }
+
+            await _promoCodes.InsertOrUpdateAsync(phoneSlug, key, amount, discount, token);
+            return RedirectToAction("PromoCodes", "Admin");
+        }
+
+        [HttpGet("deleteCode")]
+        public async Task<ActionResult<TopByFansDto>> DeleteCodeAsync([FromQuery] [Required] string key,
+            CancellationToken token)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Key not set");
+            }
+
+            await _promoCodes.RemoveIfExistAsync(key, token);
+            return RedirectToAction("PromoCodes", "Admin");
         }
     }
 }

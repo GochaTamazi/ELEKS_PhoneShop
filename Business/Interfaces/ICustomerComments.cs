@@ -9,6 +9,6 @@ namespace Application.Interfaces
     {
         Task<CommentsPage> GetAllAsync(string phoneSlug, int page, int pageSize, CancellationToken token);
 
-        Task<bool> InsertAsync(CommentForm commentForm, CancellationToken token);
+        Task<bool> InsertOrUpdateAsync(CommentForm commentForm, CancellationToken token);
     }
 }

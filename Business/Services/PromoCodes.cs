@@ -9,11 +9,13 @@ namespace Application.Services
 {
     public class PromoCodes : IPromoCodes
     {
+        private readonly IGeneralRepository<Phone> _phoneRepository;
         private readonly IGeneralRepository<PromoCode> _promoCodeRepository;
 
-        public PromoCodes(IGeneralRepository<PromoCode> promoCodeRepository)
+        public PromoCodes(IGeneralRepository<PromoCode> promoCodeRepository, IGeneralRepository<Phone> phoneRepository)
         {
             _promoCodeRepository = promoCodeRepository;
+            _phoneRepository = phoneRepository;
         }
 
         public async Task<List<PromoCode>> GetAllAsync(CancellationToken token)
@@ -25,6 +27,31 @@ namespace Application.Services
             }
 
             return new List<PromoCode>();
+        }
+
+        public async Task InsertOrUpdateAsync(string phoneSlug, string key, int amount, int discount,
+            CancellationToken token)
+        {
+            var phone = await _phoneRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug && phone.Hided != true,
+                token);
+            if (phone != null)
+            {
+                var promoCode = new PromoCode()
+                {
+                    Key = key,
+                    Amount = amount,
+                    Discount = discount,
+                    PhoneId = phone.Id
+                };
+                await _promoCodeRepository.InsertOrUpdateAsync(code => code.Key == key && code.PhoneId == phone.Id,
+                    promoCode,
+                    token);
+            }
+        }
+
+        public async Task RemoveIfExistAsync(string key, CancellationToken token)
+        {
+            await _promoCodeRepository.RemoveIfExistAsync(code => code.Key == key, token);
         }
     }
 }

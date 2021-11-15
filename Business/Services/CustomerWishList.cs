@@ -25,7 +25,7 @@ namespace Application.Services
             _wishListRepository = wishListRepository;
         }
 
-        public async Task InsertAsync(string phoneSlug, string userMail, CancellationToken token)
+        public async Task InsertIfNotExistAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
