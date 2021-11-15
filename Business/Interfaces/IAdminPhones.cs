@@ -12,6 +12,6 @@ namespace Application.Interfaces
 
         Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize, CancellationToken token);
 
-        Task<Phone> InsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
+        Task<Phone> AddOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
     }
 }

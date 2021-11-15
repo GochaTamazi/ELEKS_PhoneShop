@@ -6,7 +6,7 @@
     var phone = @Model.PhoneDetail;
 }
 
-<form asp-controller="Admin" asp-action="PhoneInsertOrUpdate" method="post">
+<form asp-controller="Admin" asp-action="AddOrUpdatePhone" method="post">
     <input type="hidden" value="@Model.BrandSlug" name="BrandSlug"/>
     <input type="hidden" value="@Model.PhoneSlug" name="PhoneSlug"/>
     <input type="hidden" value="@Model.InStore" name="InStore"/>

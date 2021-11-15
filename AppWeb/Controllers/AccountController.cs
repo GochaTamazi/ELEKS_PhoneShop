@@ -88,7 +88,7 @@ namespace PhoneShop.Controllers
                     };
                     userNew.Password = _passwordHasher.HashPassword(userNew, registerForm.Password);
 
-                    await _usersRepository.InsertAsync(userNew, token);
+                    await _usersRepository.AddAsync(userNew, token);
 
                     await AuthenticateAsync(userNew.Email, userNew.Role);
                     return RedirectToAction("Index", "Home");

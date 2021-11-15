@@ -29,7 +29,7 @@ namespace Application.Services
             return new List<PromoCode>();
         }
 
-        public async Task InsertOrUpdateAsync(string phoneSlug, string key, int amount, int discount,
+        public async Task AddOrUpdateAsync(string phoneSlug, string key, int amount, int discount,
             CancellationToken token)
         {
             var phone = await _phoneRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug && phone.Hided != true,
@@ -43,7 +43,7 @@ namespace Application.Services
                     Discount = discount,
                     PhoneId = phone.Id
                 };
-                await _promoCodeRepository.InsertOrUpdateAsync(code => code.Key == key && code.PhoneId == phone.Id,
+                await _promoCodeRepository.AddOrUpdateAsync(code => code.Key == key && code.PhoneId == phone.Id,
                     promoCode,
                     token);
             }

@@ -29,7 +29,7 @@ namespace Application.Services
         {
             var priceSubscriber = _mapper.Map<PriceSubscriber>(priceSubscriberForm);
 
-            await _priceSubscribersRepository.InsertIfNotExistAsync(s =>
+            await _priceSubscribersRepository.AddIfNotExistAsync(s =>
                     s.BrandSlug == priceSubscriber.BrandSlug &&
                     s.PhoneSlug == priceSubscriber.PhoneSlug &&
                     s.Email == priceSubscriber.Email,
@@ -40,7 +40,7 @@ namespace Application.Services
         {
             var stockSubscriber = _mapper.Map<StockSubscriber>(stockSubscriberForm);
 
-            await _stockSubscribersRepository.InsertIfNotExistAsync(s =>
+            await _stockSubscribersRepository.AddIfNotExistAsync(s =>
                     s.BrandSlug == stockSubscriber.BrandSlug &&
                     s.PhoneSlug == stockSubscriber.PhoneSlug &&
                     s.Email == stockSubscriber.Email,

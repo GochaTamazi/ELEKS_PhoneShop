@@ -22,14 +22,14 @@ namespace DataAccess.Repositories
             _table = _masterContext.Set<T>();
         }
 
-        public async Task<T> InsertAsync(T model, CancellationToken token)
+        public async Task<T> AddAsync(T model, CancellationToken token)
         {
             var entityEntry = await _table.AddAsync(model, token);
             await _masterContext.SaveChangesAsync(token);
             return entityEntry.Entity;
         }
 
-        public async Task<T> InsertIfNotExistAsync(Expression<Func<T, bool>> condition, T model,
+        public async Task<T> AddIfNotExistAsync(Expression<Func<T, bool>> condition, T model,
             CancellationToken token)
         {
             await using var transaction = await _masterContext.Database.BeginTransactionAsync(token);
@@ -37,21 +37,21 @@ namespace DataAccess.Repositories
             T modelRes = null;
             if (result == null)
             {
-                modelRes = await InsertAsync(model, token);
+                modelRes = await AddAsync(model, token);
             }
 
             await transaction.CommitAsync(token);
             return modelRes;
         }
 
-        public async Task<T> InsertOrUpdateAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token)
+        public async Task<T> AddOrUpdateAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token)
         {
             await using var transaction = await _masterContext.Database.BeginTransactionAsync(token);
             var result = await GetOneAsync(condition, token);
             T modelRes;
             if (result == null)
             {
-                modelRes = await InsertAsync(model, token);
+                modelRes = await AddAsync(model, token);
             }
             else
             {

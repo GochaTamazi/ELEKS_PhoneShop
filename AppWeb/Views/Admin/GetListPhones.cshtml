@@ -14,7 +14,7 @@
 @for (var i = 1; i <= @Model.Phones.Data.Last_page; i++)
 {
     <a asp-controller="Admin"
-       asp-action="ListPhones"
+       asp-action="GetListPhones"
        asp-route-brandSlug="@Model.BrandSlug"
        asp-route-page="@i">
         @i |
@@ -26,7 +26,7 @@
     {
         <li>
             <a asp-controller="Admin"
-               asp-action="PhoneSpecifications"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.Slug">
                 <img class="phoneImage" src="@phone.Image" alt="x"/>
                 @phone.Phone_name

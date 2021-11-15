@@ -41,8 +41,8 @@ namespace PhoneShop.Controllers
             return View();
         }
 
-        [HttpGet("listBrands")]
-        public async Task<ActionResult<ListBrandsDto>> ListBrandsAsync(CancellationToken token)
+        [HttpGet("getListBrands")]
+        public async Task<ActionResult<ListBrandsDto>> GetListBrandsAsync(CancellationToken token)
         {
             var listBrands = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
 
@@ -54,11 +54,10 @@ namespace PhoneShop.Controllers
             return View(listBrands);
         }
 
-        [HttpGet("listPhones")]
-        public async Task<ActionResult<ListPhonesDto>> ListPhonesAsync(CancellationToken token,
+        [HttpGet("getListPhones")]
+        public async Task<ActionResult<ListPhonesDto>> GetListPhonesAsync(CancellationToken token,
             [FromQuery] [Required] string brandSlug,
-            [FromQuery] int page = 1
-        )
+            [FromQuery] int page = 1)
         {
             if (page < 1)
             {
@@ -87,11 +86,10 @@ namespace PhoneShop.Controllers
             return View(listPhonesRes);
         }
 
-        [HttpGet("showAllPhones")]
-        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
+        [HttpGet("getPhones")]
+        public async Task<ActionResult<PhonesPageFront>> GetPhonesAsync(CancellationToken token,
             [FromQuery] PhonesFilterForm filterForm,
-            [FromQuery] int page = 1
-        )
+            [FromQuery] int page = 1)
         {
             const int pageSize = 10;
 
@@ -101,9 +99,8 @@ namespace PhoneShop.Controllers
             return View(phonesPageFront);
         }
 
-        [HttpGet("phoneSpecifications")]
-        public async Task<ActionResult<PhoneSpecificationsDto>> PhoneSpecificationsAsync(
-            [FromQuery] [Required] string phoneSlug,
+        [HttpGet("getPhone")]
+        public async Task<ActionResult<PhoneSpecificationsDto>> GetPhoneAsync([FromQuery] [Required] string phoneSlug,
             CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -121,11 +118,11 @@ namespace PhoneShop.Controllers
             return View(phoneSpecFront);
         }
 
-        [HttpPost("phoneInsertOrUpdate")]
-        public async Task<ActionResult<string>> PhoneInsertOrUpdateAsync([FromForm] PhoneSpecFront phoneSpecFront,
+        [HttpPost("addOrUpdatePhone")]
+        public async Task<ActionResult<string>> AddOrUpdatePhoneAsync([FromForm] PhoneSpecFront phoneSpecFront,
             CancellationToken token)
         {
-            var phone = await _adminPhones.InsertOrUpdateAsync(phoneSpecFront, token);
+            var phone = await _adminPhones.AddOrUpdateAsync(phoneSpecFront, token);
 
             if (phone == null)
             {
@@ -194,8 +191,8 @@ namespace PhoneShop.Controllers
         }
 
 
-        [HttpGet("promoCodes")]
-        public async Task<ActionResult<TopByFansDto>> PromoCodesAsync(CancellationToken token)
+        [HttpGet("getPromoCodes")]
+        public async Task<ActionResult<TopByFansDto>> GetPromoCodesAsync(CancellationToken token)
         {
             var codes = await _promoCodes.GetAllAsync(token);
             return View(codes);
@@ -213,8 +210,8 @@ namespace PhoneShop.Controllers
                 return BadRequest("Not all fields are set");
             }
 
-            await _promoCodes.InsertOrUpdateAsync(phoneSlug, key, amount, discount, token);
-            return RedirectToAction("PromoCodes", "Admin");
+            await _promoCodes.AddOrUpdateAsync(phoneSlug, key, amount, discount, token);
+            return RedirectToAction("GetPromoCodes", "Admin");
         }
 
         [HttpGet("deleteCode")]
@@ -227,7 +224,7 @@ namespace PhoneShop.Controllers
             }
 
             await _promoCodes.RemoveIfExistAsync(key, token);
-            return RedirectToAction("PromoCodes", "Admin");
+            return RedirectToAction("GetPromoCodes", "Admin");
         }
     }
 }

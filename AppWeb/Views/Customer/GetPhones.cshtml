@@ -1,7 +1,7 @@
 @model Application.DTO.Frontend.PhonesPageFront;
 
 @{
-    ViewBag.Title = "Get Phones In Store";
+    ViewBag.Title = "Customer Phones";
     Layout = "_Layout";
 
     var filter = @Model.FilterForm;
@@ -13,7 +13,7 @@
 <div>
     <b>Filter</b>
 </div>
-<form asp-controller="Admin" asp-action="ShowPhones" method="get">
+<form asp-controller="Customer" asp-action="GetPhones" method="get">
     <div>
         <label class="filterLabel">BrandName: </label>
         <input
@@ -85,14 +85,14 @@
 
 <hr/>
 
-<div>Get Phones In Store</div>
+<div>Customer Phones</div>
 <div>Total Phones Count: @Model.TotalPhones</div>
 <div>Page size: @Model.PageSize</div>
 <div>Page: @Model.Page / @Model.TotalPages</div>
 
 @for (var i = 1; i <= @Model.TotalPages; i++)
 {
-    <a asp-controller="Admin" asp-action="ShowPhones"
+    <a asp-controller="Customer" asp-action="GetPhones"
        asp-route-brandName="@filter.BrandName"
        asp-route-phoneName="@filter.PhoneName"
        asp-route-priceMin="@filter.PriceMin"
@@ -119,8 +119,8 @@
 
         <li class="pLi @phoneClass">
             <a class="pUrl"
-               asp-controller="Admin"
-               asp-action="PhoneSpecifications"
+               asp-controller="Customer"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
                 <div class="pRow">

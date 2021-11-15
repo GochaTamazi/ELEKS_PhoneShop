@@ -25,7 +25,7 @@ namespace Application.Services
             _cartsRepository = cartsRepository;
         }
 
-        public async Task InsertOrUpdateAsync(string phoneSlug, string userMail, int amount, CancellationToken token)
+        public async Task AddOrUpdateAsync(string phoneSlug, string userMail, int amount, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p =>
                     p.PhoneSlug == phoneSlug &&
@@ -41,13 +41,13 @@ namespace Application.Services
                     PhoneId = phone.Id,
                     Amount = amount
                 };
-                await _cartsRepository.InsertOrUpdateAsync(c => c.UserId == user.Id && c.PhoneId == phone.Id,
+                await _cartsRepository.AddOrUpdateAsync(c => c.UserId == user.Id && c.PhoneId == phone.Id,
                     cart,
                     token);
             }
         }
 
-        public async Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token)
+        public async Task RemoveAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);

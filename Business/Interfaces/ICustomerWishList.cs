@@ -9,8 +9,8 @@ namespace Application.Interfaces
     {
         Task<List<WishList>> GetAllAsync(string userMail, CancellationToken token);
 
-        Task InsertIfNotExistAsync(string phoneSlug, string userMail, CancellationToken token);
+        Task AddIfNotExistAsync(string phoneSlug, string userMail, CancellationToken token);
 
-        Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token);
+        Task RemoveAsync(string phoneSlug, string userMail, CancellationToken token);
     }
 }

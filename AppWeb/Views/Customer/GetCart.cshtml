@@ -27,7 +27,7 @@
         <li class="pLi @phoneClass">
             <a class="pUrl"
                asp-controller="Customer"
-               asp-action="ShowPhone"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
                 <div class="pRow">
@@ -62,7 +62,7 @@
             </a>
 
             <a asp-controller="Customer"
-               asp-action="DeleteFromCart"
+               asp-action="RemoveFromCart"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 Remover From Cart
             </a>

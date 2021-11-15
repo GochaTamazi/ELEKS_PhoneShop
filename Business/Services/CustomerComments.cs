@@ -51,7 +51,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<bool> InsertOrUpdateAsync(CommentForm commentForm, CancellationToken token)
+        public async Task<bool> AddOrUpdateAsync(CommentForm commentForm, CancellationToken token)
         {
             var user = await _usersRepository.GetOneAsync(user => user.Email == commentForm.UserMail, token);
             if (user == null)
@@ -62,7 +62,7 @@ namespace Application.Services
             var comment = _mapper.Map<Comment>(commentForm);
             comment.UserId = user.Id;
 
-            await _commentsRepository.InsertOrUpdateAsync(
+            await _commentsRepository.AddOrUpdateAsync(
                 c => c.UserId == comment.UserId && c.PhoneSlug == comment.PhoneSlug,
                 comment, token);
 

@@ -25,12 +25,12 @@
 
         <li class="pLi @phoneClass">
             <a asp-controller="Customer" 
-               asp-action="RemoveFromWishList"
+               asp-action="RemoveWishList"
                asp-route-phoneSlug="@phone.PhoneSlug">Remove From Wish List</a>
             
             <a class="pUrl"
                asp-controller="Customer"
-               asp-action="ShowPhone"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
                 <div class="pRow">

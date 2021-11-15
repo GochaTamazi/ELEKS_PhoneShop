@@ -38,7 +38,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Phone> InsertOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
+        public async Task<Phone> AddOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
                 phoneSpecFront.PhoneSlug, token);
@@ -51,7 +51,7 @@ namespace Application.Services
             var phoneFromApi = _mapper.Map<PhoneSpecificationsDto, Phone>(phoneSpecificationsDto);
             phoneFromApi = _mapper.Map<PhoneSpecFront, Phone>(phoneSpecFront, phoneFromApi);
 
-            var phoneFromDb = await _phonesRepository.InsertOrUpdateAsync(phone =>
+            var phoneFromDb = await _phonesRepository.AddOrUpdateAsync(phone =>
                 phone.PhoneSlug == phoneFromApi.PhoneSlug, phoneFromApi, token);
 
             //Price notification
@@ -145,7 +145,7 @@ namespace Application.Services
             var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
             var brandDto = listBrandsDto?.Data.FirstOrDefault(brandDto => brandDto.Brand_slug == brandSlug);
             var brandModelFromApi = _mapper.Map<Brand>(brandDto);
-            await _brandsRepository.InsertIfNotExistAsync(b => b.Slug == brandSlug, brandModelFromApi, token);
+            await _brandsRepository.AddIfNotExistAsync(b => b.Slug == brandSlug, brandModelFromApi, token);
         }
     }
 }

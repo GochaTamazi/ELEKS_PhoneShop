@@ -8,11 +8,11 @@ namespace DataAccess.Interfaces
 {
     public interface IGeneralRepository<T>
     {
-        Task<T> InsertAsync(T model, CancellationToken token);
+        Task<T> AddAsync(T model, CancellationToken token);
 
-        Task<T> InsertIfNotExistAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token);
+        Task<T> AddIfNotExistAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token);
 
-        Task<T> InsertOrUpdateAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token);
+        Task<T> AddOrUpdateAsync(Expression<Func<T, bool>> condition, T model, CancellationToken token);
 
         Task<T> RemoveAsync(T model, CancellationToken token);
 

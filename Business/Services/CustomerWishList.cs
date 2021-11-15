@@ -25,7 +25,7 @@ namespace Application.Services
             _wishListRepository = wishListRepository;
         }
 
-        public async Task InsertIfNotExistAsync(string phoneSlug, string userMail, CancellationToken token)
+        public async Task AddIfNotExistAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);
@@ -37,12 +37,12 @@ namespace Application.Services
                     PhoneId = phone.Id
                 };
 
-                await _wishListRepository.InsertIfNotExistAsync(l => l.UserId == user.Id && l.PhoneId == phone.Id,
+                await _wishListRepository.AddIfNotExistAsync(l => l.UserId == user.Id && l.PhoneId == phone.Id,
                     wishList, token);
             }
         }
 
-        public async Task DeleteAsync(string phoneSlug, string userMail, CancellationToken token)
+        public async Task RemoveAsync(string phoneSlug, string userMail, CancellationToken token)
         {
             var phone = await _phonesRepository.GetOneAsync(p => p.PhoneSlug == phoneSlug && p.Hided != true, token);
             var user = await _usersRepository.GetOneAsync(user => user.Email == userMail, token);

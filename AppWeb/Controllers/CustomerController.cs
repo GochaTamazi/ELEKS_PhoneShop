@@ -40,9 +40,10 @@ namespace PhoneShop.Controllers
             return View();
         }
 
-        [HttpGet("showAllPhones")]
-        public async Task<ActionResult<PhonesPageFront>> ShowPhonesAsync(CancellationToken token,
-            [FromQuery] PhonesFilterForm filterForm, [FromQuery] int page = 1)
+        [HttpGet("getPhones")]
+        public async Task<ActionResult<PhonesPageFront>> GetPhonesAsync(CancellationToken token,
+            [FromQuery] PhonesFilterForm filterForm,
+            [FromQuery] int page = 1)
         {
             const int pageSize = 10;
 
@@ -52,8 +53,8 @@ namespace PhoneShop.Controllers
             return View(phonesPageFront);
         }
 
-        [HttpGet("showPhone")]
-        public async Task<ActionResult> ShowPhoneAsync([FromQuery] [Required] string phoneSlug, CancellationToken token)
+        [HttpGet("getPhone")]
+        public async Task<ActionResult> GetPhoneAsync([FromQuery] [Required] string phoneSlug, CancellationToken token)
         {
             if (!ModelState.IsValid)
             {
@@ -70,7 +71,7 @@ namespace PhoneShop.Controllers
             return View(phone);
         }
 
-        [HttpGet("AddToWishList")]
+        [HttpGet("addToWishList")]
         public async Task<ActionResult> AddToWishListAsync([FromQuery] [Required] string phoneSlug,
             CancellationToken token)
         {
@@ -80,12 +81,12 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerWishList.InsertIfNotExistAsync(phoneSlug, userMail, token);
+            await _customerWishList.AddIfNotExistAsync(phoneSlug, userMail, token);
             return Ok("AddToWishListAsync ok");
         }
 
-        [HttpGet("RemoveFromWishList")]
-        public async Task<ActionResult> RemoveFromWishListAsync([FromQuery] [Required] string phoneSlug,
+        [HttpGet("removeWishList")]
+        public async Task<ActionResult> RemoveWishListAsync([FromQuery] [Required] string phoneSlug,
             CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -94,20 +95,20 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerWishList.DeleteAsync(phoneSlug, userMail, token);
+            await _customerWishList.RemoveAsync(phoneSlug, userMail, token);
             return Ok("RemoveFromWishListAsync ok");
         }
 
-        [HttpGet("ShowWishList")]
-        public async Task<ActionResult> ShowWishListAsync(CancellationToken token)
+        [HttpGet("getWishLists")]
+        public async Task<ActionResult> GetWishListsAsync(CancellationToken token)
         {
             var userMail = User.Identity?.Name;
             var wishList = await _customerWishList.GetAllAsync(userMail, token);
             return View(wishList);
         }
 
-        [HttpGet("showPhoneComments")]
-        public async Task<ActionResult> ShowPhoneCommentsAsync(CancellationToken token,
+        [HttpGet("getPhoneComments")]
+        public async Task<ActionResult> GetPhoneCommentsAsync(CancellationToken token,
             [FromQuery] [Required] string phoneSlug,
             [FromQuery] int page = 1)
         {
@@ -121,14 +122,15 @@ namespace PhoneShop.Controllers
             return PartialView(commentsPage);
         }
 
-        [HttpPost("postComment")]
-        public async Task<ActionResult> PostComment([FromForm] CommentForm commentForm, CancellationToken token)
+        [HttpPost("addOrUpdateComment")]
+        public async Task<ActionResult> AddOrUpdateCommentAsync([FromForm] CommentForm commentForm,
+            CancellationToken token)
         {
             commentForm.UserMail = User.Identity?.Name;
-            var result = await _customerComments.InsertOrUpdateAsync(commentForm, token);
+            var result = await _customerComments.AddOrUpdateAsync(commentForm, token);
             if (result)
             {
-                return RedirectToAction("ShowPhone", "Customer", new
+                return RedirectToAction("GetPhone", "Customer", new
                 {
                     phoneSlug = commentForm.PhoneSlug
                 });
@@ -137,33 +139,32 @@ namespace PhoneShop.Controllers
             return BadRequest("Error PostComment");
         }
 
-        [HttpPost("subscribePrice")]
-        public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberForm priceSubscriber,
+        [HttpPost("subscribeOnPrice")]
+        public async Task<ActionResult> SubscribeOnPriceAsync([FromForm] PriceSubscriberForm priceSubscriber,
             CancellationToken token)
         {
             await _subscribers.SubscribeOnPriceAsync(priceSubscriber, token);
             return Ok("SubscribePriceAsync ok");
         }
 
-        [HttpPost("subscribeStock")]
-        public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberForm stockSubscriber,
+        [HttpPost("subscribeOnStock")]
+        public async Task<ActionResult> SubscribeOnStockAsync([FromForm] StockSubscriberForm stockSubscriber,
             CancellationToken token)
         {
             await _subscribers.SubscribeOnStockAsync(stockSubscriber, token);
             return Ok("SubscribeStockAsync ok");
         }
 
-        [HttpGet("Cart")]
-        public async Task<ActionResult> CartAsync(CancellationToken token)
+        [HttpGet("getCart")]
+        public async Task<ActionResult> GetCartAsync(CancellationToken token)
         {
             var userMail = User.Identity?.Name;
             var cart = await _customerCart.GetAllAsync(userMail, token);
             return View(cart);
         }
 
-
-        [HttpGet("insertToCart")]
-        public async Task<ActionResult> InsertToCartAsync([FromQuery] [Required] string phoneSlug,
+        [HttpGet("addToCart")]
+        public async Task<ActionResult> AddToCartAsync([FromQuery] [Required] string phoneSlug,
             [FromQuery] [Required] int amount,
             CancellationToken token)
         {
@@ -173,12 +174,12 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerCart.InsertOrUpdateAsync(phoneSlug, userMail, amount, token);
+            await _customerCart.AddOrUpdateAsync(phoneSlug, userMail, amount, token);
             return Ok("InsertToCartAsync ok");
         }
 
-        [HttpGet("deleteFromCart")]
-        public async Task<ActionResult> DeleteFromCartAsync([FromQuery] [Required] string phoneSlug,
+        [HttpGet("removeFromCart")]
+        public async Task<ActionResult> RemoveFromCartAsync([FromQuery] [Required] string phoneSlug,
             CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -187,7 +188,7 @@ namespace PhoneShop.Controllers
             }
 
             var userMail = User.Identity?.Name;
-            await _customerCart.DeleteAsync(phoneSlug, userMail, token);
+            await _customerCart.RemoveAsync(phoneSlug, userMail, token);
             return Ok("DeleteFromCartAsync ok");
         }
     }

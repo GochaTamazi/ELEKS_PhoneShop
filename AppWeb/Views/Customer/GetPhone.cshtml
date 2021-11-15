@@ -10,7 +10,7 @@
 
 <a asp-controller="Customer" asp-action="AddToWishList" asp-route-phoneSlug="@phone.PhoneSlug">Add To Wish List</a>
 
-<form asp-controller="Customer" asp-action="SubscribePrice" method="post">
+<form asp-controller="Customer" asp-action="SubscribeOnPrice" method="post">
     <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
     <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
     <p>
@@ -27,7 +27,7 @@
 
 @if (@phone.Stock <= 0)
 {
-    <form asp-controller="Customer" asp-action="SubscribeStock" method="post">
+    <form asp-controller="Customer" asp-action="SubscribeOnStock" method="post">
         <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
         <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
         <p>
@@ -44,7 +44,7 @@
 
 <h2>Customer Phone Specifications</h2>
 
-<form asp-controller="Customer" asp-action="InsertToCart" method="get">
+<form asp-controller="Customer" asp-action="AddToCart" method="get">
     <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
     <p>
         <label>
