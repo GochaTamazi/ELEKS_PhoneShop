@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Threading;
+using Database.Models;
 
 namespace PhoneShop.Controllers
 {
@@ -18,13 +20,15 @@ namespace PhoneShop.Controllers
         private readonly ISubscribers _subscribers;
         private readonly ICustomerComments _customerComments;
         private readonly ICustomerCart _customerCart;
+        private readonly IPromoCodes _promoCodes;
 
         public CustomerController(
             ICustomerPhones customerPhones,
             ICustomerWishList customerWishList,
             ISubscribers subscribers,
             ICustomerComments customerComments,
-            ICustomerCart customerCart
+            ICustomerCart customerCart,
+            IPromoCodes promoCodes
         )
         {
             _customerPhones = customerPhones;
@@ -32,6 +36,7 @@ namespace PhoneShop.Controllers
             _subscribers = subscribers;
             _customerComments = customerComments;
             _customerCart = customerCart;
+            _promoCodes = promoCodes;
         }
 
         [HttpGet("index"), HttpGet("")]
@@ -156,12 +161,29 @@ namespace PhoneShop.Controllers
         }
 
         [HttpGet("getCart")]
-        public async Task<ActionResult> GetCartAsync(CancellationToken token)
+        public async Task<ActionResult> GetCartAsync(CancellationToken token, string promoCodeKey = "")
         {
             var userMail = User.Identity?.Name;
-            var cart = await _customerCart.GetAllAsync(userMail, token);
-            return View(cart);
+            var cartAndPromoCodeFront = new CartAndPromoCodeFront()
+            {
+                Cart = await _customerCart.GetAllAsync(userMail, token) ?? new List<Cart>(),
+                PromoCode = await _promoCodes.GetOneAsync(promoCodeKey, token)
+            };
+            return View(cartAndPromoCodeFront);
         }
+
+        [HttpGet("buyPhones")]
+        public async Task<ActionResult> BuyPhonesAsync(CancellationToken token, string promoCodeKey = "")
+        {
+            var userMail = User.Identity?.Name;
+
+            var carts = await _customerCart.BuyAsync(userMail, token);
+
+            var totalSum = await _promoCodes.Buy(carts, promoCodeKey, token);
+
+            return Ok($"BuyPhones OK. Total sum {totalSum}");
+        }
+
 
         [HttpGet("addToCart")]
         public async Task<ActionResult> AddToCartAsync([FromQuery] [Required] string phoneSlug,

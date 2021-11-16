@@ -29,6 +29,13 @@ namespace Application.Services
             return new List<PromoCode>();
         }
 
+        public async Task<PromoCode> GetOneAsync(string key, CancellationToken token)
+        {
+            return await _promoCodeRepository.GetOneIncludeAsync(code => code.Key == key,
+                code => code.Phone,
+                token);
+        }
+
         public async Task AddOrUpdateAsync(string phoneSlug, string key, int amount, int discount,
             CancellationToken token)
         {
@@ -52,6 +59,33 @@ namespace Application.Services
         public async Task RemoveIfExistAsync(string key, CancellationToken token)
         {
             await _promoCodeRepository.RemoveIfExistAsync(code => code.Key == key, token);
+        }
+
+        public async Task<double> Buy(List<Cart> carts, string key, CancellationToken token)
+        {
+            var promoCode = await _promoCodeRepository.GetOneIncludeAsync(code => code.Key == key,
+                code => code.Phone,
+                token);
+
+            double totalSumCart = 0;
+
+            foreach (var cart in carts)
+            {
+                var phone = cart.Phone;
+                double discount = 1;
+                if (promoCode != null && phone.PhoneSlug == promoCode.Phone.PhoneSlug)
+                {
+                    discount = (double) ((100.0 - promoCode.Discount) / 100.0);
+
+                    promoCode.Amount--;
+                    await _promoCodeRepository.UpdateAsync(promoCode, token);
+                }
+
+                var totalPrice = cart.Amount * phone.Price * discount ?? 0;
+                totalSumCart += totalPrice;
+            }
+
+            return totalSumCart;
         }
     }
 }

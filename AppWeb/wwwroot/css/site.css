@@ -120,6 +120,11 @@ span.pColVal {
     color: black;
 }
 
+span.pColValGreen {
+    color: green;
+    font-weight: bold;
+}
+
 .filterLabel {
     width: 95px;
 }

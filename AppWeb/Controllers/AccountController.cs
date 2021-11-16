@@ -42,7 +42,7 @@ namespace PhoneShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) => user.Email == loginForm.Email, token);
+                var user = await _usersRepository.GetOneAsync(user => user.Email == loginForm.Email, token);
                 if (user != null)
                 {
                     var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user,
@@ -76,7 +76,7 @@ namespace PhoneShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _usersRepository.GetOneAsync((user) => user.Email == registerForm.Email, token);
+                var user = await _usersRepository.GetOneAsync(user => user.Email == registerForm.Email, token);
                 if (user == null)
                 {
                     var userNew = new User

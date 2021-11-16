@@ -32,6 +32,9 @@ namespace DataAccess.Interfaces
 
         Task<T> GetOneAsync(Expression<Func<T, bool>> condition, CancellationToken token);
 
+        Task<T> GetOneIncludeAsync<TKey>(Expression<Func<T, bool>> condition, Expression<Func<T, TKey>> include,
+            CancellationToken token);
+
         Task<double?> AverageAsync(Expression<Func<T, bool>> condition, Expression<Func<T, int?>> selector,
             CancellationToken token);
 

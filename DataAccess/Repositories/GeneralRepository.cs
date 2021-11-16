@@ -122,6 +122,15 @@ namespace DataAccess.Repositories
             return await _table.Where(condition).FirstOrDefaultAsync(token);
         }
 
+        public async Task<T> GetOneIncludeAsync<TKey>(Expression<Func<T, bool>> condition,
+            Expression<Func<T, TKey>> include, CancellationToken token)
+        {
+            return await _table
+                .Where(condition)
+                .Include(include)
+                .FirstOrDefaultAsync(token);
+        }
+
         public async Task<double?> AverageAsync(Expression<Func<T, bool>> condition, Expression<Func<T, int?>> selector,
             CancellationToken token)
         {

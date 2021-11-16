@@ -1,17 +1,32 @@
-@model System.Collections.Generic.List<Database.Models.Cart>
+@model Application.DTO.Frontend.CartAndPromoCodeFront
 
 @{
     ViewBag.Title = "Cart";
     Layout = "_Layout";
+    var promoCodeKey = "";
+    if (Model.PromoCode != null)
+    {
+        promoCodeKey = @Model.PromoCode.Key;
+    }
 }
 
 <h2>Cart</h2>
 
+<form asp-controller="Customer" asp-action="GetCart" method="get">
+    <p>
+        <label>
+            <b>PromoCode:</b>
+        </label>
+        <input type="text" placeholder="PromoCode" name="PromoCodeKey" value="@promoCodeKey"/>
+        <input type="submit" value="Use PromoCode"/>
+    </p>
+</form>
+
 <ul class="pUl">
     @{
-        int? totalSumCart = 0;
+        double? totalSumCart = 0;
     }
-    @foreach (var v in @Model)
+    @foreach (var v in @Model.Cart)
     {
         var phone = v.Phone;
         var phoneClass = "";
@@ -23,6 +38,20 @@
         {
             phoneClass = "pStockEmpty";
         }
+
+        double discount = 1;
+        var discountPhone = false;
+        if (promoCodeKey != "")
+        {
+            if (Model.PromoCode.Phone.PhoneSlug == phone.PhoneSlug)
+            {
+                discount = (double) ((100.0 - Model.PromoCode.Discount) / 100.0);
+                discountPhone = true;
+            }
+        }
+
+        var totalPrice = v.Amount * phone.Price * discount;
+        totalSumCart += totalPrice;
 
         <li class="pLi @phoneClass">
             <a class="pUrl"
@@ -41,6 +70,10 @@
                 <div class="pRow">
                     <span class="pColKey">Price:</span>
                     <span class="pColVal">@phone.Price</span>
+                    @if (discountPhone)
+                    {
+                        <span class="pColValGreen">-@Model.PromoCode.Discount%</span>
+                    }
                 </div>
                 <div class="pRow">
                     <span class="pColKey">Stock:</span>
@@ -51,10 +84,6 @@
                     <span class="pColVal">@v.Amount</span>
                 </div>
 
-                @{
-                    var totalPrice = v.Amount * phone.Price;
-                    totalSumCart += totalPrice;
-                }
                 <div class="pRow">
                     <span class="pColKey">Total price:</span>
                     <span class="pColVal">@totalPrice</span>
@@ -71,3 +100,9 @@
 </ul>
 
 <h4>Total Sum Cart: @totalSumCart</h4>
+
+<a asp-controller="Customer"
+   asp-action="BuyPhones"
+   asp-route-PromoCodeKey="@promoCodeKey">
+    <h3>Buy</h3>
+</a>

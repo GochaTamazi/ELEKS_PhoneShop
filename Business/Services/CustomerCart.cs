@@ -57,14 +57,27 @@ namespace Application.Services
             }
         }
 
-        public async Task BuyAsync(string userMail, CancellationToken token)
+        public async Task<List<Cart>> BuyAsync(string userMail, CancellationToken token)
         {
-            throw new System.NotImplementedException();
-        }
+            var carts = await GetAllAsync(userMail, token);
 
-        public async Task UsePromoCodeAsync(string code, string userMail, CancellationToken token)
-        {
-            throw new System.NotImplementedException();
+            var delCarts = new List<Cart>();
+            if (carts != null)
+            {
+                foreach (var c in carts)
+                {
+                    var phone = c.Phone;
+                    if (phone.Stock - c.Amount > 0)
+                    {
+                        phone.Stock -= c.Amount;
+                        await _phonesRepository.UpdateAsync(phone, token);
+                        var delCart = await _cartsRepository.RemoveAsync(c, token);
+                        delCarts.Add(delCart);
+                    }
+                }
+            }
+
+            return delCarts;
         }
 
         public async Task<List<Cart>> GetAllAsync(string userMail, CancellationToken token)
@@ -75,7 +88,7 @@ namespace Application.Services
                 return await _cartsRepository.GetAllIncludeAsync(c => c.UserId == user.Id, c => c.Phone, token);
             }
 
-            return new List<Cart>();
+            return null;
         }
     }
 }
