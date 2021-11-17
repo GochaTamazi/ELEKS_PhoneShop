@@ -1,6 +1,6 @@
 namespace Application.DTO.Frontend.Forms
 {
-    public class PriceSubscriberForm
+    public class SubscriberForm
     {
         public string BrandSlug { get; set; } = string.Empty;
         public string PhoneSlug { get; set; } = string.Empty;

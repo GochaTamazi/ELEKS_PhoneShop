@@ -13,7 +13,7 @@
 <div>
     <b>Filter</b>
 </div>
-<form asp-controller="Admin" asp-action="GetPhones" method="get">
+<form asp-controller="Admin" asp-action="GetShopPhones" method="get">
     <div>
         <label class="filterLabel">BrandName: </label>
         <input
@@ -92,7 +92,7 @@
 
 @for (var i = 1; i <= @Model.TotalPages; i++)
 {
-    <a asp-controller="Admin" asp-action="GetPhones"
+    <a asp-controller="Admin" asp-action="GetShopPhones"
        asp-route-brandName="@filter.BrandName"
        asp-route-phoneName="@filter.PhoneName"
        asp-route-priceMin="@filter.PriceMin"
@@ -120,7 +120,7 @@
         <li class="pLi @phoneClass">
             <a class="pUrl"
                asp-controller="Admin"
-               asp-action="GetPhone"
+               asp-action="GetShopPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
                 <div class="pRow">

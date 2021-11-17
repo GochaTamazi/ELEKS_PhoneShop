@@ -46,6 +46,8 @@ namespace PhoneShop.Controllers
         }
 
 
+        #region Phones
+
         [HttpGet("phones")]
         public async Task<ActionResult<PhonesPageFront>> GetPhonesAsync(CancellationToken token,
             [FromQuery] PhonesFilterForm filterForm,
@@ -109,6 +111,10 @@ namespace PhoneShop.Controllers
             return BadRequest("Error PostComment");
         }
 
+        #endregion
+
+
+        #region WishLists
 
         [HttpGet("wishLists")]
         public async Task<ActionResult> GetWishListsAsync(CancellationToken token)
@@ -146,9 +152,13 @@ namespace PhoneShop.Controllers
             return Ok("RemoveFromWishListAsync ok");
         }
 
+        #endregion
+
+
+        #region Cart
 
         [HttpGet("cart")]
-        public async Task<ActionResult> GetCartAsync(CancellationToken token, string promoCodeKey = "")
+        public async Task<ActionResult> GetCartAsync(CancellationToken token, [FromQuery] string promoCodeKey = "")
         {
             var userMail = User.Identity?.Name;
             var cartAndPromoCodeFront = new CartAndPromoCodeFront()
@@ -200,21 +210,27 @@ namespace PhoneShop.Controllers
             return Ok($"BuyPhones OK. Total sum {totalSum}");
         }
 
+        #endregion
+
+
+        #region Subscriber
 
         [HttpPost("phone/subscribePrice")]
-        public async Task<ActionResult> SubscribePriceAsync([FromForm] PriceSubscriberForm priceSubscriber,
+        public async Task<ActionResult> SubscribePriceAsync([FromForm] SubscriberForm subscriberForm,
             CancellationToken token)
         {
-            await _subscribers.SubscribeOnPriceAsync(priceSubscriber, token);
+            await _subscribers.SubscribeOnPriceAsync(subscriberForm, token);
             return Ok("SubscribePriceAsync ok");
         }
 
         [HttpPost("phone/subscribeStock")]
-        public async Task<ActionResult> SubscribeStockAsync([FromForm] StockSubscriberForm stockSubscriber,
+        public async Task<ActionResult> SubscribeStockAsync([FromForm] SubscriberForm subscriberForm,
             CancellationToken token)
         {
-            await _subscribers.SubscribeOnStockAsync(stockSubscriber, token);
+            await _subscribers.SubscribeOnStockAsync(subscriberForm, token);
             return Ok("SubscribeStockAsync ok");
         }
+
+        #endregion
     }
 }

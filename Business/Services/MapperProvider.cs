@@ -83,13 +83,7 @@ namespace Application.Services
                                 JsonConvert.DeserializeObject<List<SpecificationDto>>(x.Specifications)))
                         .ForAllOtherMembers(m => m.Ignore());
 
-                    cfg.CreateMap<PriceSubscriberForm, PriceSubscriber>()
-                        .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
-                        .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
-                        .ForMember(x => x.Email, m => m.MapFrom(x => x.Email))
-                        .ForAllOtherMembers(m => m.Ignore());
-
-                    cfg.CreateMap<StockSubscriberForm, StockSubscriber>()
+                    cfg.CreateMap<SubscriberForm, PriceSubscriber>()
                         .ForMember(x => x.BrandSlug, m => m.MapFrom(x => x.BrandSlug))
                         .ForMember(x => x.PhoneSlug, m => m.MapFrom(x => x.PhoneSlug))
                         .ForMember(x => x.Email, m => m.MapFrom(x => x.Email))

@@ -25,9 +25,9 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task SubscribeOnPriceAsync(PriceSubscriberForm priceSubscriberForm, CancellationToken token)
+        public async Task SubscribeOnPriceAsync(SubscriberForm subscriberForm, CancellationToken token)
         {
-            var priceSubscriber = _mapper.Map<PriceSubscriber>(priceSubscriberForm);
+            var priceSubscriber = _mapper.Map<PriceSubscriber>(subscriberForm);
 
             await _priceSubscribersRepository.AddIfNotExistAsync(s =>
                     s.BrandSlug == priceSubscriber.BrandSlug &&
@@ -36,9 +36,9 @@ namespace Application.Services
                 priceSubscriber, token);
         }
 
-        public async Task SubscribeOnStockAsync(StockSubscriberForm stockSubscriberForm, CancellationToken token)
+        public async Task SubscribeOnStockAsync(SubscriberForm subscriberForm, CancellationToken token)
         {
-            var stockSubscriber = _mapper.Map<StockSubscriber>(stockSubscriberForm);
+            var stockSubscriber = _mapper.Map<StockSubscriber>(subscriberForm);
 
             await _stockSubscribersRepository.AddIfNotExistAsync(s =>
                     s.BrandSlug == stockSubscriber.BrandSlug &&

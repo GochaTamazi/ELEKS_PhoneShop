@@ -1,12 +1,12 @@
-@model Application.DTO.PhoneSpecificationsAPI.Latest.LatestDto
+@model Application.DTO.PhoneSpecificationsAPI.TopByFans.TopByFansDto
 
 @{
-    ViewBag.Title = "Latest Phones";
+    ViewBag.Title = "Top By Fans";
     Layout = "_Layout";
     var data = @Model.Data;
 }
 
-<h2>Latest Phones</h2>
+<h2>Top By Fans</h2>
 
 <h4>@data.Title : @data.Phones.Count</h4>
 
@@ -15,10 +15,10 @@
     {
         <li>
             <a asp-controller="Admin"
-               asp-action="GetPhone"
+               asp-action="GetShopPhone"
                asp-route-phoneSlug="@phone.Slug">
-                <img class="phoneImage" src="@phone.Image" alt="x"/>
-                @phone.Phone_name
+                <b>Phone_name:</b> @phone.Phone_name |
+                <b>Favorites:</b> @phone.Favorites
             </a>
         </li>
     }
