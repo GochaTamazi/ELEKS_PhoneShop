@@ -91,7 +91,7 @@
             </a>
 
             <a asp-controller="Customer"
-               asp-action="RemoveFromCart"
+               asp-action="RemoveCart"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 Remover From Cart
             </a>
@@ -102,7 +102,7 @@
 <h4>Total Sum Cart: @totalSumCart</h4>
 
 <a asp-controller="Customer"
-   asp-action="BuyPhones"
+   asp-action="BuyCart"
    asp-route-PromoCodeKey="@promoCodeKey">
     <h3>Buy</h3>
 </a>

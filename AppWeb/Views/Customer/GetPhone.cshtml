@@ -8,9 +8,9 @@
 
 }
 
-<a asp-controller="Customer" asp-action="AddToWishList" asp-route-phoneSlug="@phone.PhoneSlug">Add To Wish List</a>
+<a asp-controller="Customer" asp-action="AddWishList" asp-route-phoneSlug="@phone.PhoneSlug">Add To Wish List</a>
 
-<form asp-controller="Customer" asp-action="SubscribeOnPrice" method="post">
+<form asp-controller="Customer" asp-action="SubscribePrice" method="post">
     <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
     <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
     <p>
@@ -27,7 +27,7 @@
 
 @if (@phone.Stock <= 0)
 {
-    <form asp-controller="Customer" asp-action="SubscribeOnStock" method="post">
+    <form asp-controller="Customer" asp-action="SubscribeStock" method="post">
         <input type="hidden" name="BrandSlug" value="@phone.BrandSlug"/>
         <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
         <p>
@@ -44,7 +44,7 @@
 
 <h2>Customer Phone Specifications</h2>
 
-<form asp-controller="Customer" asp-action="AddToCart" method="get">
+<form asp-controller="Customer" asp-action="AddCart" method="post">
     <input type="hidden" name="PhoneSlug" value="@phone.PhoneSlug"/>
     <p>
         <label>
@@ -127,7 +127,7 @@
 
 <script>
 function LoadPhoneComments(phoneSlug, page = 1) {
-    let url = `/customer/showPhoneComments?phoneSlug=${phoneSlug}&page=${page}`;
+    let url = `/customer/phoneComments/${phoneSlug}/${page}`;
     fetch(url).then((response) => {
         return response.text();
     }).then((result) => {
