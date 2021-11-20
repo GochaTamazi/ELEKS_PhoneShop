@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
@@ -23,16 +24,18 @@ namespace PhoneShop.Controllers
         private readonly IAdminPhones _adminPhones;
         private readonly IPhoneSpecificationsApi _phoneSpecificationServiceApi;
         private readonly IPromoCodes _promoCodes;
+        private readonly IPhoneData _phoneData;
 
         public AdminController(
             IAdminPhones adminPhones,
             IPhoneSpecificationsApi phoneSpecificationsServiceApiApi,
-            IPromoCodes promoCodes
-        )
+            IPromoCodes promoCodes,
+            IPhoneData phoneData)
         {
             _adminPhones = adminPhones;
             _phoneSpecificationServiceApi = phoneSpecificationsServiceApiApi;
             _promoCodes = promoCodes;
+            _phoneData = phoneData;
         }
 
         [HttpGet("index"), HttpGet("")]
@@ -159,7 +162,7 @@ namespace PhoneShop.Controllers
         {
             const int pageSize = 10;
 
-            var phonesPageFront = await _adminPhones.GetAllAsync(filterForm, page, pageSize, token);
+            var phonesPageFront = await _adminPhones.GetAllPagedAsync(filterForm, page, pageSize, token);
             phonesPageFront.FilterForm = filterForm;
 
             return View(phonesPageFront);
@@ -199,8 +202,23 @@ namespace PhoneShop.Controllers
             return Ok("PhoneInsertOrUpdateAsync Done");
         }
 
-        #endregion
+        [HttpGet("shop/exportPhonesToExcel")]
+        public async Task<ActionResult> ExportPhonesToExcelAsync(CancellationToken token,
+            [FromQuery] PhonesFilterForm filterForm)
+        {
+            var phones = await _adminPhones.GetAllAsync(filterForm, token);
 
+            var data = await _phoneData.ExportToXlsxAsync(phones, token);
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            var str = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+            var fileName = $"Phones_{str}.xlsx";
+
+            return File(data, contentType, fileName);
+        }
+
+        #endregion
 
         #region PromoCodes
 

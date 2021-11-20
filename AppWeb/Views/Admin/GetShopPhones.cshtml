@@ -10,6 +10,18 @@
     var InStock = filter.InStock;
 }
 
+
+<a asp-controller="Admin" asp-action="ExportPhonesToExcel"
+   asp-route-brandName="@filter.BrandName"
+   asp-route-phoneName="@filter.PhoneName"
+   asp-route-priceMin="@filter.PriceMin"
+   asp-route-priceMax="@filter.PriceMax"
+   asp-route-inStock="@filter.InStock"
+   asp-route-orderBy="@filter.OrderBy">
+    Export result to excel
+</a>
+
+
 <div>
     <b>Filter</b>
 </div>

@@ -53,6 +53,7 @@ namespace PhoneShop
             services.AddScoped<IPhoneSpecificationsApi, PhoneSpecificationsApi>();
             services.AddScoped<IPromoCodes, PromoCodes>();
             services.AddScoped<ISubscribers, Subscribers>();
+            services.AddScoped<IPhoneData, PhoneData>();
 
             // Mapper
             services.AddSingleton<IMapperProvider, MapperProvider>();

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Collections.Generic;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using AutoMapper;
 
@@ -105,7 +106,29 @@ namespace Application.Services
             return phoneSpecFront;
         }
 
-        public async Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize,
+        public async Task<List<Phone>> GetAllAsync(PhonesFilterForm filterForm, CancellationToken token)
+        {
+            Expression<Func<Phone, bool>> condition = (phone) =>
+                EF.Functions.Like(phone.BrandSlug, $"%{filterForm.BrandName}%") &&
+                EF.Functions.Like(phone.PhoneName, $"%{filterForm.PhoneName}%") &&
+                filterForm.PriceMin <= phone.Price && phone.Price <= filterForm.PriceMax &&
+                ((!filterForm.InStock) || 1 <= phone.Stock);
+
+            Expression<Func<Phone, object>> orderBy = filterForm.OrderBy switch
+            {
+                "PhoneName" => (phone) => phone.PhoneName,
+                "BrandSlug" => (phone) => phone.BrandSlug,
+                "Price" => (phone) => phone.Price,
+                "Stock" => (phone) => phone.Stock,
+                _ => (phone) => phone.PhoneName
+            };
+
+            var phones = await _phonesRepository.GetAllAsync(condition, orderBy, token);
+
+            return phones;
+        }
+
+        public async Task<PhonesPageFront> GetAllPagedAsync(PhonesFilterForm filterForm, int page, int pageSize,
             CancellationToken token)
         {
             Expression<Func<Phone, bool>> condition = (phone) =>

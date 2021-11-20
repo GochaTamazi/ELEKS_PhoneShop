@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using System.Threading.Tasks;
@@ -10,7 +11,10 @@ namespace Application.Interfaces
     {
         Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token);
 
-        Task<PhonesPageFront> GetAllAsync(PhonesFilterForm filterForm, int page, int pageSize, CancellationToken token);
+        Task<List<Phone>> GetAllAsync(PhonesFilterForm filterForm, CancellationToken token);
+
+        Task<PhonesPageFront> GetAllPagedAsync(PhonesFilterForm filterForm, int page, int pageSize,
+            CancellationToken token);
 
         Task<Phone> AddOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
     }
