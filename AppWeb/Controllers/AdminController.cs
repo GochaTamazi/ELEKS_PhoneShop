@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 
 namespace PhoneShop.Controllers
 {
@@ -216,6 +219,23 @@ namespace PhoneShop.Controllers
             var fileName = $"Phones_{str}.xlsx";
 
             return File(data, contentType, fileName);
+        }
+
+        [HttpPost("shop/importPhonesFromExcel")]
+        public async Task<ActionResult> ImportPhonesFromExcelAsync(IFormFile uploadedFile, CancellationToken token)
+        {
+            if (uploadedFile != null && uploadedFile.Length > 0)
+            {
+                var type = uploadedFile.FileName.Split(".").Last().ToLower();
+
+                if (type == "xlsx")
+                {
+                    uploadedFile.OpenReadStream();
+                    await _phoneData.ImportFromXlsxAsync(uploadedFile.OpenReadStream(), token);
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         #endregion

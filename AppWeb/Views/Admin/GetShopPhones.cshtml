@@ -10,6 +10,19 @@
     var InStock = filter.InStock;
 }
 
+<p>
+    <div>
+        <b>Import from excel</b>
+    </div>
+
+    <h3>Выберите файл для загрузки</h3>
+    <form asp-controller="Admin" asp-action="ImportPhonesFromExcel" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadedFile"/><br>
+        <input type="submit" value="Import"/>
+    </form>
+
+</p>
+
 
 <a asp-controller="Admin" asp-action="ExportPhonesToExcel"
    asp-route-brandName="@filter.BrandName"
