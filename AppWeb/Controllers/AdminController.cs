@@ -231,7 +231,8 @@ namespace PhoneShop.Controllers
                 if (type == "xlsx")
                 {
                     uploadedFile.OpenReadStream();
-                    await _phoneData.ImportFromXlsxAsync(uploadedFile.OpenReadStream(), token);
+                    var phones = await _phoneData.ImportFromXlsxAsync(uploadedFile.OpenReadStream(), token);
+                    await _adminPhones.AddOrUpdateAsync(phones, token);
                 }
             }
 

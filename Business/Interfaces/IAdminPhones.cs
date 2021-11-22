@@ -17,5 +17,7 @@ namespace Application.Interfaces
             CancellationToken token);
 
         Task<Phone> AddOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token);
+        
+        Task AddOrUpdateAsync(List<Phone> phones, CancellationToken token);
     }
 }

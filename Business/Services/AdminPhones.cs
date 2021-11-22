@@ -73,6 +73,28 @@ namespace Application.Services
             return phoneFromApi;
         }
 
+        public async Task AddOrUpdateAsync(List<Phone> phones, CancellationToken token)
+        {
+            foreach (var phone in phones)
+            {
+                var phoneDb = await _phonesRepository.AddOrUpdateAsync(p => p.PhoneSlug == phone.PhoneSlug,
+                    phone, token);
+
+                //Price notification
+                if (phone.Price != phoneDb.Price)
+                {
+                    await _mailNotification.NotifyPriceSubscribersAsync(phone, token);
+                    await _mailNotification.NotifyPriceWishListCustomerAsync(phone, token);
+                }
+
+                //Stock notification
+                if (phone.Stock != phoneDb.Stock && phoneDb.Stock <= 0)
+                {
+                    await _mailNotification.NotifyStockSubscribersAsync(phone, token);
+                }
+            }
+        }
+
         public async Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token)
         {
             var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
