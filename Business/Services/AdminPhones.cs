@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using Application.DTO.PhoneSpecificationsAPI.ListBrands;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using AutoMapper;
 
@@ -41,8 +42,10 @@ namespace Application.Services
 
         public async Task<Phone> AddOrUpdateAsync(PhoneSpecFront phoneSpecFront, CancellationToken token)
         {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
-                phoneSpecFront.PhoneSlug, token);
+            var apiResponseDto =
+                await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(phoneSpecFront.PhoneSlug, token);
+
+            var phoneSpecificationsDto = (PhoneSpecificationsDto) apiResponseDto.Data;
 
             if (phoneSpecificationsDto == null)
             {
@@ -97,10 +100,12 @@ namespace Application.Services
 
         public async Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token)
         {
-            var phoneSpecificationsDto = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
+            var apiResponseDto1 = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
                 phoneSlug, token);
+            var phoneSpecificationsDto = (PhoneSpecificationsDto) apiResponseDto1.Data;
 
-            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var apiResponseDto2 = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var listBrands = (ListBrandsDto) apiResponseDto2.Data;
 
             if (phoneSpecificationsDto == null || listBrands == null)
             {
@@ -187,7 +192,9 @@ namespace Application.Services
 
         private async Task BrandInsertIfNotExistAsync(string brandSlug, CancellationToken token)
         {
-            var listBrandsDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var listBrandsDto = (ListBrandsDto) apiResponseDto.Data;
+
             var brandDto = listBrandsDto?.Data.FirstOrDefault(brandDto => brandDto.Brand_slug == brandSlug);
             var brandModelFromApi = _mapper.Map<Brand>(brandDto);
             await _brandsRepository.AddIfNotExistAsync(b => b.Slug == brandSlug, brandModelFromApi, token);

@@ -53,7 +53,8 @@ namespace PhoneShop.Controllers
         [HttpGet("apiBrands")]
         public async Task<ActionResult<ListBrandsDto>> GetApiBrandsAsync(CancellationToken token)
         {
-            var listBrands = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            var listBrands = (ListBrandsDto) apiResponseDto.Data;
 
             if (listBrands == null)
             {
@@ -78,7 +79,8 @@ namespace PhoneShop.Controllers
                 return BadRequest("brandSlug not set");
             }
 
-            var phones = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token);
+            var phones = (ListPhonesDto) apiResponseDto.Data;
 
             if (phones == null)
             {
@@ -104,7 +106,8 @@ namespace PhoneShop.Controllers
                 return BadRequest("query not set");
             }
 
-            var search = await _phoneSpecificationServiceApi.SearchAsync(query, token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.SearchAsync(query, token);
+            var search = (SearchDto) apiResponseDto.Data;
 
             if (search == null)
             {
@@ -117,7 +120,8 @@ namespace PhoneShop.Controllers
         [HttpGet("apiLatest")]
         public async Task<ActionResult<LatestDto>> LatestApiAsync(CancellationToken token)
         {
-            var latest = await _phoneSpecificationServiceApi.GetLatestAsync(token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetLatestAsync(token);
+            var latest = (LatestDto) apiResponseDto.Data;
 
             if (latest == null)
             {
@@ -130,7 +134,8 @@ namespace PhoneShop.Controllers
         [HttpGet("apiTopByInterest")]
         public async Task<ActionResult<TopByInterestDto>> TopByInterestAsync(CancellationToken token)
         {
-            var topByInterest = await _phoneSpecificationServiceApi.GetTopByInterestAsync(token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetTopByInterestAsync(token);
+            var topByInterest = (TopByInterestDto) apiResponseDto.Data;
 
             if (topByInterest == null)
             {
@@ -143,7 +148,8 @@ namespace PhoneShop.Controllers
         [HttpGet("apiTopByFans")]
         public async Task<ActionResult<TopByFansDto>> TopByFansApiAsync(CancellationToken token)
         {
-            var topByFans = await _phoneSpecificationServiceApi.GetTopByFansAsync(token);
+            var apiResponseDto = await _phoneSpecificationServiceApi.GetTopByFansAsync(token);
+            var topByFans = (TopByFansDto) apiResponseDto.Data;
 
             if (topByFans == null)
             {

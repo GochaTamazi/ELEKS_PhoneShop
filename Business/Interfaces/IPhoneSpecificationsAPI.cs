@@ -1,12 +1,6 @@
-using Application.DTO.PhoneSpecificationsAPI.Latest;
-using Application.DTO.PhoneSpecificationsAPI.ListBrands;
-using Application.DTO.PhoneSpecificationsAPI.ListPhones;
-using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
-using Application.DTO.PhoneSpecificationsAPI.Search;
-using Application.DTO.PhoneSpecificationsAPI.TopByFans;
-using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
 using System.Threading.Tasks;
 using System.Threading;
+using Application.DTO.PhoneSpecificationsAPI;
 
 namespace Application.Interfaces
 {
@@ -16,22 +10,18 @@ namespace Application.Interfaces
     /// </summary>
     public interface IPhoneSpecificationsApi
     {
-        Task<LatestDto> GetLatestAsync(CancellationToken token);
+        Task<ApiResponseDto> GetListBrandsAsync(CancellationToken token);
 
-        Task<ListBrandsDto> GetListBrandsAsync(CancellationToken token);
+        Task<ApiResponseDto> GetListPhonesAsync(string brandSlug, int page, CancellationToken token);
 
-        Task<ListPhonesDto> GetListPhonesAsync(string brandSlug, int page, CancellationToken token);
+        Task<ApiResponseDto> GetPhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
 
-        Task<ListPhonesDto> GetListPhonesAsync2(string brandSlug, int page, CancellationToken token);
+        Task<ApiResponseDto> SearchAsync(string query, CancellationToken token);
 
-        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync(string phoneSlug, CancellationToken token);
+        Task<ApiResponseDto> GetLatestAsync(CancellationToken token);
 
-        Task<PhoneSpecificationsDto> GetPhoneSpecificationsAsync2(string phoneSlug, CancellationToken token);
+        Task<ApiResponseDto> GetTopByFansAsync(CancellationToken token);
 
-        Task<SearchDto> SearchAsync(string query, CancellationToken token);
-
-        Task<TopByFansDto> GetTopByFansAsync(CancellationToken token);
-
-        Task<TopByInterestDto> GetTopByInterestAsync(CancellationToken token);
+        Task<ApiResponseDto> GetTopByInterestAsync(CancellationToken token);
     }
 }
