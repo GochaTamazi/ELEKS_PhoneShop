@@ -1,0 +1,11 @@
+@model Application.DTO.PhoneSpecificationsAPI.ApiResponseDto
+
+@{
+    ViewBag.Title = "API Error";
+    Layout = "_Layout";
+}
+
+<div>Message: @Model.Message</div>
+<div>Message: @Model.StatusCode</div>
+
+<div>Message: @Model.Data?.ToString();</div>

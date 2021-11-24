@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
@@ -54,6 +55,11 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<ListBrandsDto>> GetApiBrandsAsync(CancellationToken token)
         {
             var apiResponseDto = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var listBrands = (ListBrandsDto) apiResponseDto.Data;
 
             if (listBrands == null)
@@ -80,6 +86,11 @@ namespace PhoneShop.Controllers
             }
 
             var apiResponseDto = await _phoneSpecificationServiceApi.GetListPhonesAsync(brandSlug, page, token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var phones = (ListPhonesDto) apiResponseDto.Data;
 
             if (phones == null)
@@ -107,6 +118,11 @@ namespace PhoneShop.Controllers
             }
 
             var apiResponseDto = await _phoneSpecificationServiceApi.SearchAsync(query, token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var search = (SearchDto) apiResponseDto.Data;
 
             if (search == null)
@@ -121,6 +137,11 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<LatestDto>> LatestApiAsync(CancellationToken token)
         {
             var apiResponseDto = await _phoneSpecificationServiceApi.GetLatestAsync(token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var latest = (LatestDto) apiResponseDto.Data;
 
             if (latest == null)
@@ -135,6 +156,11 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<TopByInterestDto>> TopByInterestAsync(CancellationToken token)
         {
             var apiResponseDto = await _phoneSpecificationServiceApi.GetTopByInterestAsync(token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var topByInterest = (TopByInterestDto) apiResponseDto.Data;
 
             if (topByInterest == null)
@@ -149,6 +175,11 @@ namespace PhoneShop.Controllers
         public async Task<ActionResult<TopByFansDto>> TopByFansApiAsync(CancellationToken token)
         {
             var apiResponseDto = await _phoneSpecificationServiceApi.GetTopByFansAsync(token);
+            if (apiResponseDto.StatusCode != HttpStatusCode.OK)
+            {
+                return View("ApiError", apiResponseDto);
+            }
+
             var topByFans = (TopByFansDto) apiResponseDto.Data;
 
             if (topByFans == null)
