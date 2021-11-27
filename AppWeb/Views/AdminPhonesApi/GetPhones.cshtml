@@ -13,8 +13,8 @@
 
 @for (var i = 1; i <= @Model.Phones.Data.Last_page; i++)
 {
-    <a asp-controller="Admin"
-       asp-action="GetApiPhones"
+    <a asp-controller="AdminPhonesApi"
+       asp-action="GetPhones"
        asp-route-brandSlug="@Model.BrandSlug"
        asp-route-page="@i">
         @i |
@@ -25,8 +25,8 @@
     @foreach (var phone in @Model.Phones.Data.Phones)
     {
         <li>
-            <a asp-controller="Admin"
-               asp-action="GetShopPhone"
+            <a asp-controller="AdminPhonesShop"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.Slug">
                 <img class="phoneImage" src="@phone.Image" alt="x"/>
                 @phone.Phone_name

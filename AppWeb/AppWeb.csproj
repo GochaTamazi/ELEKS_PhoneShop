@@ -11,6 +11,14 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\AdminController1\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\ApiError.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\GetApiBrands.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\GetApiPhones.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\LatestApi.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\SearchApi.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\TopByFansApi.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\AdminPhonesApi\TopByInterest.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +30,17 @@
 
     <ItemGroup>
       <Folder Include="Templates\xlsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\ApiError.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\GetApiBrands.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\GetApiPhones.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\Index.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\LatestApi.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\SearchApi.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\TopByFansApi.cshtml" />
+      <UpToDateCheckInput Remove="Views\Admin\AdminPhonesApi\TopByInterest.cshtml" />
     </ItemGroup>
 
 </Project>

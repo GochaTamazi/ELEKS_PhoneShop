@@ -3,13 +3,14 @@ using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using System.Threading.Tasks;
 using System.Threading;
+using Application.DTO.PhoneSpecificationsAPI;
 using Database.Models;
 
 namespace Application.Interfaces
 {
     public interface IAdminPhones
     {
-        Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token);
+        Task<ApiResponseDto> GetOneAsync(string phoneSlug, CancellationToken token);
 
         Task<List<Phone>> GetAllAsync(PhonesFilterForm filterForm, CancellationToken token);
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.DTO.Frontend.Forms;
 using Database.Models;
 
 namespace Application.Interfaces
@@ -11,7 +12,7 @@ namespace Application.Interfaces
 
         Task<PromoCode> GetOneAsync(string key, CancellationToken token);
 
-        Task AddOrUpdateAsync(string phoneSlug, string key, int amount, int discount, CancellationToken token);
+        Task AddOrUpdateAsync(PromoCodeForm promoCodeForm, CancellationToken token);
 
         Task RemoveIfExistAsync(string key, CancellationToken token);
 

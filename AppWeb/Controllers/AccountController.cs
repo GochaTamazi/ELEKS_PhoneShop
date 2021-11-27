@@ -38,7 +38,7 @@ namespace PhoneShop.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginAsync([FromForm] LoginForm loginForm, CancellationToken token)
+        public async Task<IActionResult> LoginAsync(CancellationToken token, [FromForm] LoginForm loginForm)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace PhoneShop.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterAsync([FromForm] RegisterForm registerForm, CancellationToken token)
+        public async Task<IActionResult> RegisterAsync(CancellationToken token, [FromForm] RegisterForm registerForm)
         {
             if (ModelState.IsValid)
             {

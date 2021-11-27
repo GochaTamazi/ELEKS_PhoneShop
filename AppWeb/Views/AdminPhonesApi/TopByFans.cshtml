@@ -1,12 +1,12 @@
-@model Application.DTO.PhoneSpecificationsAPI.TopByInterest.TopByInterestDto
+@model Application.DTO.PhoneSpecificationsAPI.TopByFans.TopByFansDto
 
 @{
-    ViewBag.Title = "Top By Interest";
+    ViewBag.Title = "Top By Fans";
     Layout = "_Layout";
     var data = @Model.Data;
 }
 
-<h2>Top By Interest</h2>
+<h2>Top By Fans</h2>
 
 <h4>@data.Title : @data.Phones.Count</h4>
 
@@ -14,11 +14,11 @@
     @foreach (var phone in @data.Phones)
     {
         <li>
-            <a asp-controller="Admin"
-               asp-action="GetShopPhone"
+            <a asp-controller="AdminPhonesShop"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.Slug">
                 <b>Phone_name:</b> @phone.Phone_name |
-                <b>Hits:</b> @phone.Hits
+                <b>Favorites:</b> @phone.Favorites
             </a>
         </li>
     }

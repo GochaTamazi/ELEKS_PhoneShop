@@ -12,7 +12,7 @@
 
 <h2>Cart</h2>
 
-<form asp-controller="Customer" asp-action="GetCart" method="get">
+<form asp-controller="CustomerCart" asp-action="GetCart" method="get">
     <p>
         <label>
             <b>PromoCode:</b>
@@ -55,7 +55,7 @@
 
         <li class="pLi @phoneClass">
             <a class="pUrl"
-               asp-controller="Customer"
+               asp-controller="CustomerPhonesShop"
                asp-action="GetPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
@@ -90,7 +90,7 @@
                 </div>
             </a>
 
-            <a asp-controller="Customer"
+            <a asp-controller="CustomerCart"
                asp-action="RemoveCart"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 Remover From Cart
@@ -101,7 +101,7 @@
 
 <h4>Total Sum Cart: @totalSumCart</h4>
 
-<a asp-controller="Customer"
+<a asp-controller="CustomerCart"
    asp-action="BuyCart"
    asp-route-PromoCodeKey="@promoCodeKey">
     <h3>Buy</h3>

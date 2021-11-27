@@ -9,7 +9,7 @@
 
 <div>
     <div>Create Promo Code</div>
-    <form asp-controller="Admin" asp-action="CreatePromoCodes" method="post">
+    <form asp-controller="AdminPromoCodes" asp-action="CreatePromoCode" method="post">
         <div>
             <label class="filterLabel">PhoneSlug:</label>
             <input type="text" name="PhoneSlug" placeholder="PhoneSlug" value=""/>
@@ -60,8 +60,8 @@ setRandKey();
 
         <li class="pLi @phoneClass">
             <a class="pUrl"
-               asp-controller="Admin"
-               asp-action="GetShopPhone"
+               asp-controller="AdminPhonesShop"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.PhoneSlug">
                 <img class="phoneImage" src="@phone.Thumbnail" alt="x"/>
                 <div class="pRow">
@@ -98,7 +98,7 @@ setRandKey();
                 <span class="pColVal">@v.Discount</span>
             </div>
 
-            <a asp-controller="Admin"
+            <a asp-controller="AdminPromoCodes"
                asp-action="RemoveCode"
                asp-route-key="@v.Key">
                 DeleteCode

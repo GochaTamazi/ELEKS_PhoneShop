@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.DTO.Frontend.Forms;
 using Application.Interfaces;
 using DataAccess.Interfaces;
 using Database.Models;
@@ -36,21 +37,22 @@ namespace Application.Services
                 token);
         }
 
-        public async Task AddOrUpdateAsync(string phoneSlug, string key, int amount, int discount,
-            CancellationToken token)
+        public async Task AddOrUpdateAsync(PromoCodeForm promoCodeForm, CancellationToken token)
         {
-            var phone = await _phoneRepository.GetOneAsync(phone => phone.PhoneSlug == phoneSlug && phone.Hided != true,
+            var phone = await _phoneRepository.GetOneAsync(
+                phone => phone.PhoneSlug == promoCodeForm.PhoneSlug && phone.Hided != true,
                 token);
             if (phone != null)
             {
                 var promoCode = new PromoCode()
                 {
-                    Key = key,
-                    Amount = amount,
-                    Discount = discount,
+                    Key = promoCodeForm.Key,
+                    Amount = promoCodeForm.Amount,
+                    Discount = promoCodeForm.Discount,
                     PhoneId = phone.Id
                 };
-                await _promoCodeRepository.AddOrUpdateAsync(code => code.Key == key && code.PhoneId == phone.Id,
+                await _promoCodeRepository.AddOrUpdateAsync(
+                    code => code.Key == promoCodeForm.Key && code.PhoneId == phone.Id,
                     promoCode,
                     token);
             }

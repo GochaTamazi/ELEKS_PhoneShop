@@ -11,7 +11,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using Application.DTO.PhoneSpecificationsAPI;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
+using Application.DTO.PhoneSpecificationsAPI.ListPhones;
 using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using AutoMapper;
 
@@ -98,18 +101,21 @@ namespace Application.Services
             }
         }
 
-        public async Task<PhoneSpecFront> GetOneAsync(string phoneSlug, CancellationToken token)
+        public async Task<ApiResponseDto> GetOneAsync(string phoneSlug, CancellationToken token)
         {
             var apiResponseDto1 = await _phoneSpecificationServiceApi.GetPhoneSpecificationsAsync(
                 phoneSlug, token);
             var phoneSpecificationsDto = (PhoneSpecificationsDto) apiResponseDto1.Data;
+            if (apiResponseDto1.StatusCode != HttpStatusCode.OK)
+            {
+                return apiResponseDto1;
+            }
 
             var apiResponseDto2 = await _phoneSpecificationServiceApi.GetListBrandsAsync(token);
             var listBrands = (ListBrandsDto) apiResponseDto2.Data;
-
-            if (phoneSpecificationsDto == null || listBrands == null)
+            if (apiResponseDto2.StatusCode != HttpStatusCode.OK)
             {
-                return null;
+                return apiResponseDto2;
             }
 
             var brand = listBrands.Data.FirstOrDefault(brand => brand.Brand_name == phoneSpecificationsDto.Data.Brand);
@@ -130,7 +136,8 @@ namespace Application.Services
 
             phoneSpecFront.PhoneDetail = phoneSpecificationsDto.Data;
 
-            return phoneSpecFront;
+            apiResponseDto1.Data = phoneSpecFront;
+            return apiResponseDto1;
         }
 
         public async Task<List<Phone>> GetAllAsync(PhonesFilterForm filterForm, CancellationToken token)

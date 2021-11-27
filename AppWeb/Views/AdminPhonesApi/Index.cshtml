@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Admin Page";
+}
+
+<div class="text-left">
+    <h4>Admin Phones Api</h4>
+
+    <p>
+        <a asp-controller="AdminPhonesApi" asp-action="GetBrands">List Brands</a>
+    </p>
+
+    <p>
+        <a asp-controller="AdminPhonesApi" asp-action="Latest">Latest Phones</a>
+    </p>
+
+    <p>
+        <a asp-controller="AdminPhonesApi" asp-action="TopByInterest">Top By Interest</a>
+    </p>
+
+    <p>
+        <a asp-controller="AdminPhonesApi" asp-action="TopByFans">Top By Fans</a>
+    </p>
+
+    <form asp-controller="AdminPhonesApi" asp-action="Search" method="get">
+        <div>
+            <label>
+                <b>Search:</b>
+            </label>
+            <input type="text" name="query"/>
+            <input type="submit" value="Find"/>
+        </div>
+    </form>
+
+</div>

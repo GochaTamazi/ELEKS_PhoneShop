@@ -13,8 +13,8 @@
     @foreach (var brand in @Model.Data)
     {
         <li>
-            <a asp-controller="Admin"
-               asp-action="GetApiPhones"
+            <a asp-controller="AdminPhonesApi"
+               asp-action="GetPhones"
                asp-route-brandSlug="@brand.Brand_slug"
                asp-route-page="1">
                 @brand.Brand_name

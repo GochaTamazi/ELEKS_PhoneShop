@@ -29,23 +29,32 @@
                         if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminPhonesApi" asp-action="Index">
+                                    PhonesApi
+                                </a>
                             </li>
+                            
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="GetPromoCodes">PromoCodes</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminPhonesShop" asp-action="GetPhones">
+                                    PhonesShop
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminPromoCodes" asp-action="GetPromoCodes">PromoCodes</a>
                             </li>
                         }
 
                         if (User.IsInRole("Customer"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customer</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CustomerPhonesShop" asp-action="GetPhones">Customer</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="GetWishLists">ShowWishList</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CustomerWishLists" asp-action="GetWishLists">ShowWishList</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="GetCart">Cart</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CustomerCart" asp-action="GetCart">Cart</a>
                             </li>
                         }
 

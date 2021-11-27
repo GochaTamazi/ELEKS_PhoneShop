@@ -1,7 +1,6 @@
 ﻿using Application.DTO.Frontend;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace PhoneShop.Controllers
@@ -10,13 +9,6 @@ namespace PhoneShop.Controllers
     [Route("home"), Route("")]
     public class HomeController : Controller
     {
-        private ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Error()
         {

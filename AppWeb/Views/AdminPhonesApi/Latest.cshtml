@@ -14,8 +14,8 @@
     @foreach (var phone in @data.Phones)
     {
         <li>
-            <a asp-controller="Admin"
-               asp-action="GetShopPhone"
+            <a asp-controller="AdminPhonesShop"
+               asp-action="GetPhone"
                asp-route-phoneSlug="@phone.Slug">
                 <img class="phoneImage" src="@phone.Image" alt="x"/>
                 @phone.Phone_name
