@@ -1,11 +1,11 @@
 using Application.Interfaces;
+using DataAccess.Interfaces;
 using Database.Models;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using DataAccess.Interfaces;
 
 namespace Application.Services
 {

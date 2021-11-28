@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace PhoneShop.Controllers
 {
-    [Route("account")]
+    [Route("Account")]
     public class AccountController : Controller
     {
         private readonly IGeneralRepository<User> _usersRepository;
@@ -29,14 +29,14 @@ namespace PhoneShop.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpGet("Login")]
         public IActionResult Login()
         {
             return View();
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("Login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginAsync(CancellationToken token, [FromForm] LoginForm loginForm)
         {
@@ -63,14 +63,14 @@ namespace PhoneShop.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("register")]
+        [HttpGet("Register")]
         public IActionResult Register()
         {
             return View();
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("Register")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAsync(CancellationToken token, [FromForm] RegisterForm registerForm)
         {
@@ -101,7 +101,7 @@ namespace PhoneShop.Controllers
         }
 
         [Authorize]
-        [HttpGet("logout")]
+        [HttpGet("Logout")]
         public async Task<IActionResult> LogoutAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

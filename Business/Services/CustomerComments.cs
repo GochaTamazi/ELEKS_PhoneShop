@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.DTO.Frontend;
 using Application.DTO.Frontend.Forms;
+using Application.DTO.Frontend;
 using Application.Interfaces;
 using AutoMapper;
 using DataAccess.Interfaces;
 using Database.Models;
 using PagedList;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace Application.Services
 {

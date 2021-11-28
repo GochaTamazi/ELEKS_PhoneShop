@@ -18,7 +18,7 @@ namespace PhoneShop.Controllers.Customer
             _subscribers = subscribers;
         }
 
-        [HttpPost("phone/subscribePrice")]
+        [HttpPost("SubscribePrice")]
         public async Task<ActionResult> SubscribePriceAsync(CancellationToken token,
             [FromForm] SubscriberForm subscriberForm)
         {
@@ -26,7 +26,7 @@ namespace PhoneShop.Controllers.Customer
             return Ok("SubscribePriceAsync ok");
         }
 
-        [HttpPost("phone/subscribeStock")]
+        [HttpPost("SubscribeStock")]
         public async Task<ActionResult> SubscribeStockAsync(CancellationToken token,
             [FromForm] SubscriberForm subscriberForm)
         {

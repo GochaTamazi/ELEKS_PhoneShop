@@ -23,7 +23,7 @@ namespace PhoneShop.Controllers.Customer
             _promoCodes = promoCodes;
         }
 
-        [HttpGet("cart")]
+        [HttpGet("Cart")]
         public async Task<ActionResult> GetCartAsync(CancellationToken token, [FromQuery] string promoCodeKey = "")
         {
             var userMail = User.Identity?.Name;
@@ -35,7 +35,7 @@ namespace PhoneShop.Controllers.Customer
             return View(cartAndPromoCodeFront);
         }
 
-        [HttpPost("cart")]
+        [HttpPost("Cart")]
         public async Task<ActionResult> AddCartAsync(CancellationToken token,
             [FromForm] [Required] string phoneSlug,
             [FromForm] [Required] int amount)
@@ -47,10 +47,11 @@ namespace PhoneShop.Controllers.Customer
 
             var userMail = User.Identity?.Name;
             await _customerCart.AddOrUpdateAsync(phoneSlug, userMail, amount, token);
-            return Ok("InsertToCartAsync ok");
+
+            return RedirectToAction("GetCart", "CustomerCart");
         }
 
-        [HttpGet("cart/remove/{phoneSlug}")]
+        [HttpGet("Cart/Remove/{phoneSlug}")]
         public async Task<ActionResult> RemoveCartAsync(CancellationToken token,
             [FromRoute] [Required] string phoneSlug)
         {
@@ -61,16 +62,18 @@ namespace PhoneShop.Controllers.Customer
 
             var userMail = User.Identity?.Name;
             await _customerCart.RemoveAsync(phoneSlug, userMail, token);
-            return Ok("DeleteFromCartAsync ok");
+
+            return RedirectToAction("GetCart", "CustomerCart");
         }
 
-        [HttpGet("cart/buy")]
+        [HttpGet("Cart/Buy")]
         public async Task<ActionResult> BuyCartAsync(CancellationToken token, [FromQuery] string promoCodeKey = "")
         {
             var userMail = User.Identity?.Name;
             var carts = await _customerCart.BuyAsync(userMail, token);
             var totalSum = await _promoCodes.Buy(carts, promoCodeKey, token);
-            return Ok($"BuyPhones OK. Total sum {totalSum}");
+
+            return Ok($"BuyPhones. Total sum {totalSum}");
         }
     }
 }

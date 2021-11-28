@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace PhoneShop.Controllers
 {
     [AllowAnonymous]
-    [Route("home"), Route("")]
+    [Route("Home"), Route("")]
     public class HomeController : Controller
     {
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -15,7 +15,7 @@ namespace PhoneShop.Controllers
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
-        [HttpGet("index"), HttpGet("")]
+        [HttpGet("Index"), HttpGet("")]
         public ActionResult Index()
         {
             return View();

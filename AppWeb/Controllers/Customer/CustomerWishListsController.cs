@@ -18,7 +18,7 @@ namespace PhoneShop.Controllers.Customer
             _customerWishList = customerWishList;
         }
 
-        [HttpGet("wishLists")]
+        [HttpGet("WishLists")]
         public async Task<ActionResult> GetWishListsAsync(CancellationToken token)
         {
             var userMail = User.Identity?.Name;
@@ -26,7 +26,7 @@ namespace PhoneShop.Controllers.Customer
             return View(wishList);
         }
 
-        [HttpGet("wishList/add/{phoneSlug}")]
+        [HttpGet("WishList/Add/{phoneSlug}")]
         public async Task<ActionResult> AddWishListAsync([FromRoute] [Required] string phoneSlug,
             CancellationToken token)
         {
@@ -37,10 +37,11 @@ namespace PhoneShop.Controllers.Customer
 
             var userMail = User.Identity?.Name;
             await _customerWishList.AddIfNotExistAsync(phoneSlug, userMail, token);
-            return Ok("AddToWishListAsync ok");
+            
+            return RedirectToAction("GetWishLists", "CustomerWishLists");
         }
 
-        [HttpGet("wishList/remove/{phoneSlug}")]
+        [HttpGet("WishList/Remove/{phoneSlug}")]
         public async Task<ActionResult> RemoveWishListAsync([FromRoute] [Required] string phoneSlug,
             CancellationToken token)
         {
@@ -51,7 +52,8 @@ namespace PhoneShop.Controllers.Customer
 
             var userMail = User.Identity?.Name;
             await _customerWishList.RemoveAsync(phoneSlug, userMail, token);
-            return Ok("RemoveFromWishListAsync ok");
+            
+            return RedirectToAction("GetWishLists", "CustomerWishLists");
         }
     }
 }

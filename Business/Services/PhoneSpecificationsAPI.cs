@@ -1,4 +1,3 @@
-using System;
 using Application.DTO.Options;
 using Application.DTO.PhoneSpecificationsAPI.Latest;
 using Application.DTO.PhoneSpecificationsAPI.ListBrands;
@@ -7,6 +6,7 @@ using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
 using Application.DTO.PhoneSpecificationsAPI.Search;
 using Application.DTO.PhoneSpecificationsAPI.TopByFans;
 using Application.DTO.PhoneSpecificationsAPI.TopByInterest;
+using Application.DTO.PhoneSpecificationsAPI;
 using Application.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
@@ -14,7 +14,7 @@ using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
-using Application.DTO.PhoneSpecificationsAPI;
+using System;
 
 namespace Application.Services
 {

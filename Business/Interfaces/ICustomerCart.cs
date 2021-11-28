@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Database.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Application.Interfaces
 {

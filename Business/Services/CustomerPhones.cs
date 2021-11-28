@@ -1,17 +1,16 @@
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
 using Application.Interfaces;
+using AutoMapper;
 using DataAccess.Interfaces;
 using Database.Models;
 using Microsoft.EntityFrameworkCore;
 using PagedList;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using AutoMapper;
 
 namespace Application.Services
 {

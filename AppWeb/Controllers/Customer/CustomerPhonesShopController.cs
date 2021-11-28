@@ -22,7 +22,7 @@ namespace PhoneShop.Controllers.Customer
             _customerComments = customerComments;
         }
 
-        [HttpGet("phones")]
+        [HttpGet("Phones")]
         public async Task<ActionResult<PhonesPageFront>> GetPhonesAsync(CancellationToken token,
             [FromQuery] PhonesFilterForm filterForm,
             [FromQuery] int page = 1)
@@ -33,7 +33,7 @@ namespace PhoneShop.Controllers.Customer
             return View(phonesPageFront);
         }
 
-        [HttpGet("phone/{phoneSlug}")]
+        [HttpGet("Phone/{phoneSlug}")]
         public async Task<ActionResult> GetPhoneAsync(CancellationToken token, [FromRoute] [Required] string phoneSlug)
         {
             if (!ModelState.IsValid)
@@ -50,7 +50,7 @@ namespace PhoneShop.Controllers.Customer
             return View(phone);
         }
 
-        [HttpGet("phoneComments/{phoneSlug}/{page}")]
+        [HttpGet("PhoneComments/{phoneSlug}/{page}")]
         public async Task<ActionResult> GetPhoneCommentsAsync(CancellationToken token,
             [FromRoute] [Required] string phoneSlug,
             [FromRoute] int page = 1)
@@ -65,7 +65,7 @@ namespace PhoneShop.Controllers.Customer
             return PartialView(commentsPage);
         }
 
-        [HttpPost("phoneComments")]
+        [HttpPost("PhoneComments")]
         public async Task<ActionResult> AddOrUpdatePhoneCommentAsync(CancellationToken token,
             [FromForm] CommentForm commentForm)
         {

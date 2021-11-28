@@ -1,22 +1,21 @@
 using Application.DTO.Frontend.Forms;
 using Application.DTO.Frontend;
+using Application.DTO.PhoneSpecificationsAPI.ListBrands;
+using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
+using Application.DTO.PhoneSpecificationsAPI;
 using Application.Interfaces;
+using AutoMapper;
 using DataAccess.Interfaces;
 using Database.Models;
 using Microsoft.EntityFrameworkCore;
 using PagedList;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using Application.DTO.PhoneSpecificationsAPI;
-using Application.DTO.PhoneSpecificationsAPI.ListBrands;
-using Application.DTO.PhoneSpecificationsAPI.ListPhones;
-using Application.DTO.PhoneSpecificationsAPI.PhoneSpecifications;
-using AutoMapper;
 
 namespace Application.Services
 {
