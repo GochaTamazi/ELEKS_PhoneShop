@@ -1,3 +1,4 @@
+@using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute
 @model Application.DTO.Frontend.PhoneDto
 
 @{
@@ -127,7 +128,12 @@
 
 <script>
 function LoadPhoneComments(phoneSlug, page = 1) {
-    let url = `/customer/phoneComments/${phoneSlug}/${page}`;
+    let url = '@Url.Action("GetPhoneComments", "CustomerPhonesShop", new {phoneSlug = "_phoneSlug_", page = "_page_"})'
+        .replace('_phoneSlug_', phoneSlug)
+        .replace('_page_', page);
+    
+    console.log(url)
+    
     fetch(url).then((response) => {
         return response.text();
     }).then((result) => {

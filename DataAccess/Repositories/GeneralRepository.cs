@@ -57,7 +57,8 @@ namespace DataAccess.Repositories
             {
                 DetachEntity(result);
                 ((IEntity) model).Id = ((IEntity) result).Id;
-                modelRes = await UpdateAsync(model, token);
+                modelRes = result;
+                await UpdateAsync(model, token);
             }
 
             await transaction.CommitAsync(token);
